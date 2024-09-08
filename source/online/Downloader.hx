@@ -26,7 +26,7 @@ class Downloader {
 	public var originURL:String;
 
 	var downloadPath:String;
-	static var downloadDir:String = #if mobile Sys.getCwd() #else openfl.filesystem.File.applicationDirectory.nativePath #end + "/downloads/";
+	static var downloadDir:String = #if mobile StorageUtil.getStorageDirectory(true) + "downloads/" #else openfl.filesystem.File.applicationDirectory.nativePath + "/downloads/" #end;
 
 	var alert:DownloadAlert;
 

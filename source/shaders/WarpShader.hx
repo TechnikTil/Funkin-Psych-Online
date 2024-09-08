@@ -29,9 +29,6 @@ class WarpShader extends FlxShader {
     // Contact the author for other licensing options
 
     #pragma header
-    vec2 uv = openfl_TextureCoordv.xy;
-    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-    vec2 iResolution = openfl_TextureSize;
     uniform float iTime;
     #define iChannel0 bitmap
     #define texture flixel_texture2D
@@ -154,6 +151,9 @@ class WarpShader extends FlxShader {
 
     void mainImage()
     {
+        vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+        vec2 iResolution = openfl_TextureSize;
+
         float t = -iTime*0.03;
         vec2 uv = fragCoord.xy / iResolution.xy-0.5;
         uv.x *= iResolution.x/iResolution.y;
