@@ -506,7 +506,7 @@ class ChartingState extends MusicBeatState
 		for (i in 0...directories.length) {
 			var directory:String = directories[i];
 			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
+				for (file in Paths.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
 					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
 						var charToCheck:String = file.substr(0, file.length - 5);
@@ -565,7 +565,7 @@ class ChartingState extends MusicBeatState
 		for (i in 0...directories.length) {
 			var directory:String = directories[i];
 			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
+				for (file in Paths.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
 					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
 						var stageToCheck:String = file.substr(0, file.length - 5);
@@ -917,7 +917,7 @@ class ChartingState extends MusicBeatState
 		#if sys
 		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'custom_notetypes/');
 		for (folder in foldersToCheck)
-			for (file in FileSystem.readDirectory(folder))
+			for (file in Paths.readDirectory(folder))
 			{
 				var fileName:String = file.toLowerCase().trim();
 				var wordLen:Int = 4; //length of word ".lua" and ".txt";
@@ -983,7 +983,7 @@ class ChartingState extends MusicBeatState
 		for (i in 0...directories.length) {
 			var directory:String =  directories[i];
 			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
+				for (file in Paths.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
 					if (!FileSystem.isDirectory(path) && file != 'readme.txt' && file.endsWith('.txt')) {
 						var fileToCheck:String = file.substr(0, file.length - 4);

@@ -17,8 +17,8 @@ class MobileData
 
 	public static function init()
 	{
-		readDirectory(Paths.getPreloadPath('mobile/DPadModes'), dpadModes);
-		readDirectory(Paths.getPreloadPath('mobile/ActionModes'), actionModes);
+		readDirectory(Paths.getLibraryPathForce('mobile/DPadModes', 'shared'), dpadModes);
+		readDirectory(Paths.getLibraryPathForce('mobile/ActionModes', 'shared'), actionModes);
 		#if MODS_ALLOWED
 		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/'))
 		{
@@ -34,7 +34,7 @@ class MobileData
 	public static function readDirectory(folder:String, map:Dynamic)
 	{
 		#if MODS_ALLOWED if(FileSystem.exists(folder)) #end
-			for (file in FileSystem.readDirectory(folder))
+			for (file in Paths.readDirectory(folder))
 			{
 				var fileWithNoLib:String = file.contains(':') ? file.split(':')[1] : file;
 				if (Path.extension(fileWithNoLib) == 'json')

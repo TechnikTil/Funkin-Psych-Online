@@ -291,7 +291,7 @@ class ExtraFunctions
 			var list:Array<String> = [];
 			#if sys
 			if(FileSystem.exists(folder)) {
-				for (folder in FileSystem.readDirectory(folder)) {
+				for (folder in Paths.readDirectory(folder)) {
 					if (!list.contains(folder)) {
 						list.push(folder);
 					}

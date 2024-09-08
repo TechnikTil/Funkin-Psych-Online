@@ -72,7 +72,7 @@ class SkinsState extends MusicBeatState {
 				characters = Paths.mods(name + '/characters/');
 			}
 			if (FileSystem.exists(characters)) {
-				for (file in FileSystem.readDirectory(characters)) {
+				for (file in Paths.readDirectory(characters)) {
 					var path = Path.join([characters, file]);
 					if (!sys.FileSystem.isDirectory(path) && file.endsWith('.json')) {
 						var character:String = file.substr(0, file.length - 5);

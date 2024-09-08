@@ -666,7 +666,7 @@ class PlayState extends MusicBeatState
 		preloadTasks.push(() -> {
 			var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'scripts/');
 			for (folder in foldersToCheck)
-				for (file in FileSystem.readDirectory(folder))
+				for (file in Paths.readDirectory(folder))
 				{
 					if(file.toLowerCase().endsWith('.lua'))
 						new FunkinLua(folder + file);
@@ -988,7 +988,7 @@ class PlayState extends MusicBeatState
 		preloadTasks.push(() -> {
 			var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'data/' + songName + '/');
 			for (folder in foldersToCheck)
-				for (file in FileSystem.readDirectory(folder)) {
+				for (file in Paths.readDirectory(folder)) {
 					if (file.toLowerCase().endsWith('.lua'))
 						new FunkinLua(folder + file);
 					#if HSCRIPT_ALLOWED

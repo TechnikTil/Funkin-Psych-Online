@@ -21,7 +21,7 @@ class FileUtils {
 	 */
 	public static function removeFiles(path:String) {
 		if (FileSystem.isDirectory(path)) {
-			for (file in FileSystem.readDirectory(path)) {
+			for (file in Paths.readDirectory(path)) {
 				removeFiles(Path.join([path, file]));
 			}
 			FileSystem.deleteDirectory(path);
@@ -39,7 +39,7 @@ class FileUtils {
 			FileSystem.createDirectory(Path.directory(to));
 		
 		if (FileSystem.isDirectory(from)) {
-			for (file in FileSystem.readDirectory(from)) {
+			for (file in Paths.readDirectory(from)) {
 				copyFiles(Path.join([from, file]), Path.join([to, file]));
 			}
 		}
@@ -61,7 +61,7 @@ class FileUtils {
 
 	public static function forEachFile(path:String, callback:(path:String)->Void) {
 		if (FileSystem.isDirectory(path)) {
-			for (file in FileSystem.readDirectory(path)) {
+			for (file in Paths.readDirectory(path)) {
 				forEachFile(Path.join([path, file]), callback);
 			}
 		}
