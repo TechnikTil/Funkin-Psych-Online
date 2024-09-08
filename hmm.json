@@ -7,8 +7,10 @@
     },
     {
       "name": "lime",
-      "type": "haxelib",
-      "version": "8.1.2"
+      "type": "git",
+      "dir": null,
+      "ref": "develop",
+      "url": "https://github.com/mcagabe19-stuff/lime.git"
     },
     {
       "name": "openfl",
@@ -37,8 +39,10 @@
     },
     {
       "name": "hxcpp",
-      "type": "haxelib",
-      "version": "4.3.2"
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/mcagabe19-stuff/hxcpp.git"
     },
     {
       "name": "tjson",
@@ -57,8 +61,10 @@
     },
     {
       "name": "SScript",
-      "type": "haxelib",
-      "version": "17.0.618"
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/MobilePorting/SScript-Psych-Online"
     },
     {
       "name": "discord_rpc",
@@ -71,8 +77,8 @@
       "name": "linc_luajit",
       "type": "git",
       "dir": null,
-      "ref": "master",
-      "url": "https://github.com/superpowers04/linc_luajit"
+      "ref": "main",
+      "url": "https://github.com/mcagabe19-stuff/linc_luajit-rewriten"
     },
     {
       "name": "colyseus",
@@ -104,7 +110,7 @@
       "type": "git",
       "dir": null,
       "ref": "dev",
-      "url": "https://github.com/ShadowMario/flxanimate"
+      "url": "https://github.com/FunkinExtraKeys/flxanimate"
     },
     {
       "name": "lumod",
@@ -112,6 +118,13 @@
       "dir": null,
       "ref": "main",
       "url": "https://github.com/Snirozu/Lumod"
+    },
+    {
+      "name": "extension-androidtools",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/MAJigsaw77/extension-androidtools/"
     }
   ]
 }

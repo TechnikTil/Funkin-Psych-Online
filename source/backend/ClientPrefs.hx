@@ -10,7 +10,12 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import states.TitleState;
 
 // Add a variable here and it will get automatically saved
-class SaveVariables {
+@:structInit class SaveVariables {
+	// Mobile and Mobile Controls Releated
+	#if android
+	public var storageType:String = "EXTERNAL_DATA";
+	#end
+
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;
@@ -84,16 +89,11 @@ class SaveVariables {
 	public var showNoteTiming:Bool = false;
 	public var disableAutoDownloads:Bool = false;
 	public var disableSongComments:Bool = false;
-
-	public function new()
-	{
-		//Why does haxe needs this again?
-	}
 }
 
 class ClientPrefs {
-	public static var data:SaveVariables = null;
-	public static var defaultData:SaveVariables = null;
+	public static var data:SaveVariables = {};
+	public static var defaultData:SaveVariables = {};
 
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -192,9 +192,6 @@ class ClientPrefs {
 	}
 
 	public static function loadPrefs() {
-		if(data == null) data = new SaveVariables();
-		if(defaultData == null) defaultData = new SaveVariables();
-
 		for (key in Reflect.fields(data)) {
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key)) {
 				//trace('loaded variable: $key');

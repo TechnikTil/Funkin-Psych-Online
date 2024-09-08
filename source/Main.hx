@@ -19,19 +19,15 @@ import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import lime.app.Application;
 import states.TitleState;
+#if mobile
+import mobile.states.CopyState;
+#end
 
 #if linux
 import lime.graphics.Image;
 #end
 
 import sys.FileSystem;
-
-//crash handler stuff
-import openfl.events.UncaughtErrorEvent;
-import haxe.CallStack;
-import haxe.io.Path;
-import sys.io.File;
-import sys.io.Process;
 
 class Main extends Sprite
 {
@@ -65,6 +61,22 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+		#if mobile
+		#if android
+		StorageUtil.requestPermissions();
+		#end
+		Sys.setCwd(StorageUtil.getStorageDirectory());
+		#end
+		backend.CrashHandler.init();
+
+		#if windows
+		@:functionCode("
+			#include <windows.h>
+			#include <winuser.h>
+			setProcessDPIAware() // allows for more crisp visuals
+			DisableProcessWindowsGhosting() // lets you move the window and such if it's not responding
+		")
+		#end
 
 		if (stage != null)
 		{
@@ -88,6 +100,7 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
+		#if (openfl <= "9.2.0")
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
@@ -99,6 +112,10 @@ class Main extends Sprite
 			game.width = Math.ceil(stageWidth / game.zoom);
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
+		#else
+		if (game.zoom == -1.0)
+			game.zoom = 1.0;
+		#end
 
 		CoolUtil.setDarkMode(true);
 
@@ -117,9 +134,8 @@ class Main extends Sprite
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
 		Controls.instance = new Controls();
 		ClientPrefs.loadDefaultKeys();
-		addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
-		#if !mobile
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsVar);
 		Lib.current.stage.align = "tl";
@@ -127,7 +143,6 @@ class Main extends Sprite
 		if(fpsVar != null) {
 			fpsVar.visible = ClientPrefs.data.showFPS;
 		}
-		#end
 
 		#if linux
 		var icon = Image.fromFile("icon.png");
@@ -138,13 +153,11 @@ class Main extends Sprite
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 		#end
-		
-		//haxe errors caught by openfl
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, (e) -> {
-			onCrash(e.error);
-		});
-		//internal c++ exceptions
-		untyped __global__.__hxcpp_set_critical_error_handler(onCrash);
+
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
+		ClientPrefs.loadPrefs();
+
+		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
 
 		#if DISCORD_ALLOWED
 		DiscordClient.start();
@@ -152,6 +165,9 @@ class Main extends Sprite
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
+			if(fpsVar != null)
+				fpsVar.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
+
 		     if (FlxG.cameras != null) {
 			   for (cam in FlxG.cameras.list) {
 				@:privateAccess
@@ -209,6 +225,7 @@ class Main extends Sprite
 			online.Downloader.checkDeleteDlDir();
 		});
 
+		#if !mobile
 		Lib.application.window.onDropFile.add(path -> {
 			if (FileSystem.isDirectory(path))
 				return;
@@ -224,6 +241,7 @@ class Main extends Sprite
 				});
 			}
 		});
+		#end
 		
 		#if HSCRIPT_ALLOWED
 		FlxG.signals.postStateSwitch.add(() -> {
@@ -245,47 +263,5 @@ class Main extends Sprite
 		        sprite.__cacheBitmap = null;
 			sprite.__cacheBitmapData = null;
 		}
-	}
-
-	static function onCrash(exc:Dynamic):Void
-	{
-		if (exc == null)
-			exc = new Exception("Empty Uncaught Exception");
-
-		var alertMsg:String = "";
-		var daError:String = "";
-		var path:String;
-		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
-		var dateNow:String = Date.now().toString();
-
-		dateNow = dateNow.replace(" ", "_");
-		dateNow = dateNow.replace(":", "'");
-
-		path = "./crash/" + "PsychEngine_" + dateNow + ".txt";
-
-		alertMsg += exc + "\n";
-		daError += CallStack.toString(callStack) + "\n";
-		if (exc is Exception)
-			daError += cast(exc, Exception).stack.toString() + "\n";
-		alertMsg += daError;
-
-		Sys.println(alertMsg);
-
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
-		File.saveContent(path, alertMsg + "\n\n === \n\nCommit: " + GIT_COMMIT + "\n");
-		Sys.println("Crash dump saved in " + Path.normalize(path));
-		
-		#if (windows && cpp)
-		alertMsg += "\nDo you wish to report this error on GitHub?";
-		alertMsg += "\nPress OK to draft a new GitHub issue";
-		WinAPI.alert("Uncaught Exception!", alertMsg, () -> {
-			daError += '\nVersion: ${Main.PSYCH_ONLINE_VERSION} ($GIT_COMMIT)';
-			FlxG.openURL('https://github.com/Snirozu/Funkin-Psych-Online/issues/new?title=${StringTools.urlEncode('Exception: ${exc}')}&body=${StringTools.urlEncode(daError)}');
-		});
-		#else
-		Application.current.window.alert(alertMsg, "Uncaught Exception!");
-		#end
-		Sys.exit(1);
 	}
 }

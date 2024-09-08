@@ -1,222 +1,129 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Build
-
-
-# Controls when the action will run.
-on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ main, experimental ]
-  pull_request:
-    branches: [ main, experimental ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+name: Main
+on: workflow_dispatch
 jobs:
-  # This workflow contains a single job called "build"
-  buildLinux:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  Desktop:
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-12, macos-14]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@main
 
-      - name: Retrieve Cache
-        uses: actions/cache@v3
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
         with:
-          path: |
-            ~/haxelib
-            export/release/linux/haxe
-            export/release/linux/obj
-          key: ${{ runner.os }}-build-cache
+          haxe-version: 4.3.6
 
-      - uses: krdlab/setup-haxe@master
-        with:
-          haxe-version: 4.3.2
-      # Runs a set of commands using the runners shell
-      - name: Install Haxelib
+      - name: Install libVLC (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt install libvlc-dev libvlccore-dev
+
+      - name: Install Libraries
         run: |
-          sudo apt-get install libvlc-dev
-          sudo apt-get install libvlccore-dev
-          haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
-          haxelib run hmm install
-      - name: Create Version Tag
-        run: echo "${{github.run_id}}" > VERSION
-      - name: Compile
-        run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}"
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: linuxBuild
-          path: 'export/release/linux/bin'
-  buildWindows:
-    runs-on: windows-latest
+          haxelib run hmm install --quiet
 
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2.3.0
-      
-      - name: Retrieve Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/haxelib
-            export/release/windows/haxe
-            export/release/windows/obj
-          key: ${{ runner.os }}-build-cache
+      - name: Compile (Windows)
+        if: startsWith(matrix.os, 'windows')
+        run: haxelib run lime build windows
 
-      - uses: krdlab/setup-haxe@master
-        with:
-          haxe-version: 4.3.2
-      # Runs a set of commands using the runners shell
-      - name: Install Haxelib
-        run: |
-          haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          haxelib install hmm --quiet
-          haxelib run hmm install
-        shell: cmd
-      - name: Create Version Tag
-        run: echo "${{github.run_id}}" > VERSION
-      - name: Compile
-        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2.2.4
+      - name: Compile (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: haxelib run lime build linux
+
+      - name: Compile (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: haxelib run lime build mac
+
+      - name: Upload Artifact (Windows)
+        if: startsWith(matrix.os, 'windows')
+        uses: actions/upload-artifact@main
         with:
           name: windowsBuild
-          path: export/release/windows/bin
-  buildMac:
-    runs-on: macos-12
+          path: export\release\windows\bin\*
+          if-no-files-found: error
 
+      - name: Upload Artifact (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: actions/upload-artifact@main
+        with:
+          name: linuxBuild
+          path: export/release/linux/bin/*
+          if-no-files-found: error
+
+      - name: Upload Artifact (macOS 12)
+        if: matrix.os == 'macos-12'
+        uses: actions/upload-artifact@main
+        with:
+          name: macOSBuild-x86_64
+          path: export/release/macos/bin/*
+          if-no-files-found: error
+
+      - name: Upload Artifact (macOS 14)
+        if: matrix.os == 'macos-14'
+        uses: actions/upload-artifact@main
+        with:
+          name: macOSBuild-arm64
+          path: export/release/macos/bin/*
+          if-no-files-found: error
+  Mobile:
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@main
 
-      - name: Retrieve Cache
-        uses: actions/cache@v3
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
         with:
-          path: |
-            ~/haxelib
-            export/release/macos/haxe
-            export/release/macos/obj
-          key: ${{ runner.os }}-build-cache
+          haxe-version: 4.3.6
 
-      - uses: krdlab/setup-haxe@master
-        with:
-          haxe-version: 4.3.2
-      # Runs a set of commands using the runners shell
-      - name: Install Haxelib
+      - name: Install Libraries
         run: |
-          haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
-          haxelib run hmm install
-      - name: Create Version Tag
-        run: echo "${{github.run_id}}" > VERSION
-      - name: Compile
-        run: haxelib run lime build mac --app-version="4.0.0-${{ github.run_id}}"
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2.2.4
+          haxelib run hmm install --quiet
+
+      - name: Configure Android
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          haxelib run lime config ANDROID_SDK $ANDROID_HOME
+          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
+          haxelib run lime config JAVA_HOME $JAVA_HOME_17_X64
+          haxelib run lime config ANDROID_SETUP true
+
+      - name: Compile (Android)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: haxelib run lime build android -ONLY_ARMV7
+
+      - name: Compile (iOS)
+        if: startsWith(matrix.os, 'macos')
+        run: haxelib run lime build ios -nosign
+
+      - name: Make Ipa
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          cd export/release/ios/build/*-iphoneos
+          mkdir Payload
+          mv *.app Payload
+          zip -r PsychOnline.ipa Payload
+
+      - name: Upload Artifact (Android)
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: actions/upload-artifact@main
         with:
-          name: macBuild
-          path: export/release/macos/bin
-  # buildAndroid:
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-latest
+          name: androidBuild
+          path: export/release/android/bin/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
 
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-      
-  #     - name: Retrieve Cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           ~/haxelib
-  #           export/release/android/haxe
-  #           export/release/android/obj
-  #         key: ${{ runner.os }}-cache
-
-  #     - uses: krdlab/setup-haxe@master
-  #       with:
-  #         haxe-version: 4.3.2
-      
-  #     - name: Setup Java JDK
-  #       uses: actions/setup-java@v2
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '11'
-
-  #     - name: Setup Android NDK
-  #       uses: nttld/setup-ndk@v1
-  #       id: setup-ndk
-  #       with:
-  #         ndk-version: r21e
-      
-  #     # Runs a set of commands using the runners shell
-  #     - name: Install Haxelib
-  #       run: |
-  #         sudo apt-get install libvlc-dev
-  #         sudo apt-get install libvlccore-dev
-  #         haxelib setup ~/haxelib
-  #         haxelib install hxcpp > /dev/null --quiet
-  #         haxelib install hmm --quiet
-  #         haxelib run hmm install
-  #         haxelib run lime config ANDROID_SDK $ANDROID_HOME
-  #         haxelib run lime config ANDROID_NDK_ROOT ${{steps.setup-ndk.outputs.ndk-path}}
-  #         haxelib run lime config JAVA_HOME $JAVA_HOME
-  #         haxelib run lime config ANDROID_SETUP true
-
-  #     - name: Create Version Tag
-  #       run: echo "${{github.run_id}}" > VERSION
-  #     - name: Compile
-  #       run: haxelib run lime build Project.xml android -D HXCPP_M64 --app-version="4.0.0-${{ github.run_id}}"
-  #     - name: Publish Artifact
-  #       uses: actions/upload-artifact@v2.2.4
-  #       with:
-  #         name: androidBuild (experimental)
-  #         path: 'export/release/android/bin/app/build/outputs/apk'
-  # smh: code signing shit
-  # buildiOS:
-  #   runs-on: macos-latest
-
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-
-  #     - name: Retrieve Cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           ~/haxelib
-  #           export/release/ios/haxe
-  #           export/release/ios/obj
-  #         key: ${{ runner.os }}-cache
-
-  #     - uses: krdlab/setup-haxe@master
-  #       with:
-  #         haxe-version: 4.3.2
-  #     # Runs a set of commands using the runners shell
-  #     - name: Install Haxelib
-  #       run: |
-  #         haxelib setup ~/haxelib
-  #         haxelib install hxcpp > /dev/null --quiet
-  #         haxelib install hmm --quiet
-  #         haxelib run hmm install
-  #     - name: Create Version Tag
-  #       run: echo "${{github.run_id}}" > VERSION
-  #     - name: Compile
-  #       run: haxelib run lime build ios --app-version="4.0.0-${{ github.run_id}}"
-  #     - name: Publish Artifact
-  #       uses: actions/upload-artifact@v2.2.4
-  #       with:
-  #         name: iOSBuild (experimental)
-  #         path: export/release/ios/build/
+      - name: Upload Artifact (iOS)
+        if: startsWith(matrix.os, 'macos')
+        uses: actions/upload-artifact@main
+        with:
+          name: iOSBuild
+          path: export/release/ios/build/Release-iphoneos/*.ipa
+          if-no-files-found: error

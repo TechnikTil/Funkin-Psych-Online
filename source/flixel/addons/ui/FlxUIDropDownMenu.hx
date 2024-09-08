@@ -1,6 +1,6 @@
 package flixel.addons.ui;
 
-import flash.geom.Rectangle;
+import openfl.geom.Rectangle;
 import flixel.addons.ui.interfaces.IFlxUIClickable;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
 import flixel.addons.ui.interfaces.IHasParams;
@@ -229,7 +229,7 @@ class FlxUIDropDownMenu extends FlxUIGroup implements IFlxUIWidget implements IF
 		for (i in 0...currentScroll) { //Hides buttons that goes before the current scroll
 			var button:FlxUIButton = list[i];
 			if(button != null) {
-				button.y = -99999;
+				button.y = FlxG.height + 250;
 			}
 		}
 		for (i in currentScroll...list.length)
@@ -428,42 +428,51 @@ class FlxUIDropDownMenu extends FlxUIGroup implements IFlxUIWidget implements IF
 	{
 		super.update(elapsed);
 
-		#if FLX_MOUSE
+		#if (FLX_MOUSE || FLX_TOUCH)
 		if (dropPanel.visible)
 		{
-			if(list.length > 1 && canScroll) {
-				if(FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP) {
-					// Go up
-					--currentScroll;
-					if(currentScroll < 0) currentScroll = 0;
-					updateButtonPositions();
+			/*if (Controls.instance.mobileC) {
+				if(list.length > 1 && canScroll) {
+					for (swipe in FlxG.swipes) {
+						var f = swipe.startPosition.x - swipe.endPosition.x;
+						var g = swipe.startPosition.y - swipe.endPosition.y;
+						if (25 <= Math.sqrt(f * f + g * g)) {
+							if ((-45 <= swipe.startPosition.angleBetween(swipe.endPosition) && 45 >= swipe.startPosition.angleBetween(swipe.endPosition))) {
+								// Go down
+								currentScroll++;
+								if(currentScroll >= list.length) currentScroll = list.length-1;
+									updateButtonPositions();
+							}
+							else if (-180 <= swipe.startPosition.angleBetween(swipe.endPosition) && -135 >= swipe.startPosition.angleBetween(swipe.endPosition) || (135 <= swipe.startPosition.angleBetween(swipe.endPosition) && 180 >= swipe.startPosition.angleBetween(swipe.endPosition))) {
+								// Go up
+								--currentScroll;
+								if(currentScroll < 0) currentScroll = 0;
+								updateButtonPositions();
+							}
+						}
+					}
 				}
-				else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN) {
-					// Go down
-					currentScroll++;
-					if(currentScroll >= list.length) currentScroll = list.length-1;
-					updateButtonPositions();
+			} else {*/
+				if(list.length > 1 && canScroll) {
+					var lastScroll:Int = currentScroll;
+					if(FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP) {
+						// Go up
+						--currentScroll;
+						if(currentScroll < 0) currentScroll = 0;
+					}
+					else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN) {
+						// Go down
+						currentScroll++;
+						if(currentScroll >= list.length) currentScroll = list.length-1;
+					}
+					if(lastScroll != currentScroll) updateButtonPositions();
 				}
-			}
 
-			if (FlxG.mouse.justPressed && !mouseOverlapping())
-			{
-				showList(false);
+				if (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this,camera))
+					showList(false);
 			}
-		}
+		//}
 		#end
-	}
-
-	function mouseOverlapping()
-	{
-		var mousePoint = FlxG.mouse.getScreenPosition(camera);
-		var objPoint = this.getScreenPosition(null, camera);
-		if(mousePoint.x >= objPoint.x && mousePoint.y >= objPoint.y &&
-			mousePoint.x < objPoint.x + this.width && mousePoint.y < objPoint.y + this.height)
-		{
-			return true;
-		}
-		return false;
 	}
 
 	override public function destroy():Void

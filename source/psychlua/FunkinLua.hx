@@ -43,6 +43,8 @@ import psychlua.HScript;
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
 
+import mobile.psychlua.Functions;
+
 class FunkinLua {
 	public static var Function_Stop:Dynamic = "##PSYCHLUA_FUNCTIONSTOP";
 	public static var Function_Continue:Dynamic = "##PSYCHLUA_FUNCTIONCONTINUE";
@@ -1599,6 +1601,7 @@ class FunkinLua {
 		CustomSubstate.implement(this);
 		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
+		#if android AndroidFunctions.implement(this); #end
 		
 		try{
 			var result:Dynamic = LuaL.dofile(lua, scriptName);
