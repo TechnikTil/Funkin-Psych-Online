@@ -29,7 +29,19 @@ class ExtraFunctions
 			if (Controls.instance?.moodyBlues != null && Controls.instance.moodyBlues.pressedKeys.get('KEY:' + name) == JUST_PRESSED) {
 				return true;
 			}
-			return Reflect.getProperty(FlxG.keys.justPressed, name);
+			
+			switch(name.toUpperCase()){
+				case 'SPACE':
+					var space = Reflect.getProperty(FlxG.keys.justPressed, 'SPACE');
+					var mobileShit:Bool = false;
+					if (Controls.instance.mobileC)
+						if (MusicBeatState.instance.mobileControls != null)
+							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.justPressed;
+					return space || mobileShit;
+
+				default:
+					return Reflect.getProperty(FlxG.keys.justPressed, name.toUpperCase());
+			}
 		});
 		Lua_helper.add_callback(lua, "keyboardPressed", luaPressed = function(name:String)
 		{
@@ -38,7 +50,19 @@ class ExtraFunctions
 				if (status == PRESSED || status == JUST_PRESSED)
 					return true;
 			}
-			return Reflect.getProperty(FlxG.keys.pressed, name);
+
+			switch(name.toUpperCase()){
+				case 'SPACE':
+					var space = Reflect.getProperty(FlxG.keys.pressed, 'SPACE');
+					var mobileShit:Bool = false;
+					if (Controls.instance.mobileC)
+						if (MusicBeatState.instance.mobileControls != null)
+							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.pressed;
+					return space || mobileShit;
+
+				default:
+					return Reflect.getProperty(FlxG.keys.pressed, name.toUpperCase());
+			}
 		});
 		Lua_helper.add_callback(lua, "keyboardReleased", luaJustReleased = function(name:String)
 		{
@@ -47,7 +71,19 @@ class ExtraFunctions
 				if (status == JUST_RELEASED)
 					return true;
 			}
-			return Reflect.getProperty(FlxG.keys.justReleased, name);
+			
+			switch(name.toUpperCase()){
+				case 'SPACE':
+					var space = Reflect.getProperty(FlxG.keys.justReleased, 'SPACE');
+					var mobileShit:Bool = false;
+					if (Controls.instance.mobileC)
+						if (MusicBeatState.instance.mobileControls != null)
+							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.justReleased;
+					return space || mobileShit;
+
+				default:
+					return Reflect.getProperty(FlxG.keys.justReleased, name.toUpperCase());
+			}
 		});
 
 		Lua_helper.add_callback(lua, "anyGamepadJustPressed", function(name:String)

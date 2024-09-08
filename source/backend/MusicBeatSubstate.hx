@@ -4,8 +4,12 @@ import flixel.FlxSubState;
 
 class MusicBeatSubstate extends FlxSubState
 {
+	public static var instance:MusicBeatSubstate;
+
 	public function new()
 	{
+		instance = this;
+		controls.isInSubstate = true;
 		super();
 	}
 
@@ -24,6 +28,68 @@ class MusicBeatSubstate extends FlxSubState
 
 	inline function get_controls():Controls
 		return Controls.instance;
+
+	public var touchPad:TouchPad;
+	public var mobileControls:MobileControls;
+
+	public function addMobileControls(defaultDrawTarget:Bool = false):Void
+		{
+			mobileControls = new MobileControls();
+	
+			var camControls = new flixel.FlxCamera();
+			camControls.bgColor.alpha = 0;
+			FlxG.cameras.add(camControls, defaultDrawTarget);
+	
+			mobileControls.cameras = [camControls];
+			mobileControls.visible = false;
+			add(mobileControls);
+		}
+	
+		public function removeMobileControls()
+		{
+			if (mobileControls != null)
+				remove(mobileControls);
+		}
+
+	public function addTouchPad(DPad:String, Action:String)
+	{
+		touchPad = new TouchPad(DPad, Action);
+		add(touchPad);
+	}
+
+	public function removeTouchPad()
+	{
+		if (touchPad != null)
+			remove(touchPad);
+	}
+
+	public function addTouchPadCamera(defaultDrawTarget:Bool = false):Void
+	{
+		if (touchPad != null)
+		{
+			var camControls:FlxCamera = new FlxCamera();
+			camControls.bgColor.alpha = 0;
+			FlxG.cameras.add(camControls, defaultDrawTarget);
+			touchPad.cameras = [camControls];
+		}
+	}
+
+	override function destroy()
+	{
+		super.destroy();
+
+		controls.isInSubstate = false;
+		if (touchPad != null)
+		{
+			touchPad = FlxDestroyUtil.destroy(touchPad);
+			touchPad = null;
+		}
+		if (mobileControls != null)
+		{
+			mobileControls = FlxDestroyUtil.destroy(mobileControls);
+			mobileControls = null;
+		}
+	}
 
 	override function update(elapsed:Float)
 	{

@@ -276,6 +276,7 @@ class PlayState extends MusicBeatState
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 	public var camLoading:FlxCamera;
+	public var luaVpadCam:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
 	public var songScore:Int = 0;
@@ -438,6 +439,8 @@ class PlayState extends MusicBeatState
 	
 	public var songId:String = null;
 
+	public var luaTouchPad:TouchPad;
+
 	override public function create()
 	{
 		theWorld = true;
@@ -455,13 +458,16 @@ class PlayState extends MusicBeatState
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camLoading = new FlxCamera();
+		luaVpadCam = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
+		luaVpadCam.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
 		FlxG.cameras.add(camLoading, false);
+		FlxG.cameras.add(luaVpadCam, false);
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
 		FlxG.cameras.cameraAdded.addOnce(realignLoadCam);
@@ -5076,5 +5082,84 @@ class PlayState extends MusicBeatState
 	}
 	function set_scrollYCenter(value) {
 		return camGame.scroll.y = value - FlxG.height / 2;
+	}
+
+	public function makeLuaTouchPad(DPadMode:String, ActionMode:String) {
+		if(members.contains(luaTouchPad)) return;
+
+		if(!variables.exists("luaTouchPad"))
+			variables.set("luaTouchPad", luaTouchPad);
+
+		luaTouchPad = new TouchPad(DPadMode, ActionMode, NONE);
+		luaTouchPad.alpha = ClientPrefs.data.controlsAlpha;
+	}
+	
+	public function addLuaTouchPad() {
+		if(luaTouchPad == null || members.contains(luaTouchPad)) return;
+
+		var target = LuaUtils.getTargetInstance();
+		target.insert(target.members.length + 1, luaTouchPad);
+	}
+
+	public function addLuaTouchPadCamera() {
+		if(luaTouchPad != null)
+			luaTouchPad.cameras = [luaVpadCam];
+	}
+
+	public function removeLuaTouchPad() {
+		if (luaTouchPad != null) {
+			luaTouchPad.kill();
+			luaTouchPad.destroy();
+			remove(luaTouchPad);
+			luaTouchPad = null;
+		}
+	}
+
+	public function luaTouchPadPressed(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonPressed(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button; // haxe said "You Can't Iterate On A Dyanmic Value Please Specificy Iterator or Iterable *insert nerd emoji*" so that's the only i foud to fix
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyPressed(idArray);
+			} else
+				return false;
+		}
+		return false;
+	}
+
+	public function luaTouchPadJustPressed(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonJustPressed(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button;
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyJustPressed(idArray);
+			} else
+				return false;
+		}
+		return false;
+	}
+	
+	public function luaTouchPadJustReleased(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonJustReleased(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button;
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyJustReleased(idArray);
+			} else
+				return false;
+		}
+		return false;
 	}
 }

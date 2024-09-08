@@ -21,7 +21,9 @@ import lime.app.Application;
 import states.TitleState;
 #if mobile
 import mobile.states.CopyState;
+import mobile.backend.MobileScaleMode;
 #end
+import mobile.objects.MobileControls;
 
 #if linux
 import lime.graphics.Image;
@@ -42,6 +44,8 @@ class Main extends Sprite
 	};
 
 	public static var fpsVar:FPS;
+
+	public static final platform:String = #if mobile "Phones" #else "PCs" #end;
 	#if AWAY_TEST
 	public static var stage3D:AwayStage;
 	#end
@@ -161,6 +165,12 @@ class Main extends Sprite
 
 		#if DISCORD_ALLOWED
 		DiscordClient.start();
+		#end
+		MobileControls.initSave();
+
+		#if mobile
+		lime.system.System.allowScreenTimeout = ClientPrefs.data.screensaver; 		
+		FlxG.scaleMode = new MobileScaleMode();
 		#end
 
 		// shader coords fix

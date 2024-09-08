@@ -4,14 +4,14 @@ import psychlua.CustomSubstate;
 #if LUA_ALLOWED
 import lime.ui.Haptic;
 import psychlua.FunkinLua;
-//import mobile.backend.TouchFunctions;
+import mobile.backend.TouchFunctions;
 #if android import mobile.backend.PsychJNI; #end
 
 /**
  * ...
  * @author: Karim Akra and Lily Ross (mcagabe19)
  */
-/*class MobileFunctions
+class MobileFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
@@ -192,7 +192,7 @@ import psychlua.FunkinLua;
 				return 'unknown';
 		}
 	}
-}*/
+}
 
 #if android
 class AndroidFunctions

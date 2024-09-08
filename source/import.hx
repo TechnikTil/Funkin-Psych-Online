@@ -30,6 +30,13 @@ import backend.Difficulty;
 import backend.Mods;
 import mobile.backend.StorageUtil;
 
+//Mobile Controls
+import mobile.objects.MobileControls;
+import mobile.objects.Hitbox;
+import mobile.objects.TouchPad;
+import mobile.input.MobileInputID;
+import mobile.backend.MobileData;
+
 //Android
 #if android
 import android.content.Context as AndroidContext;
@@ -58,6 +65,7 @@ import flixel.system.FlxSound;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.util.FlxDestroyUtil;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;

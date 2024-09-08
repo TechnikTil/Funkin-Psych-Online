@@ -6,6 +6,7 @@ import objects.Alphabet;
 
 class VisualsUISubState extends BaseOptionsMenu
 {
+	public static var pauseMusics:Array<String> = ['None', 'Tea Time', 'Breakfast'];
 	var noteOptionID:Int = -1;
 	var notes:FlxTypedGroup<StrumNote>;
 	var notesTween:Array<FlxTween> = [];
@@ -119,12 +120,21 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = onChangeFPSCounter;
+
+		#if sys
+		var option:Option = new Option('VSync',
+			'If checked, Enables VSync fixing any screen tearing at the cost of capping the FPS to screen refresh rate.\n(Must restart the game to have an effect)',
+			'vsync',
+			'bool');
+		option.onChange = onChangeVSync;
+		addOption(option);
+		#end
 		
 		var option:Option = new Option('Pause Screen Song:',
 			"What song do you prefer for the Pause Screen?",
 			'pauseMusic',
 			'string',
-			['None', 'Breakfast', 'Tea Time']);
+			pauseMusics);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 		
@@ -237,4 +247,14 @@ class VisualsUISubState extends BaseOptionsMenu
 		if(Main.fpsVar != null)
 			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
+
+	#if sys
+	function onChangeVSync()
+	{
+		var file:String = StorageUtil.rootDir + "vsync.txt";
+		if(FileSystem.exists(file))
+			FileSystem.deleteFile(file);
+		File.saveContent(file, Std.string(ClientPrefs.data.vsync));
+	}
+	#end
 }

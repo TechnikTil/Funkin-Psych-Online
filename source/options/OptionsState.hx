@@ -3,22 +3,33 @@ package options;
 import online.states.RoomState;
 import states.MainMenuState;
 import backend.StageData;
+#if (target.threaded)
+import sys.thread.Thread;
+import sys.thread.Mutex;
+#end
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
 	public static var onPlayState:Bool = false;
 	public static var onOnlineRoom:Bool = false;
+	#if (target.threaded) var mutex:Mutex = new Mutex(); #end
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
 			case 'Note Colors':
 				openSubState(new options.NotesSubState());
 			case 'Controls':
-				openSubState(new options.ControlsSubState());
+				switch (controls.mobileC)
+				{
+					case true:
+						persistentUpdate = false;
+						openSubState(new mobile.substates.MobileControlSelectSubState());
+					default: openSubState(new options.ControlsSubState());
+				}
 			case 'Graphics':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
@@ -27,6 +38,8 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				FlxG.switchState(() -> new options.NoteOffsetState());
+			case 'Mobile Options':
+				openSubState(new mobile.options.MobileOptionsSubState());
 		}
 	}
 
@@ -64,6 +77,20 @@ class OptionsState extends MusicBeatState
 
 		changeSelection();
 		ClientPrefs.saveSettings();
+
+		#if (target.threaded)
+		Thread.create(()->{
+			mutex.acquire();
+
+			for (music in VisualsUISubState.pauseMusics)
+			{
+				if (music.toLowerCase() != "none")
+					Paths.music(Paths.formatToSongPath(music));
+			}
+
+			mutex.release();
+		});
+		#end
 
 		super.create();
 

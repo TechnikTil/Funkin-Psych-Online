@@ -431,7 +431,7 @@ class FlxUIDropDownMenu extends FlxUIGroup implements IFlxUIWidget implements IF
 		#if (FLX_MOUSE || FLX_TOUCH)
 		if (dropPanel.visible)
 		{
-			/*if (Controls.instance.mobileC) {
+			if (Controls.instance.mobileC) {
 				if(list.length > 1 && canScroll) {
 					for (swipe in FlxG.swipes) {
 						var f = swipe.startPosition.x - swipe.endPosition.x;
@@ -452,7 +452,7 @@ class FlxUIDropDownMenu extends FlxUIGroup implements IFlxUIWidget implements IF
 						}
 					}
 				}
-			} else {*/
+			} else {
 				if(list.length > 1 && canScroll) {
 					var lastScroll:Int = currentScroll;
 					if(FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP) {
@@ -471,7 +471,7 @@ class FlxUIDropDownMenu extends FlxUIGroup implements IFlxUIWidget implements IF
 				if (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this,camera))
 					showList(false);
 			}
-		//}
+		}
 		#end
 	}
 

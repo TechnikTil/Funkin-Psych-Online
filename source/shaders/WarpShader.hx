@@ -1,7 +1,7 @@
 package shaders;
 
 import flixel.FlxBasic;
-import flixel.system.FlxAssets.FlxShader;
+import shaders.flixel.system.FlxShader;
 
 class WarpEffect extends FlxBasic {
 	var shader:WarpShader;
