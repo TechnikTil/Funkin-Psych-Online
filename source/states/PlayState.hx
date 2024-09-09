@@ -2356,7 +2356,7 @@ class PlayState extends MusicBeatState
 		setOnScripts('curDecStep', curDecStep);
 		setOnScripts('curDecBeat', curDecBeat);
 
-		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #else || touchPad.buttonP.justPressed #end && startedCountdown && canPause && canInput())
+		if (controls.PAUSE || #if android FlxG.android.justReleased.BACK #else touchPad.buttonP.justPressed #end && startedCountdown && canPause && canInput())
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {
