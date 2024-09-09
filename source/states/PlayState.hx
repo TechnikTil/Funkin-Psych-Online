@@ -1138,8 +1138,8 @@ class PlayState extends MusicBeatState
 		#if android
 		if (GameClient.isConnected()) {
 		#end
-			addTouchPad('NONE', 'P');
-    		addTouchPadCamera();
+			addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C' : 'P');
+			addTouchPadCamera();
 		#if android
 		}
 		#end

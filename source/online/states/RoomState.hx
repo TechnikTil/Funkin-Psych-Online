@@ -402,7 +402,7 @@ class RoomState extends MusicBeatState {
 
 		verifyDownloadMod(false, true);
 
-		addTouchPad('NONE', 'B');
+		addTouchPad('NONE', 'B_C');
 		addTouchPadCamera();
 		touchPad.y -= 300;
 

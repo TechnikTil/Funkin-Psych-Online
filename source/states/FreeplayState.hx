@@ -293,7 +293,7 @@ class FreeplayState extends MusicBeatState
 			GameClient.send("status", "Choosing a Song");
 		}
 
-		addTouchPad('LEFT_FULL', 'A_B_X_Y');
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y' : 'A_B_X_Y');
 
 		super.create();
 	}

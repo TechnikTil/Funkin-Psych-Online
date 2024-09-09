@@ -7,6 +7,7 @@ import lime.system.Clipboard;
 
 class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	public static var instance:ChatBox;
+	final tab:String = Controls.instance.mobileC ? "C" : "TAB";
 	var prevMouseVisibility:Bool = false;
     public var focused(default, set):Bool = false;
 	function set_focused(v) {
@@ -19,7 +20,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		}
 		else {
 			FlxG.mouse.visible = prevMouseVisibility;
-			typeTextHint.text = "(Press TAB to open chat!)";
+			typeTextHint.text = '(Press $tab to open chat!)';
 			typeBg.colorTransform.alphaOffset = -100;
 			typeBg.scale.x = Std.int(bg.width);
 		}
@@ -223,7 +224,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
         super.update(elapsed);
 
-		if (FlxG.keys.justPressed.TAB) {
+		if ((MusicBeatState.instance.touchPad.buttonC != null && MusicBeatState.instance.touchPad.buttonC.justPressed) || FlxG.keys.justPressed.TAB) {
 			focused = !focused;
 		}
 
