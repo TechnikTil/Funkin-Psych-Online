@@ -162,7 +162,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
     override function update(elapsed) {
 		if (focused || alpha > 0) {
-			if (FlxG.keys.justPressed.ESCAPE) {
+			if (FlxG.keys.justPressed.ESCAPE || #if android FlxG.android.justReleased.BACK #else (MusicBeatState.instance.touchPad.buttonB != null && MusicBeatState.instance.touchPad.buttonB.justPressed) #end) {
 				focused = false;
 			}
 

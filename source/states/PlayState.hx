@@ -999,10 +999,9 @@ class PlayState extends MusicBeatState
 		});
 		#end
 
-		//MTODO
 		if (GameClient.isConnected()) {
 			preloadTasks.push(() -> {
-				waitReadySpr = new Alphabet(0, 0, "PRESS ACCEPT TO START", true);
+				waitReadySpr = new Alphabet(0, 0, controls.mobileC ? "TOUCH YOUR SCREEN TO START" : "PRESS ACCEPT TO START", true);
 				waitReadySpr.cameras = [camOther];
 				waitReadySpr.alpha = 0;
 				waitReadySpr.alignment = CENTERED;
@@ -1136,9 +1135,13 @@ class PlayState extends MusicBeatState
 
 		addMobileControls();
         mobileControls.visible = true;
-		#if !android
-		addTouchPad('NONE', 'P');
-    	addTouchPadCamera();
+		#if android
+		if (GameClient.isConnected()) {
+		#end
+			addTouchPad('NONE', 'P');
+    		addTouchPadCamera();
+		#if android
+		}
 		#end
 
 		super.create();
@@ -2312,7 +2315,7 @@ class PlayState extends MusicBeatState
 				endSong();
 			}
 
-			if (canStart && !isReady && controls.ACCEPT && canInput()) {
+			if (canStart && !isReady && (controls.mobileC && FlxG.mouse.justPressed || controls.ACCEPT) && canInput()) {
 				isReady = true;
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
 				if (ClientPrefs.data.flashing)
@@ -2353,7 +2356,7 @@ class PlayState extends MusicBeatState
 		setOnScripts('curDecStep', curDecStep);
 		setOnScripts('curDecBeat', curDecBeat);
 
-		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #else || touchPad.buttonP.justPressed #end && startedCountdown && canPause && canInput())
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end || touchPad.buttonP.justPressed && startedCountdown && canPause && canInput())
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {

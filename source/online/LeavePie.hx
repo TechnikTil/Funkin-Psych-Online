@@ -22,7 +22,7 @@ class LeavePie extends FlxTypedSpriteGroup<FlxSprite> {
 		pieDial.antialiasing = ClientPrefs.data.antialiasing;
 		add(pieDial);
 
-		final back:String = (Controls.instance.mobileC) ? 'B' : 'BACK';
+		final back:String = (Controls.instance.mobileC) ? Std.isOfType(getState(), states.PlayState) ? 'P' : 'B' : 'BACK';
 
 		exitTip = new FlxText(pieDial.x + 80, pieDial.y + 5, 0, 'Hold $back to leave!');
 		exitTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -33,7 +33,7 @@ class LeavePie extends FlxTypedSpriteGroup<FlxSprite> {
     override function update(elapsed) {
         super.update(elapsed);
 
-		if (getState().controls.pressed('back') && !ChatBox.instance.focused) {
+		if ((Std.isOfType(getState(), states.PlayState) && getState().touchPad.buttonP.pressed || getState().controls.pressed('back')) && !ChatBox.instance.focused) {
 			exitTip.alpha = 1;
 			pieDial.amount += elapsed * 2;
 			pieDial.visible = true;
