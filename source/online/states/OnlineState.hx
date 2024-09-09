@@ -92,7 +92,7 @@ class OnlineState extends MusicBeatState {
         bg.antialiasing = ClientPrefs.data.antialiasing;
         add(bg);
 
-		if (!ClientPrefs.data.disableWarpShader) {
+		if (!ClientPrefs.data.disableOnlineShaders) {
 			var warp:FlxSprite = new FlxSprite();
 			warp.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
 			warp.updateHitbox();

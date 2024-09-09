@@ -129,6 +129,12 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.onChange = onChangeVSync;
 		addOption(option);
 		#end
+
+		var option:Option = new Option('Disable Online Shaders',
+			'If checked, disables shaders that being used on online menus.',
+			'disableOnlineShaders',
+			'bool');
+		addOption(option);
 		
 		var option:Option = new Option('Pause Screen Song:',
 			"What song do you prefer for the Pause Screen?",
