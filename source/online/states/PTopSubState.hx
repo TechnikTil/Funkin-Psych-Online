@@ -35,6 +35,8 @@ class PTopSubState extends MusicBeatSubstate {
 			leaderboardTimer.cancel();
 		leaderboardTimer = new FlxTimer().start(0.5, t -> { generateLeaderboard(); });
 		add(topShit);
+		
+		addTouchPad('LEFT_FULL', 'A_B');
     }
 
     var top:Array<Dynamic> = [];

@@ -999,6 +999,7 @@ class PlayState extends MusicBeatState
 		});
 		#end
 
+		//MTODO
 		if (GameClient.isConnected()) {
 			preloadTasks.push(() -> {
 				waitReadySpr = new Alphabet(0, 0, "PRESS ACCEPT TO START", true);

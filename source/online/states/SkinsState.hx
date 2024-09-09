@@ -28,6 +28,8 @@ class SkinsState extends MusicBeatState {
 
 	static var flipped:Bool = false;
 
+	final accept:String = (Controls.instance.mobileC) ? "A" : "ACCEPT";
+
     override function create() {
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Selects their Skin", null, null, false);
@@ -125,7 +127,7 @@ class SkinsState extends MusicBeatState {
 		swagText.alpha = 0.4;
 		swagText.cameras = [hud];
 		swagText.x = FlxG.width - swagText.width - 10;
-		add(swagText);
+		if (!controls.mobileC) add(swagText);
 
 		title = new Alphabet(0, 0, "BOYFRIEND", true);
 		title.cameras = [hud];
@@ -146,15 +148,17 @@ class SkinsState extends MusicBeatState {
 		add(arrowRight);
 
 		charSelect = new FlxText(0, 0, FlxG.width);
-		charSelect.text = 'Press ACCEPT to select!';
+		charSelect.text = 'Press $accept to select!';
 		charSelect.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charSelect.y = barDown.y + barDown.height / 2 - charSelect.height / 2;
 		charSelect.alpha = 0.8;
 		charSelect.cameras = [hud];
 		add(charSelect);
 
+		final gofuckurself:String = (controls.mobileC) ? "Use Arrow Keys while pressing Y to move!" : "Use Note keybinds while pressing SHIFT to move!";
+
 		var swagText = new FlxText(0, charSelect.y + charSelect.height + 5, FlxG.width);
-		swagText.text = 'Use Note keybinds while pressing SHIFT to move!';
+		swagText.text = gofuckurself;
 		swagText.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		swagText.alpha = 0.8;
 		swagText.cameras = [hud];
@@ -165,9 +169,11 @@ class SkinsState extends MusicBeatState {
 		tip1.y = charSelect.y;
 		tip1.alpha = 0.6;
 		tip1.cameras = [hud];
-		add(tip1);
+		if (!controls.mobileC) add(tip1);
 
-		var tip2 = new FlxText(-20, 0, FlxG.width, '9 - Flip skin');
+		final nine:String = (controls.mobileC) ? "X" : "9";
+
+		var tip2 = new FlxText(-20, 0, FlxG.width, '$nine - Flip skin');
 		tip2.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -180,6 +186,9 @@ class SkinsState extends MusicBeatState {
 		
 		CustomFadeTransition.nextCamera = hud; // wat
 
+		addTouchPad('LEFT_FULL', 'A_B_X_Y');
+		addTouchPadCamera();
+
 		GameClient.send("status", "Selects their skin");
     }
 
@@ -188,7 +197,7 @@ class SkinsState extends MusicBeatState {
     override function update(elapsed) {
         super.update(elapsed);
 
-        if (FlxG.keys.pressed.SHIFT) {
+        if (touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) {
 			if (controls.NOTE_UP) {
 				character.members[0].playAnim("singUP");
 			}
@@ -243,7 +252,7 @@ class SkinsState extends MusicBeatState {
 				charSelect.alpha = 1;
 			}
 			else {
-				charSelect.text = 'Press ACCEPT to select!';
+				charSelect.text = 'Press $accept to select!';
 				charSelect.alpha = 0.8;
 			}
 			if (acceptSound == null || !acceptSound.playing)
@@ -256,7 +265,7 @@ class SkinsState extends MusicBeatState {
 			FlxG.switchState(() -> new CharacterEditorState(charactersName.get(curCharacter), false, true));
 		}
 
-		if (FlxG.keys.justPressed.NINE) {
+		if (touchPad.buttonX.justPressed || FlxG.keys.justPressed.NINE) {
 			flipped = !flipped;
 			LoadingState.loadAndSwitchState(new SkinsState());
 		}
@@ -299,7 +308,7 @@ class SkinsState extends MusicBeatState {
 				charSelect.alpha = 1;
 			}
             else {
-				charSelect.text = 'Press ACCEPT to select!';
+				charSelect.text = 'Press $accept to select!';
 				charSelect.alpha = 0.8;
             }
 

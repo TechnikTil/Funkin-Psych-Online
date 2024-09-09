@@ -22,7 +22,9 @@ class LeavePie extends FlxTypedSpriteGroup<FlxSprite> {
 		pieDial.antialiasing = ClientPrefs.data.antialiasing;
 		add(pieDial);
 
-		exitTip = new FlxText(pieDial.x + 80, pieDial.y + 5, 0, "Hold BACK to leave!");
+		final back:String = (Controls.instance.mobileC) ? 'B' : 'BACK';
+
+		exitTip = new FlxText(pieDial.x + 80, pieDial.y + 5, 0, 'Hold $back to leave!');
 		exitTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		exitTip.alpha = 0;
 		add(exitTip);

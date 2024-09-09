@@ -106,6 +106,8 @@ class OptionsState extends MusicBeatState {
 		sezOption.screenCenter(X);
 		sezOption.ID = i++;
 
+		//MTODO
+		#if !mobile
 		if (ClientPrefs.data.networkAuthID == null && ClientPrefs.data.networkAuthToken == null) {
 			// var registerOption:InputOption;
 			// items.add(registerOption = new InputOption("Join the Network",
@@ -145,10 +147,13 @@ class OptionsState extends MusicBeatState {
 			logoutOption.screenCenter(X);
 			logoutOption.ID = i++;
 		}
+		#end
 
 		add(items);
 
         changeSelection(0);
+
+		addTouchPad('UP_DOWN', 'A_B');
     }
 
     override function update(elapsed) {
@@ -168,11 +173,11 @@ class OptionsState extends MusicBeatState {
 			else if (controls.UI_DOWN_P || FlxG.mouse.wheel == -1)
 				changeSelection(1);
 
-			if (FlxG.mouse.deltaScreenX != 0 || FlxG.mouse.deltaScreenY != 0 || FlxG.mouse.justPressed) {
+			if (!controls.mobileC && (FlxG.mouse.deltaScreenX != 0 || FlxG.mouse.deltaScreenY != 0 || FlxG.mouse.justPressed)) {
                 curSelected = -1;
                 var i = 0;
                  for (item in items) {
-                    if (FlxG.mouse.overlaps(item, camera)) {
+                    if (!controls.mobileC && FlxG.mouse.overlaps(item, camera)) {
                         curSelected = i;
                         break;
                     }
@@ -185,7 +190,7 @@ class OptionsState extends MusicBeatState {
 		super.update(elapsed);
 
 		if (!inputWait) {
-			if ((controls.ACCEPT || FlxG.mouse.justPressed) && curOption != null) {
+			if ((controls.ACCEPT || (!controls.mobileC && FlxG.mouse.justPressed)) && curOption != null) {
 				if (curOption.isInput)
 					curOption.input.hasFocus = true;
 				else

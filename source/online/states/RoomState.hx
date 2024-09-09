@@ -402,6 +402,11 @@ class RoomState extends MusicBeatState {
 
 		verifyDownloadMod(false, true);
 
+		//MTODO B_C_Y_Z(?)
+		addTouchPad('NONE', 'B');
+		addTouchPadCamera();
+		touchPad.y -= 300;
+
 		GameClient.send("status", "In the Lobby");
 	}
 

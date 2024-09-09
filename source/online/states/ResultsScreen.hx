@@ -279,6 +279,8 @@ class ResultsScreen extends MusicBeatState {
 				(GameClient.isOwner ? p2 : p1).playAnim(message[0], true);
 			});
 		});
+
+		addTouchPad('NONE', 'B');
     }
 
 	function flickerLoop() {

@@ -92,6 +92,8 @@ class SetupMods extends MusicBeatState {
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
 		changeSelection(0);
+
+		addTouchPad('NONE', 'B');
     }
 
     override function update(elapsed:Float) {

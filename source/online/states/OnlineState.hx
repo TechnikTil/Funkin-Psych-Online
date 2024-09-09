@@ -231,6 +231,8 @@ class OnlineState extends MusicBeatState {
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
 		FlxG.mouse.visible = true;
+
+		addTouchPad('NONE', 'B');
     }
 
 	override function destroy() {
@@ -283,6 +285,7 @@ class OnlineState extends MusicBeatState {
 			if (controls.ACCEPT || (FlxG.mouse.justPressed && mouseInItems)) {
 				switch (itms[curSelected].toLowerCase()) {
 					case "join":
+						FlxG.stage.window.textInputEnabled = true;
 						inputWait = true;
 					case "find":
 						disableInput = true;
@@ -452,6 +455,7 @@ class OnlineState extends MusicBeatState {
 			switch (itms[curSelected].toLowerCase()) {
 				case "join":
 					disableInput = true;
+					FlxG.stage.window.textInputEnabled = false;
 					if (daCoomCode.toLowerCase() == "adachi") {
 						var image = new FlxSprite().loadGraphic(Paths.image('unnamed_file_from_google'));
 						image.setGraphicSize(FlxG.width, FlxG.height);
