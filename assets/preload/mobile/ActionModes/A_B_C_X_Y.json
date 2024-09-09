@@ -17,15 +17,15 @@
     {
       "button": "buttonX",
       "graphic": "x",
-      "x": 908,
-      "y": 596,
+      "x": 1032,
+      "y": 472,
       "color": "0x99062D"
     },
     {
       "button": "buttonY",
       "graphic": "y",
-      "x": 784,
-      "y": 596,
+      "x": 1156,
+      "y": 472,
       "color": "0x4A35B9"
     },
     {
