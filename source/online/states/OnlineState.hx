@@ -91,14 +91,16 @@ class OnlineState extends MusicBeatState {
         bg.screenCenter();
         bg.antialiasing = ClientPrefs.data.antialiasing;
         add(bg);
-		
-		var warp:FlxSprite = new FlxSprite();
-		warp.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
-		warp.updateHitbox();
-		warp.screenCenter();
-		add(new WarpEffect(warp));
-		warp.antialiasing = ClientPrefs.data.antialiasing;
-		add(warp);
+
+		if (!ClientPrefs.data.disableWarpShader) {
+			var warp:FlxSprite = new FlxSprite();
+			warp.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
+			warp.updateHitbox();
+			warp.screenCenter();
+			add(new WarpEffect(warp));
+			warp.antialiasing = ClientPrefs.data.antialiasing;
+			add(warp);
+		}
 
 		var lines:FlxSprite = new FlxSprite().loadGraphic(Paths.image('coolLines'));
 		lines.updateHitbox();

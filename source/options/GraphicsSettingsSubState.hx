@@ -39,6 +39,12 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 
+		var option:Option = new Option('Disable Warp Shader',
+			'If checked, disables warp shader on online menu.\n(Who the fuck thinked this to add anyways)',
+			'disableWarpShader',
+			'bool');
+		addOption(option);
+
 		var option:Option = new Option('GPU Caching', //Name
 			"If checked, allows the GPU to be used for caching textures, decreasing RAM usage.\nDon't turn this on if you have a shitty Graphics Card.", //Description
 			'cacheOnGPU',

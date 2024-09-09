@@ -293,6 +293,8 @@ class FreeplayState extends MusicBeatState
 			GameClient.send("status", "Choosing a Song");
 		}
 
+		addTouchPad('LEFT_FULL', 'A_B_X_Y');
+
 		super.create();
 	}
 
@@ -409,7 +411,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var shiftMult:Int = 1;
-		if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
+		if(touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) shiftMult = 3;
 
 		if (!selected) {
 			if(songs.length > 1)
@@ -472,7 +474,7 @@ class FreeplayState extends MusicBeatState
 				FlxG.autoPause = prevPauseGame;
 			}
 
-			if(FlxG.keys.justPressed.SPACE)
+			if(touchPad.buttonX.justPressed || FlxG.keys.justPressed.SPACE)
 			{
 				listenToSong();
 			}
@@ -784,14 +786,18 @@ class FreeplayState extends MusicBeatState
 
 		camera.targetOffset.set(0, 0);
 
+		final accept:String = (controls.mobileC) ? 'A' : 'ACCEPT';
+		final back:String = (controls.mobileC) ? 'B' : 'BACK';
+		final space:String = (controls.mobileC) ? 'X' : 'SPACE';
+
 		switch (selectedItem) {
 			case 0:
 				if (selected) {
-					infoText.text = "Press ACCEPT to enter the Song / Use your Arrow Keys to change the Difficulty";
+					infoText.text = "Press " + accept + " to enter the Song / Use your Arrow Keys to change the Difficulty";
 					camera.targetOffset.y += 200;
 				}
 				else
-					infoText.text = "Press ACCEPT to select the current Song / Press SPACE to listen to the Song";
+					infoText.text = "Press " + accept + " to select the current Song / Press " + space + " to listen to the Song";
 
 				if (centerPoint == null)
 					centerPoint = new FlxObject(FlxG.width / 2, FlxG.height / 2);
@@ -805,7 +811,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 1:
-				infoText.text = "Press ACCEPT to open Gameplay Modifers Menu";
+				infoText.text = "Press " + accept + " to open Gameplay Modifers Menu";
 
 				camera.follow(modifiersSelect, null, 0.15);
 				camera.targetOffset.y += 200;
@@ -818,7 +824,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 2:
-				infoText.text = "Press ACCEPT to load a Replay data file";
+				infoText.text = "Press " + accept + " to load a Replay data file";
 				
 				camera.follow(replaysSelect, null, 0.15);
 				camera.targetOffset.y += 200;
@@ -831,7 +837,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 3:
-				infoText.text = "Press ACCEPT to reset Score and Accuracy of this Song";
+				infoText.text = "Press " + accept + " to reset Score and Accuracy of this Song";
 
 				camera.follow(resetSelect, null, 0.15);
 				camera.targetOffset.y += 200;
@@ -844,7 +850,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 4:
-				infoText.text = "LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song";
+				infoText.text = "LEFT or RIGHT to Flip Pages / " + accept + " to view Player's replay of this song";
 
 				camera.follow(topShit.background, null, 0.15);
 				camera.targetOffset.y -= 100 + topTitle.height;
@@ -862,7 +868,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (selected)
-			infoText.text += " / Press BACK to return to Songs";
+			infoText.text += " / Press " + back + " to return to Songs";
 
 		if (GameClient.isConnected()) {
 			replaysSelect.alpha -= 0.4;

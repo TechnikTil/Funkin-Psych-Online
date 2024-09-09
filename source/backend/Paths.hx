@@ -120,7 +120,7 @@ class Paths
 		#end
 
 		if(library == "mobile")
-			return Paths.getLibraryPathForce('mobile/$file', 'shared');
+			return getPreloadPath('mobile/$file');
 
 		if (library != null)
 			return getLibraryPath(file, library);

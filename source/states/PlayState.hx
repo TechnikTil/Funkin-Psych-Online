@@ -1133,6 +1133,13 @@ class PlayState extends MusicBeatState
 
 		orderOffset = 2;
 
+		addMobileControls();
+        mobileControls.visible = true;
+		#if !android
+		addTouchPad('NONE', 'P');
+    	addTouchPadCamera();
+		#end
+
 		super.create();
 	}
 
@@ -2345,7 +2352,7 @@ class PlayState extends MusicBeatState
 		setOnScripts('curDecStep', curDecStep);
 		setOnScripts('curDecBeat', curDecBeat);
 
-		if (controls.PAUSE && startedCountdown && canPause && canInput())
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #else || touchPad.buttonP.justPressed #end && startedCountdown && canPause && canInput())
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {
@@ -3073,6 +3080,7 @@ class PlayState extends MusicBeatState
 	public var transitioning = false;
 	public function endSong()
 	{
+		mobileControls.visible = #if !android touchPad.visible = #end false;
 		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, noteDensity, totalNotesHit, combo, (Conductor.judgePlaybackRate ?? playbackRate), songSpeed);
 
 		//Should kill you if you tried to cheat

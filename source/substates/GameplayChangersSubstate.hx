@@ -153,6 +153,8 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			GameClient.room.state.gameplaySettings.onChange(receiveChange);
 			
 		}
+
+		addTouchPad('LEFT_FULL', 'A_B_C');
 	}
 
 	function receiveChange(_:Dynamic, __:Dynamic) {
@@ -300,7 +302,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				}
 			}
 
-			if(controls.RESET)
+			if(touchPad.buttonC.justPressed || controls.RESET)
 			{
 				for (i in 0...optionsArray.length)
 				{

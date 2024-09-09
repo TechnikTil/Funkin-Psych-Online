@@ -19,6 +19,10 @@ class OptionsState extends MusicBeatState
 	#if (target.threaded) var mutex:Mutex = new Mutex(); #end
 
 	function openSelectedSubstate(label:String) {
+		if (label != "Adjust Delay and Combo"){
+			removeTouchPad();
+			persistentUpdate = false;
+		}
 		switch(label) {
 			case 'Note Colors':
 				openSubState(new options.NotesSubState());
@@ -92,6 +96,8 @@ class OptionsState extends MusicBeatState
 		});
 		#end
 
+		addTouchPad('UP_DOWN', 'A_B');
+
 		super.create();
 
 		online.GameClient.send("status", "In the Game Options");
@@ -100,6 +106,10 @@ class OptionsState extends MusicBeatState
 	override function closeSubState() {
 		super.closeSubState();
 		ClientPrefs.saveSettings();
+		controls.isInSubstate = false;
+        removeTouchPad();
+		addTouchPad('UP_DOWN', 'A_B');
+		persistentUpdate = true;
 	}
 
 	override function update(elapsed:Float) {

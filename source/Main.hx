@@ -158,14 +158,14 @@ class Main extends Sprite
 		FlxG.mouse.visible = false;
 		#end
 
-		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-		ClientPrefs.loadPrefs();
-
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
 
 		#if DISCORD_ALLOWED
 		DiscordClient.start();
 		#end
+
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
+		ClientPrefs.loadPrefs();
 		MobileControls.initSave();
 
 		#if mobile
@@ -192,7 +192,7 @@ class Main extends Sprite
 
 		//ONLINE STUFF, BELOW CODE USE FOR BACKPORTING
 
-		var http = new haxe.Http("https://raw.githubusercontent.com/Snirozu/Funkin-Psych-Online/main/server_addresses.txt");
+		var http = new haxe.Http("https://raw.githubusercontent.com/MobilePorting/Funkin-Psych-Online-Mobile/main/server_addresses.txt");
 		http.onData = function(data:String) {
 			for (address in data.split(',')) {
 				online.GameClient.serverAddresses.push(address.trim());
