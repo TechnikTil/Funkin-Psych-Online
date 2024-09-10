@@ -106,8 +106,6 @@ class OptionsState extends MusicBeatState {
 		sezOption.screenCenter(X);
 		sezOption.ID = i++;
 
-		//MTODO
-		#if !mobile
 		if (ClientPrefs.data.networkAuthID == null && ClientPrefs.data.networkAuthToken == null) {
 			// var registerOption:InputOption;
 			// items.add(registerOption = new InputOption("Join the Network",
@@ -147,7 +145,6 @@ class OptionsState extends MusicBeatState {
 			logoutOption.screenCenter(X);
 			logoutOption.ID = i++;
 		}
-		#end
 
 		add(items);
 
@@ -209,6 +206,19 @@ class OptionsState extends MusicBeatState {
 						case "login in browser":
 							FlxG.openURL(FunkinNetwork.client.getURL("/api/network/account/cookie?id=" + ClientPrefs.data.networkAuthID + "&token=" + ClientPrefs.data.networkAuthToken));
 						case "recover account":
+							#if mobile
+							if (FileSystem.exists(StorageUtil.getStorageDirectory(true) + 'recovery_token.txt'))
+							{
+								var recFile = Std.string(File.getContent(StorageUtil.getStorageDirectory(true) + 'recovery_token.txt')).split("\n");
+								FunkinNetwork.login(recFile[0], recFile[1]);
+								FlxG.resetState();
+							}
+							else
+							{
+								CoolUtil.showPopUp('"recovery_token.txt" file not found, Please place to ${StorageUtil.getStorageDirectory(true)}.', 'Error!');
+								FlxG.resetState();
+							}
+							#else
 							var fileDialog = new FileDialog();
 							fileDialog.onOpen.add(res -> {
 								var recFile = Std.string(res).split("\n");
@@ -216,6 +226,7 @@ class OptionsState extends MusicBeatState {
 								FlxG.resetState();
 							});
 							fileDialog.open('txt', Sys.getCwd(), "Load Recovery File");
+							#end
 					}
 			}
 		}
