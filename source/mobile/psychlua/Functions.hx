@@ -80,7 +80,7 @@ class MobileFunctions
 			if (addToCustomSubstate)
 			{
 				if (PlayState.instance.luaTouchPad != null || !PlayState.instance.members.contains(PlayState.instance.luaTouchPad))
-					CustomSubstate.insertLuaVpad(posAtCustomSubstate);
+					CustomSubstate.insertLuaTpad(posAtCustomSubstate);
 			}
 			else
 				PlayState.instance.addLuaTouchPad();

@@ -276,7 +276,7 @@ class PlayState extends MusicBeatState
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 	public var camLoading:FlxCamera;
-	public var luaVpadCam:FlxCamera;
+	public var luaTpadCam:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
 	public var songScore:Int = 0;
@@ -458,16 +458,16 @@ class PlayState extends MusicBeatState
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camLoading = new FlxCamera();
-		luaVpadCam = new FlxCamera();
+		luaTpadCam = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
-		luaVpadCam.bgColor.alpha = 0;
+		luaTpadCam.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
 		FlxG.cameras.add(camLoading, false);
-		FlxG.cameras.add(luaVpadCam, false);
+		FlxG.cameras.add(luaTpadCam, false);
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
 		FlxG.cameras.cameraAdded.addOnce(realignLoadCam);
@@ -5115,7 +5115,7 @@ class PlayState extends MusicBeatState
 
 	public function addLuaTouchPadCamera() {
 		if(luaTouchPad != null)
-			luaTouchPad.cameras = [luaVpadCam];
+			luaTouchPad.cameras = [luaTpadCam];
 	}
 
 	public function removeLuaTouchPad() {

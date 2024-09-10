@@ -29,7 +29,7 @@ class MusicBeatState extends FlxUIState
 	public var touchPad:TouchPad;
 	public var mobileControls:MobileControls;
 	public var camControls:FlxCamera;
-	public var vpadCam:FlxCamera;
+	public var tpadCam:FlxCamera;
 
 	public function addTouchPad(DPad:String, Action:String)
 	{
@@ -66,10 +66,10 @@ class MusicBeatState extends FlxUIState
 	{
 		if (touchPad != null)
 		{
-			vpadCam = new FlxCamera();
-			vpadCam.bgColor.alpha = 0;
-			FlxG.cameras.add(vpadCam, defaultDrawTarget);
-			touchPad.cameras = [vpadCam];
+			tpadCam = new FlxCamera();
+			tpadCam.bgColor.alpha = 0;
+			FlxG.cameras.add(tpadCam, defaultDrawTarget);
+			touchPad.cameras = [tpadCam];
 		}
 	}
 

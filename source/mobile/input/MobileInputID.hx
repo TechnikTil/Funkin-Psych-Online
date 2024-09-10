@@ -41,7 +41,7 @@ enum abstract MobileInputID(Int) from Int to Int {
 	var X = 24;
 	var Y = 25;
 	var Z = 26;
-	// VPAD Buttons
+	// TPAD Buttons
 	var UP = 27;
 	var UP2 = 28;
 	var DOWN = 29;
