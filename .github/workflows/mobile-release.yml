@@ -85,9 +85,9 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          automatic_release_tag: "0.7.6"
-          title: "0.7.6"
+          prerelease: true
+          automatic_release_tag: "devbuild-1d0e1bf"
+          title: "DevBuild 1d0e1bf"
           files: |
             /home/runner/*.apk
             /home/runner/*.zip
