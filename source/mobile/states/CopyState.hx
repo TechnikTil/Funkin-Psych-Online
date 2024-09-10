@@ -26,7 +26,7 @@ class CopyState extends MusicBeatState
 	var loopTimes:Int = 0;
 	var failedFiles:Array<String> = [];
 	var failedFilesStack:Array<String> = [];
-	var directoriesToIgnore:Array<String> = [];
+	static var directoriesToIgnore:Array<String> = [];
 	var canUpdate:Bool = true;
 	var shouldCopy:Bool = false;
 
