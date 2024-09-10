@@ -178,15 +178,15 @@ class Controls
 	public var moodyBlues:ReplayPlayer;
 
 	public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
-	public var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
-	public var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and touchPad)
+	public var requestedInstance(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
+	public var requestedMobileC(get, default):IMobileControls; // for PlayState and EditorPlayState (hitbox and touchPad)
 	public var mobileC(get, never):Bool;
 
 	private function touchPadPressed(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.touchPad != null)
+		if (keys != null && requestedInstance.touchPad != null)
 		{
-			if (requested.touchPad.anyPressed(keys) == true)
+			if (requestedInstance.touchPad.anyPressed(keys) == true)
 			{
 				controllerMode = true; // !!DO NOT DISABLE THIS IF YOU DONT WANT TO KILL THE INPUT FOR MOBILE!!
 				return true;
@@ -197,9 +197,9 @@ class Controls
 
 	private function touchPadJustPressed(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.touchPad != null)
+		if (keys != null && requestedInstance.touchPad != null)
 		{
-			if (requested.touchPad.anyJustPressed(keys) == true)
+			if (requestedInstance.touchPad.anyJustPressed(keys) == true)
 			{
 				controllerMode = true;
 				return true;
@@ -210,9 +210,9 @@ class Controls
 
 	private function touchPadJustReleased(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.touchPad != null)
+		if (keys != null && requestedInstance.touchPad != null)
 		{
-			if (requested.touchPad.anyJustReleased(keys) == true)
+			if (requestedInstance.touchPad.anyJustReleased(keys) == true)
 			{
 				controllerMode = true;
 				return true;
@@ -223,9 +223,9 @@ class Controls
 
 	private function mobileCPressed(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.mobileControls != null && gameplayRequest != null)
+		if (keys != null && requestedMobileC != null)
 		{
-			if (gameplayRequest.anyPressed(keys))
+			if (requestedMobileC.instance.anyPressed(keys))
 			{
 				controllerMode = true;
 				return true;
@@ -236,9 +236,9 @@ class Controls
 
 	private function mobileCJustPressed(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.mobileControls != null && gameplayRequest != null)
+		if (keys != null && requestedMobileC != null)
 		{
-			if (gameplayRequest.anyJustPressed(keys))
+			if (requestedMobileC.instance.anyJustPressed(keys))
 			{
 				controllerMode = true;
 				return true;
@@ -249,9 +249,9 @@ class Controls
 
 	private function mobileCJustReleased(keys:Array<MobileInputID>):Bool
 	{
-		if (keys != null && requested.mobileControls != null && gameplayRequest != null)
+		if (keys != null && requestedMobileC != null)
 		{
-			if (gameplayRequest.anyJustReleased(keys))
+			if (requestedMobileC.instance.anyJustReleased(keys))
 			{
 				controllerMode = true;
 				return true;
@@ -261,21 +261,18 @@ class Controls
 	}
 
 	@:noCompletion
-	private function get_requested():Dynamic
+	private function get_requestedInstance():Dynamic
 	{
 		if (isInSubstate)
 			return MusicBeatSubstate.instance;
 		else
-			return MusicBeatState.instance;
+			return MusicBeatState.getState();
 	}
 
 	@:noCompletion
-	private function get_gameplayRequest():Dynamic
+	private function get_requestedMobileC():IMobileControls
 	{
-		if (isInSubstate)
-			return MusicBeatSubstate.instance.mobileControls.current.target;
-		else
-			return MusicBeatState.instance.mobileControls.current.target;
+		return requestedInstance.mobileControls;
 	}
 
 	@:noCompletion

@@ -36,10 +36,13 @@ class StorageUtil
 
 	public static function createDirectories(directory:String):Void
 	{
-		try {
+		try
+		{
 			if (FileSystem.exists(directory) && FileSystem.isDirectory(directory))
 				return;
-		} catch (e:haxe.Exception) {
+		}
+		catch (e:haxe.Exception)
+		{
 			trace('Something went wrong while looking at directory. (${e.message})');
 		}
 
@@ -79,10 +82,14 @@ class StorageUtil
 				FileSystem.createDirectory('saves');
 
 			File.saveContent('saves/$fileName', fileData);
-			if (alert) CoolUtil.showPopUp('$fileName has been saved.', "Success!");
+			if (alert)
+				CoolUtil.showPopUp('$fileName has been saved.', "Success!");
 		}
 		catch (e:Exception)
-			if (alert) CoolUtil.showPopUp('$fileName couldn\'t be saved.\n(${e.message})', "Error!") else trace('$fileName couldn\'t be saved. (${e.message})');
+			if (alert)
+				CoolUtil.showPopUp('$fileName couldn\'t be saved.\n(${e.message})', "Error!")
+			else
+				trace('$fileName couldn\'t be saved. (${e.message})');
 	}
 
 	#if android
@@ -100,8 +107,12 @@ class StorageUtil
 			AndroidSettings.requestSetting('MANAGE_APP_ALL_FILES_ACCESS_PERMISSION');
 		}
 
-		if ((AndroidVersion.SDK_INT >= AndroidVersionCode.TIRAMISU && !AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_MEDIA_IMAGES')) || (AndroidVersion.SDK_INT < AndroidVersionCode.TIRAMISU && !AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE')))
-			CoolUtil.showPopUp('If you accepted the permissions you are all good!' + '\nIf you didn\'t then expect a crash' + '\nPress OK to see what happens', 'Notice!');
+		if ((AndroidVersion.SDK_INT >= AndroidVersionCode.TIRAMISU
+			&& !AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_MEDIA_IMAGES'))
+			|| (AndroidVersion.SDK_INT < AndroidVersionCode.TIRAMISU
+				&& !AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE')))
+			CoolUtil.showPopUp('If you accepted the permissions you are all good!' + '\nIf you didn\'t then expect a crash' + '\nPress OK to see what happens',
+				'Notice!');
 
 		try
 		{
@@ -115,17 +126,21 @@ class StorageUtil
 		}
 	}
 
-	public static function checkExternalPaths(?splitStorage = false):Array<String> {
+	public static function checkExternalPaths(?splitStorage = false):Array<String>
+	{
 		var process = new Process('grep -o "/storage/....-...." /proc/mounts | paste -sd \',\'');
 		var paths:String = process.stdout.readAll().toString();
-		if (splitStorage) paths = paths.replace('/storage/', '');
+		if (splitStorage)
+			paths = paths.replace('/storage/', '');
 		return paths.split(',');
 	}
 
-	public static function getExternalDirectory(externalDir:String):String {
+	public static function getExternalDirectory(externalDir:String):String
+	{
 		var daPath:String = '';
 		for (path in checkExternalPaths())
-			if (path.contains(externalDir)) daPath = path;
+			if (path.contains(externalDir))
+				daPath = path;
 
 		daPath = haxe.io.Path.addTrailingSlash(daPath.endsWith("\n") ? daPath.substr(0, daPath.length - 1) : daPath);
 		return daPath;

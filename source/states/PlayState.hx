@@ -1134,7 +1134,7 @@ class PlayState extends MusicBeatState
 		orderOffset = 2;
 
 		addMobileControls();
-        mobileControls.visible = true;
+        mobileControls.instance.visible = true;
 		#if android
 		if (GameClient.isConnected()) {
 		#end
@@ -3084,7 +3084,7 @@ class PlayState extends MusicBeatState
 	public var transitioning = false;
 	public function endSong()
 	{
-		mobileControls.visible = #if !android touchPad.visible = #end false;
+		mobileControls.instance.visible = #if !android touchPad.visible = #end false;
 		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, noteDensity, totalNotesHit, combo, (Conductor.judgePlaybackRate ?? playbackRate), songSpeed);
 
 		//Should kill you if you tried to cheat

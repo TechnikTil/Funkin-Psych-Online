@@ -24,61 +24,42 @@ class ExtraFunctions
 		var lua:State = funk.lua;
 		
 		// Keyboard & Gamepads
-		Lua_helper.add_callback(lua, "keyboardJustPressed", luaJustPressed = function(name:String)
-		{
-			if (Controls.instance?.moodyBlues != null && Controls.instance.moodyBlues.pressedKeys.get('KEY:' + name) == JUST_PRESSED) {
-				return true;
-			}
-			
-			switch(name.toUpperCase()){
+		funk.set("keyboardJustPressed", function(name:String) {
+			switch (name.toUpperCase()) {
 				case 'SPACE':
 					var space = Reflect.getProperty(FlxG.keys.justPressed, 'SPACE');
 					var mobileShit:Bool = false;
 					if (Controls.instance.mobileC)
-						if (MusicBeatState.instance.mobileControls != null)
-							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.justPressed;
+						if (MusicBeatState.getState().mobileControls != null)
+							mobileShit = MusicBeatState.getState().mobileControls.buttonExtra.justPressed;
 					return space || mobileShit;
 
 				default:
 					return Reflect.getProperty(FlxG.keys.justPressed, name.toUpperCase());
 			}
 		});
-		Lua_helper.add_callback(lua, "keyboardPressed", luaPressed = function(name:String)
-		{
-			if (Controls.instance?.moodyBlues != null) {
-				var status = Controls.instance?.moodyBlues.pressedKeys.get('KEY:' + name);
-				if (status == PRESSED || status == JUST_PRESSED)
-					return true;
-			}
-
-			switch(name.toUpperCase()){
+		funk.set("keyboardPressed", function(name:String) {
+			switch (name.toUpperCase()) {
 				case 'SPACE':
 					var space = Reflect.getProperty(FlxG.keys.pressed, 'SPACE');
 					var mobileShit:Bool = false;
 					if (Controls.instance.mobileC)
-						if (MusicBeatState.instance.mobileControls != null)
-							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.pressed;
+						if (MusicBeatState.getState().mobileControls != null)
+							mobileShit = MusicBeatState.getState().mobileControls.buttonExtra.pressed;
 					return space || mobileShit;
 
 				default:
 					return Reflect.getProperty(FlxG.keys.pressed, name.toUpperCase());
 			}
 		});
-		Lua_helper.add_callback(lua, "keyboardReleased", luaJustReleased = function(name:String)
-		{
-			if (Controls.instance?.moodyBlues != null) {
-				var status = Controls.instance?.moodyBlues.pressedKeys.get('KEY:' + name);
-				if (status == JUST_RELEASED)
-					return true;
-			}
-			
-			switch(name.toUpperCase()){
+		funk.set("keyboardReleased", function(name:String) {
+			switch (name.toUpperCase()) {
 				case 'SPACE':
 					var space = Reflect.getProperty(FlxG.keys.justReleased, 'SPACE');
 					var mobileShit:Bool = false;
 					if (Controls.instance.mobileC)
-						if (MusicBeatState.instance.mobileControls != null)
-							mobileShit = MusicBeatState.instance.mobileControls.current.buttonExtra.justReleased;
+						if (MusicBeatState.getState().mobileControls != null)
+							mobileShit = MusicBeatState.getState().mobileControls.buttonExtra.justReleased;
 					return space || mobileShit;
 
 				default:

@@ -10,6 +10,16 @@ import llua.*;
 import llua.Lua;
 #end
 
+//Mobile Controls
+import mobile.objects.MobileControls;
+import mobile.objects.IMobileControls;
+import mobile.objects.Hitbox;
+import mobile.objects.TouchPad;
+import mobile.objects.TouchButton;
+import mobile.input.MobileInputID;
+import mobile.backend.MobileData;
+import mobile.input.MobileInputManager;
+
 #if sys
 import sys.*;
 import sys.io.*;
@@ -29,13 +39,6 @@ import backend.BaseStage;
 import backend.Difficulty;
 import backend.Mods;
 import mobile.backend.StorageUtil;
-
-//Mobile Controls
-import mobile.objects.MobileControls;
-import mobile.objects.Hitbox;
-import mobile.objects.TouchPad;
-import mobile.input.MobileInputID;
-import mobile.backend.MobileData;
 
 //Android
 #if android

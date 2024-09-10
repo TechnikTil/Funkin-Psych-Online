@@ -12,7 +12,7 @@ class TouchFunctions
 	public static var touchPressed(get, never):Bool;
 	public static var touchJustPressed(get, never):Bool;
 	public static var touchJustReleased(get, never):Bool;
-	public static var touch(get, never):FlxTouch;
+	public static var touch(get, never):Null<FlxTouch>;
 
 	public static function touchOverlapObject(object:FlxBasic):Bool
 	{
@@ -46,7 +46,7 @@ class TouchFunctions
 	}
 
 	@:noCompletion
-	private static function get_touch():FlxTouch
+	private static function get_touch():Null<FlxTouch>
 	{
 		for (touch in FlxG.touches.list)
 			return touch;
