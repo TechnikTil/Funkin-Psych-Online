@@ -77,6 +77,7 @@ class ResetScoreSubState extends MusicBeatSubstate
 
 		addTouchPad('LEFT_RIGHT', 'A_B');
 		addTouchPadCamera();
+		controls.isInSubstate = true;
 	}
 
 	override function update(elapsed:Float)

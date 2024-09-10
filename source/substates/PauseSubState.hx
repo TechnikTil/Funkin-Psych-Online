@@ -165,6 +165,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		addTouchPad(PlayState.chartingMode ? 'LEFT_FULL' : 'UP_DOWN', 'A_B');
 		addTouchPadCamera();
+		controls.isInSubstate = true;
 	}
 
 	var holdTime:Float = 0;

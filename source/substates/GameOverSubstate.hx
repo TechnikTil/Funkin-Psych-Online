@@ -76,6 +76,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		addTouchPad('NONE', 'A_B');
 		addTouchPadCamera();
+		controls.isInSubstate = true;
 	}
 
 	public var startedDeath:Bool = false;

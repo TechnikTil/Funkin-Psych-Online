@@ -121,6 +121,7 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 		add(items);
 
 		addTouchPad('NONE', 'B');
+		controls.isInSubstate = true;
 
 		GameClient.send("status", "In the Room Settings");
 	}

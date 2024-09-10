@@ -155,6 +155,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 
 		addTouchPad('LEFT_FULL', 'A_B_C');
+		controls.isInSubstate = true;
 	}
 
 	function receiveChange(_:Dynamic, __:Dynamic) {

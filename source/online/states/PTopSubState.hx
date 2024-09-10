@@ -39,6 +39,7 @@ class PTopSubState extends MusicBeatSubstate {
 		add(topShit);
 		
 		addTouchPad('LEFT_FULL', 'A_B');
+		controls.isInSubstate = true;
     }
 
     var top:Array<Dynamic> = [];
