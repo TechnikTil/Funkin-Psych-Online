@@ -26,6 +26,7 @@ class CopyState extends MusicBeatState
 	var loopTimes:Int = 0;
 	var failedFiles:Array<String> = [];
 	var failedFilesStack:Array<String> = [];
+	var directoriesToIgnore:Array<String> = [];
 	var canUpdate:Bool = true;
 	var shouldCopy:Bool = false;
 
@@ -42,7 +43,7 @@ class CopyState extends MusicBeatState
 			return;
 		}
 
-		#if !ios
+		#if (!ios || !iphoneos || !iphonesim)
 		CoolUtil.showPopUp("Seems like you have some missing files that are necessary to run the game\nPress OK to begin the copy process", "Notice!");
 		#end
 		
@@ -188,19 +189,34 @@ class CopyState extends MusicBeatState
 		var assets = locatedFiles.filter(folder -> folder.startsWith('assets/'));
 		var mods = locatedFiles.filter(folder -> folder.startsWith('mods/'));
 		locatedFiles = assets.concat(mods);
+		locatedFiles = locatedFiles.filter(file -> !FileSystem.exists(file));
 
 		var filesToRemove:Array<String> = [];
 
 		for (file in locatedFiles)
 		{
-			if (FileSystem.exists(file) || OpenFLAssets.exists(getFile(Path.join([Path.directory(getFile(file)), IGNORE_FOLDER_FILE_NAME]))))
+			if(filesToRemove.contains(file))
+				continue;
+			
+			var ignoreFile:String = getFile(Path.join([Path.directory(file), IGNORE_FOLDER_FILE_NAME]));
+			if(OpenFLAssets.exists(ignoreFile) && !directoriesToIgnore.contains(ignoreFile))
+				directoriesToIgnore.push(Path.directory(file));
+
+			if(directoriesToIgnore.length > 0)
 			{
-				filesToRemove.push(file);
+				for(directory in directoriesToIgnore)
+				{
+					if(file.startsWith(directory))
+					   filesToRemove.push(file);
+				}
+			}
+			else
+			{
+				break;
 			}
 		}
 
-		for (file in filesToRemove)
-			locatedFiles.remove(file);
+		locatedFiles = locatedFiles.filter(file -> !filesToRemove.contains(file));
 
 		maxLoopTimes = locatedFiles.length;
 
