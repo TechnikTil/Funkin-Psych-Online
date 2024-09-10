@@ -12,7 +12,7 @@ class InputText extends FlxInputText {
 
 		callback = (text, action) -> {
             if (action == FlxInputText.ENTER_ACTION) {
-				hasFocus = FlxG.stage.window.textInputEnabled = false; //allow event to overwrite it
+				hasFocus = false; //allow event to overwrite it
 				onEnter(text);
             }
         };
@@ -22,7 +22,7 @@ class InputText extends FlxInputText {
         super.update(elapsed);
 
 		if (hasFocus && (FlxG.keys.justPressed.ESCAPE || (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this)))) {
-            hasFocus = FlxG.stage.window.textInputEnabled = false;
+            hasFocus = false;
         }
     }
 }
