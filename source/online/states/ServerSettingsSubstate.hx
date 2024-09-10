@@ -120,7 +120,6 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 
 		add(items);
 
-		//MTODO
 		addTouchPad('NONE', 'B');
 
 		GameClient.send("status", "In the Room Settings");

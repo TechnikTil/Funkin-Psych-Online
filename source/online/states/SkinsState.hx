@@ -169,6 +169,7 @@ class SkinsState extends MusicBeatState {
 		tip1.y = charSelect.y;
 		tip1.alpha = 0.6;
 		tip1.cameras = [hud];
+		//MTODO(?)
 		if (!controls.mobileC) add(tip1);
 
 		final nine:String = (controls.mobileC) ? "X" : "9";
@@ -187,7 +188,6 @@ class SkinsState extends MusicBeatState {
 		CustomFadeTransition.nextCamera = hud; // wat
 
 		addTouchPad('LEFT_FULL', 'A_B_X_Y');
-		addTouchPadCamera();
 
 		GameClient.send("status", "Selects their skin");
     }
