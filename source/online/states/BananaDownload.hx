@@ -117,7 +117,8 @@ class BananaDownload extends MusicBeatState {
 
 		loadNextPage(true);
 
-		addTouchPad('LEFT_RIGHT', 'B_C');
+		//MTODO
+		addTouchPad('LEFT_RIGHT', 'B_V');
     }
 
 	function loadNextPage(?value:Int = 0, ?newSearch:Bool = false) {
