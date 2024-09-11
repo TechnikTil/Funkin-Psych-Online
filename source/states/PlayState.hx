@@ -3357,6 +3357,7 @@ class PlayState extends MusicBeatState
 			antialias = !isPixelStage;
 		}
 
+		if (ClientPrefs.data.popUpRating){
 		var rating:FlxSprite = new FlxSprite();
 		rating.loadGraphic(Paths.image(uiPrefix + ratingImage + uiSuffix));
 		rating.cameras = [camHUD];
@@ -3448,6 +3449,7 @@ class PlayState extends MusicBeatState
 				rating.destroy();
 			}
 		});
+	}
 	}
 
 	private function popUpScore(note:Note = null):Rating
