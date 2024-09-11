@@ -43,6 +43,9 @@ class DownloadAlerts extends Sprite {
 				Downloader.downloaders[8].cancel();
 		}
 
+		if (Controls.instance.mobileC && (MusicBeatState.getState().touchPad != null && MusicBeatState.getState().touchPad.buttonC.justPressed))
+			Downloader.downloaders[0].cancel();
+
 		var prevAlert:DownloadAlert = null;
 		var i = 1;
 		for (alert in instances) {
@@ -51,7 +54,10 @@ class DownloadAlerts extends Sprite {
 				alert.cancelText.text = 'Cancelling...';
 			}
 			else {
-				alert.cancelText.text = 'Cancel: ALT + $i ';
+				if (Controls.instance.mobileC && Downloader.downloaders[i - 1] != Downloader.downloaders[0])
+					alert.cancelText.text = 'Cancel: (Cancel Upper Process First!) ';
+				else
+					alert.cancelText.text = Controls.instance.mobileC ? 'Cancel: C ' : 'Cancel: ALT + $i ';
 				if (i >= 10) {
 					alert.cancelText.text = "";
 				}

@@ -87,7 +87,7 @@ class FreeplayState extends MusicBeatState
 	// var dShots:FlxTypedGroup<FlxEffectSprite> = new FlxTypedGroup<FlxEffectSprite>();
 	var diffSelect:Alphabet = new Alphabet(0, 0, "< ? >", true);
 	var modifiersSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? "GAMEPLAY MODIFIERS" : "MODIFIERS UNAVAILABLE HERE", true);
-	var replaysSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? "LOAD REPLAY" : "REPLAYS UNAVAILABLE", true);
+	var replaysSelect:Alphabet = new Alphabet(0, 0, #if mobile "REPLAYS UNAVAILABLE" #else !GameClient.isConnected() ? "LOAD REPLAY" : "REPLAYS UNAVAILABLE" #end, true);
 	var resetSelect:Alphabet = new Alphabet(0, 0, "RESET SCORE", true);
 
 	var topTitle:Alphabet = new Alphabet(0, 0, "LEADERBOARD", true);
@@ -294,6 +294,12 @@ class FreeplayState extends MusicBeatState
 		}
 
 		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y' : 'A_B_X_Y');
+		if (!GameClient.isConnected())
+		{
+			touchPad.buttonX.x = 1032;
+			touchPad.buttonY.x = 1156;
+			touchPad.buttonX.y = touchPad.buttonY.y = 472;
+		}
 
 		super.create();
 	}
@@ -319,6 +325,14 @@ class FreeplayState extends MusicBeatState
 		}
 		persistentUpdate = true;
 		super.closeSubState();
+		removeTouchPad();
+		addTouchPad('LEFT_FULL', ((GameClient.isConnected()) ? 'A_B_C_X_Y' : 'A_B_X_Y'));
+		if (!GameClient.isConnected())
+		{
+			touchPad.buttonX.x = 1032;
+			touchPad.buttonY.x = 1156;
+			touchPad.buttonX.y = touchPad.buttonY.y = 472;
+		}
 	}
 
 	function setDiffVisibility(value:Bool) {
@@ -571,6 +585,9 @@ class FreeplayState extends MusicBeatState
 							openSubState(new GameplayChangersSubstate());
 						}
 					case 2:
+						#if mobile
+						return;
+						#else
 						if (!GameClient.isConnected()) {
 							if (!FileSystem.exists("replays/"))
 								FileSystem.createDirectory("replays/");
@@ -581,6 +598,7 @@ class FreeplayState extends MusicBeatState
 							});
 							fileDialog.open('funkinreplay', Sys.getCwd() + Paths.PATH_SLASH + "replay", "Load Replay File");
 						}
+						#end
 					case 3:
 						persistentUpdate = false;
 						openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));

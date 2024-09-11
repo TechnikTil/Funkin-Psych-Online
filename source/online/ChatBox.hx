@@ -163,7 +163,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
     override function update(elapsed) {
 		if (focused || alpha > 0) {
-			if (FlxG.keys.justPressed.ESCAPE || #if android FlxG.android.justReleased.BACK #else (MusicBeatState.instance.touchPad.buttonB != null && MusicBeatState.instance.touchPad.buttonB.justPressed) #end) {
+			if (FlxG.keys.justPressed.ESCAPE || #if android FlxG.android.justReleased.BACK #else (MusicBeatState.getState().touchPad.buttonB != null && MusicBeatState.getState().touchPad.buttonB.justPressed) #end) {
 				focused = false;
 			}
 
@@ -224,7 +224,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
         super.update(elapsed);
 
-		if ((MusicBeatState.instance.touchPad.buttonC != null && MusicBeatState.instance.touchPad.buttonC.justPressed) || FlxG.keys.justPressed.TAB) {
+		if ((MusicBeatState.getState().touchPad.buttonC != null && MusicBeatState.getState().touchPad.buttonC.justPressed) || FlxG.keys.justPressed.TAB) {
 			focused = !focused;
 		}
 

@@ -1664,7 +1664,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				daNote.kill();
+				if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) daNote.kill();
 				unspawnNotes.remove(daNote);
 				daNote.destroy();
 			}
@@ -1680,7 +1680,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				daNote.kill();
+				if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) daNote.kill();
 				notes.remove(daNote, true);
 				daNote.destroy();
 			}
@@ -2514,7 +2514,7 @@ class PlayState extends MusicBeatState
 								daNote.active = false;
 								daNote.visible = false;
 
-								daNote.kill();
+								if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) daNote.kill();
 								notes.remove(daNote, true);
 								daNote.destroy();
 							}
@@ -3261,7 +3261,7 @@ class PlayState extends MusicBeatState
 			daNote.active = false;
 			daNote.visible = false;
 
-			daNote.kill();
+			if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
 		}
@@ -3499,6 +3499,7 @@ class PlayState extends MusicBeatState
 			antialias = !isPixelStage;
 		}
 
+		if (ClientPrefs.data.popUpRating){
 		rating.loadGraphic(Paths.image(uiPrefix + daRating.image + uiSuffix));
 		rating.cameras = [camHUD];
 		rating.screenCenter();
@@ -3666,6 +3667,7 @@ class PlayState extends MusicBeatState
 				onComplete: (t) -> noteTimingRating.active = false
 			});
 		}
+	}
 
 		return daRating;
 	}
@@ -3715,7 +3717,7 @@ class PlayState extends MusicBeatState
 					{
 						for (doubleNote in pressNotes) {
 							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1) {
-								doubleNote.kill();
+								if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) doubleNote.kill();
 								notes.remove(doubleNote, true);
 								doubleNote.destroy();
 							} else
@@ -3879,7 +3881,7 @@ class PlayState extends MusicBeatState
 		//Dupe note remove
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && isPlayerNote(daNote) && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
-				note.kill();
+				if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -4001,7 +4003,7 @@ class PlayState extends MusicBeatState
 
 		if (!note.isSustainNote)
 		{
-			note.kill();
+			if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) note.kill();
 			notes.remove(note, true);
 			note.destroy();
 		}
@@ -4038,7 +4040,7 @@ class PlayState extends MusicBeatState
 
 				if (!note.isSustainNote)
 				{
-					note.kill();
+					if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) note.kill();
 					notes.remove(note, true);
 					note.destroy();
 				}
@@ -4127,7 +4129,7 @@ class PlayState extends MusicBeatState
 
 			if (!note.isSustainNote)
 			{
-				note.kill();
+				if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -4960,7 +4962,7 @@ class PlayState extends MusicBeatState
 						&& note.isSustainNote == message[2]
 						&& Math.abs(note.strumTime - message[0]) < 1) 
 					{
-						note.kill();
+						if(!ClientPrefs.data.lowQuality || !ClientPrefs.data.popUpRating) note.kill();
 						unspawnNotes.remove(note);
 						note.destroy();
 					}
