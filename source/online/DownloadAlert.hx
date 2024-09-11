@@ -43,7 +43,7 @@ class DownloadAlerts extends Sprite {
 				Downloader.downloaders[8].cancel();
 		}
 
-		if (Controls.instance.mobileC && (MusicBeatState.getState().touchPad != null && MusicBeatState.getState().touchPad.buttonC.justPressed))
+		if (Controls.instance.mobileC && (Downloader.downloaders[0] != null && MusicBeatState.getState().touchPad != null && MusicBeatState.getState().touchPad.buttonC.justPressed))
 			Downloader.downloaders[0].cancel();
 
 		var prevAlert:DownloadAlert = null;
