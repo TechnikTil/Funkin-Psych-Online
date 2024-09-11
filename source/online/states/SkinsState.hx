@@ -188,6 +188,7 @@ class SkinsState extends MusicBeatState {
 		CustomFadeTransition.nextCamera = hud; // wat
 
 		addTouchPad('LEFT_FULL', 'A_B_X_Y');
+		addTouchPadCamera();
 
 		GameClient.send("status", "Selects their skin");
     }
