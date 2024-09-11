@@ -20,21 +20,44 @@ class FunkinNetwork {
 	public static var points(default, null):Float = 0;
 	public static var loggedIn:Bool = false;
 
-	public static function login(id:String, secret:String) {
+	public static function requestLogin(email:String, ?code:String) {
 		var response = requestAPI({
-			path: "/api/network/auth/reset",
-			headers: ["authorization" => getAuthHeader(id, secret)],
+			path: "/api/network/auth/login",
+			headers: ["content-type" => "application/json"],
+			body: Json.stringify({
+				email: email,
+				code: code
+			}),
 			post: true
 		});
 
 		if (response == null)
-			return;
+			return false;
 
-		var json = Json.parse(response.body);
-		Waiter.put(() -> {
-			saveCredentials(json);
-			Alert.alert("Successfully logged in!");
+		if (code != null)
+			saveCredentials(Json.parse(response.body));
+
+		return true;
+	}
+
+	public static function setEmail(email:String, ?code:String) {
+		var emailSplit = email.split(' from ');
+
+		var response = requestAPI({
+			path: "/api/network/auth/email/set",
+			headers: ["authorization" => getAuthHeader(), "content-type" => "application/json"],
+			body: Json.stringify({
+				email: emailSplit[0].trim(),
+				old_email: emailSplit[1].trim(),
+				code: code
+			}),
+			post: true
 		});
+
+		if (response == null)
+			return false;
+
+		return true;
 	}
 
 	public static function logout() {
@@ -93,11 +116,11 @@ class FunkinNetwork {
 		ClientPrefs.data.networkAuthID = json.id;
 		ClientPrefs.data.networkAuthToken = json.token;
 		ClientPrefs.saveSettings();
-		#if mobile
-		StorageUtil.saveContent('recovery_token.txt', json.id + "\n" + json.secret);
-		#else
-		new FileReference().save(json.id + "\n" + json.secret, "recovery_token.txt");
-		#end
+		// #if mobile
+		// StorageUtil.saveContent('recovery_token.txt', json.id + "\n" + json.secret);
+		// #else
+		// new FileReference().save(json.id + "\n" + json.secret, "recovery_token.txt");
+		// #end
 		ping();
 	}
 
@@ -199,12 +222,12 @@ class FunkinNetwork {
 		}
 	}
 
-	public static function requestAPI(request:HTTPRequest):Null<HTTPResponse> {
+	public static function requestAPI(request:HTTPRequest, ?alertError:Bool = true):Null<HTTPResponse> {
 		var response = client.request(request);
 
 		if (response.isFailed()) {
 			if (response.exception != null) {
-				if (response.exception != "Eof" && response.exception != "EOF")
+				if (alertError && response.exception != "Eof" && response.exception != "EOF")
 					Waiter.put(() -> {
 						Alert.alert("Exception: " + request.path, response.exception + (response.exception.stack != null ? "\n\n" + CallStack.toString(response.exception.stack) : ""));
 					});
@@ -212,7 +235,7 @@ class FunkinNetwork {
 			else if (response.status == 404) {
 				return null;
 			}
-			else {
+			else if (alertError) {
 				Waiter.put(() -> {
 					Alert.alert('HTTP Error ${response.status}: ' + request.path, response.body != null && response.body.ltrim().startsWith("{") ? Json.parse(response.body).error : response.body);
 				});

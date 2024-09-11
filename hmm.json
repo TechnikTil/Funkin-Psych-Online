@@ -120,6 +120,11 @@
       "url": "https://github.com/Snirozu/Lumod"
     },
     {
+      "name": "actuate",
+      "type": "haxelib",
+      "version": "1.9.0"
+    },
+    {
       "name": "extension-androidtools",
       "type": "git",
       "dir": null,
