@@ -117,7 +117,6 @@ class BananaDownload extends MusicBeatState {
 
 		loadNextPage(true);
 
-		//MTODO
 		addTouchPad('LEFT_RIGHT', 'B');
     }
 
