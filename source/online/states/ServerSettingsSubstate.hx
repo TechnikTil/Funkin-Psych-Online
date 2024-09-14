@@ -12,6 +12,7 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 	var curSelectedID:Int = 0;
 
 	var blurFilter:BlurFilter;
+	var blackSprite:FlxSprite;
 	var coolCam:FlxCamera;
 
     //options
@@ -31,6 +32,11 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 					cam.filters = [];
 				cam.filters.push(blurFilter);
 			}
+		} else {
+			blackSprite = new FlxSprite();
+       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
 		}
 
 		coolCam = new FlxCamera();
@@ -140,7 +146,8 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 				if (cam?.filters != null)
 					cam.filters.remove(blurFilter);
 			}
-		}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 

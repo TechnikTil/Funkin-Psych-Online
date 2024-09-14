@@ -24,6 +24,7 @@ class RequestState extends MusicBeatSubstate {
 	var curSelected:Int = -1;
 
 	var blurFilter:BlurFilter;
+	var blackSprite:FlxSprite;
 	var coolCam:FlxCamera;
 
 	public static function requestURL(url:String, ?prompt:String = "Do you want to open this link", ?disableTrusting:Bool = false) {
@@ -97,6 +98,11 @@ class RequestState extends MusicBeatSubstate {
 					cam.filters = [];
 				cam.filters.push(blurFilter);
 			}
+		} else {
+			blackSprite = new FlxSprite();
+       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
 		}
 
 		coolCam = new FlxCamera();
@@ -194,7 +200,8 @@ class RequestState extends MusicBeatSubstate {
 				if (cam?.filters != null)
 					cam.filters.remove(blurFilter);
 			}
-		}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 

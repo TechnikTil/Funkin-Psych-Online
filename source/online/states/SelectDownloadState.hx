@@ -14,6 +14,7 @@ class SelectDownloadState extends MusicBeatSubstate {
 	var downloads:DownloadPage;
 
 	var blurFilter:BlurFilter;
+	var blackSprite:FlxSprite;
 	var coolCam:FlxCamera;
 
 	function set_selected(v) {
@@ -47,6 +48,11 @@ class SelectDownloadState extends MusicBeatSubstate {
 					cam.filters = [];
 				cam.filters.push(blurFilter);
 			}
+		} else {
+			blackSprite = new FlxSprite();
+       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
 		}
 
 		coolCam = new FlxCamera();
@@ -123,7 +129,8 @@ class SelectDownloadState extends MusicBeatSubstate {
 				if (cam?.filters != null)
 					cam.filters.remove(blurFilter);
 			}
-		}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 

@@ -8,6 +8,7 @@ class PTopSubState extends MusicBeatSubstate {
 	var topShit:Scoreboard = new Scoreboard(FlxG.width - 300, 35, 15, ["PLAYER", "POINTS"]);
 
 	var blurFilter:BlurFilter;
+	var blackSprite:FlxSprite;
 	var coolCam:FlxCamera;
 
     var curPage:Int = 0;
@@ -23,6 +24,11 @@ class PTopSubState extends MusicBeatSubstate {
 					cam.filters = [];
 				cam.filters.push(blurFilter);
 			}
+		} else {
+			blackSprite = new FlxSprite();
+       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
 		}
 
 		coolCam = new FlxCamera();
@@ -91,7 +97,8 @@ class PTopSubState extends MusicBeatSubstate {
 				if (cam?.filters != null)
 					cam.filters.remove(blurFilter);
 			}
-		}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 
