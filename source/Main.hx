@@ -8,7 +8,7 @@ import states.MainMenuState;
 import externs.WinAPI;
 import haxe.Exception;
 import flixel.graphics.FlxGraphic;
-
+import haxe.io.Path;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
@@ -17,13 +17,11 @@ import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.StageScaleMode;
-import lime.app.Application;
 import states.TitleState;
 #if mobile
 import mobile.states.CopyState;
 import mobile.backend.MobileScaleMode;
 #end
-import mobile.objects.MobileControls;
 
 #if linux
 import lime.graphics.Image;
