@@ -6,6 +6,7 @@ import mobile.objects.TouchButton;
 import openfl.display.Shape;
 import mobile.objects.TouchButton;
 import flixel.graphics.FlxGraphic;
+import flixel.util.FlxSignal;
 
 /**
  * A zone with 4 hint's (A hitbox).
@@ -18,12 +19,15 @@ class Hitbox extends MobileInputManager implements IMobileControls
 	final offsetFir:Int = (ClientPrefs.data.hitbox2 ? Std.int(FlxG.height / 4) * 3 : 0);
 	final offsetSec:Int = (ClientPrefs.data.hitbox2 ? 0 : Std.int(FlxG.height / 4));
 
-	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.hitboxLEFT, MobileInputID.noteLEFT]);
-	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.hitboxDOWN, MobileInputID.noteDOWN]);
-	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.hitboxUP, MobileInputID.noteUP]);
-	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.hitboxRIGHT, MobileInputID.noteRIGHT]);
+	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.hitboxLEFT]);
+	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.hitboxDOWN]);
+	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.hitboxUP]);
+	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.hitboxRIGHT]);
 	public var buttonExtra:TouchButton = new TouchButton(0, 0);
 	public var buttonExtra2:TouchButton = new TouchButton(0, 0);
+
+	public var onButtonUp:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
+	public var onButtonDown:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
 
 	public var instance:MobileInputManager;
 
@@ -108,6 +112,8 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onDown.callback = function()
 			{
+				onButtonDown.dispatch(hint, hint.IDs);
+				
 				if (hintTween != null)
 					hintTween.cancel();
 
@@ -119,6 +125,8 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onOut.callback = hint.onUp.callback = function()
 			{
+				onButtonUp.dispatch(hint, hint.IDs);
+				
 				if (hintTween != null)
 					hintTween.cancel();
 
@@ -127,6 +135,11 @@ class Hitbox extends MobileInputManager implements IMobileControls
 					onComplete: (twn:FlxTween) -> hintTween = null
 				});
 			}
+		}
+		else
+		{
+			hint.onUp.callback hint.onOut.callback = () -> onButtonUp.dispatch(hint, hint.IDs);
+			hint.onDown.callback = () -> onButtonDown.dispatch(hint, hint.IDs);
 		}
 
 		hint.immovable = hint.multiTouch = true;
