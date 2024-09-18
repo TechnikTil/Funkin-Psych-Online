@@ -92,7 +92,13 @@ class ReplayRecorder extends FlxBasic {
 		}
 
 		state.add(this);
-        
+
+		var mobileControls = state.controls.requestedMobileC;
+		if(mobileControls != null && mobileControls.instance != null)
+		{
+			mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 0));
+			mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 1));
+		}
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
     }
@@ -134,6 +140,29 @@ class ReplayRecorder extends FlxBasic {
 		}
 	}
 
+	function recordKeyMobile(time:Float, ids:Array<MobileInputID>, move:Int) {
+		if(ids == null || ids.length < 0) return;
+		
+//		var id:MobileInputID = ids[0];
+//		switch (id) {
+//			case 16: // shift
+//				data.inputs.push([time, 'KEY:SHIFT', move]);
+//			case 17: // ctrl
+//				data.inputs.push([time, 'KEY:CONTROL', move]);
+//			case 18: // alt
+//				data.inputs.push([time, 'KEY:ALT', move]);
+//			case 32: // spaceeee
+//				data.inputs.push([time, 'KEY:SPACE', move]);
+//		}
+
+		for (id in ids) {
+			var formattedID:String = formatIDName(id);
+			if (id == null || state.paused || formattedID == null || !REGISTER_BINDS.contains(formattedID))
+				continue;
+			data.inputs.push([time, formattedID, move]);
+		}
+	}
+
     public function save():Float {
 		if (!FileSystem.exists("replays/"))
 			FileSystem.createDirectory("replays/");
@@ -166,6 +195,18 @@ class ReplayRecorder extends FlxBasic {
 			}
 		}
 		return 0;
+    }
+
+    function formatIDName(id:MobileInputID):String
+    {
+        var note:String = id.toString();
+	if(!note.startsWith("note")) return null;
+	
+        var splitIndex = "note".length;
+        var prefix = note.substr(0, splitIndex);
+        var suffix = note.substr(splitIndex).toLowerCase();
+        
+        return prefix + "_" + suffix;
     }
 }
 
