@@ -105,6 +105,11 @@ class GameClient {
 		}
 
 		GameClient.room.onLeave += () -> {
+			trace("Left!");
+			if (room?.roomId != null) {
+				trace("Left from room: " + room.roomId);
+			}
+
 			if (client == null) {
 				leaveRoom();
 			}
@@ -304,9 +309,11 @@ class GameClient {
 				}
 				catch (exc) {
 					_pendingMessages.push([type, message]);
-					if (reconnectTries <= 0)
+
+					if (reconnectTries <= 0) {
+						trace(exc + " : FAILED TO SEND: " + type + " -> " + message);
 						reconnect();
-					//trace(exc + " : FAILED TO SEND: " + type + " -> " + message);
+					}
 				}
 			});
 	}
@@ -394,6 +401,21 @@ class GameClient {
 			return 0.0;
 		
 		return CoolUtil.floorDecimal(Math.min(1, Math.max(0, totalNotesHit / totalPlayed)) * 100, 2);
+	}
+
+	public static function getPlayerRating(player:Player) {
+		var ratingFC = 'Clear';
+		if (player.misses < 1) {
+			if (player.bads > 0 || player.shits > 0)
+				ratingFC = 'FC';
+			else if (player.goods > 0)
+				ratingFC = 'GFC';
+			else if (player.sicks > 0)
+				ratingFC = 'SFC';
+		}
+		else if (player.misses < 10)
+			ratingFC = 'SDCB';
+		return ratingFC;
 	}
 
 	public static function getRoomSecret(?forceAddress:Bool = false) {
