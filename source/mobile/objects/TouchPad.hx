@@ -3,6 +3,7 @@ package mobile.objects;
 import mobile.objects.TouchButton;
 import mobile.input.MobileInputManager;
 import flixel.math.FlxPoint;
+import flixel.util.FlxSignal;
 
 /**
  * ...
@@ -11,14 +12,14 @@ import flixel.math.FlxPoint;
 @:access(mobile.objects.TouchButton)
 class TouchPad extends MobileInputManager implements IMobileControls
 {
-	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.LEFT, MobileInputID.noteLEFT]);
-	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.UP, MobileInputID.noteUP]);
-	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.RIGHT, MobileInputID.noteRIGHT]);
-	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.DOWN, MobileInputID.noteDOWN]);
-	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.LEFT2, MobileInputID.noteLEFT]);
-	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.UP2, MobileInputID.noteUP]);
-	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.RIGHT2, MobileInputID.noteRIGHT]);
-	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.DOWN2, MobileInputID.noteDOWN]);
+	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.LEFT]);
+	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.UP]);
+	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.RIGHT]);
+	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.DOWN]);
+	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.LEFT2]);
+	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.UP2]);
+	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.RIGHT2]);
+	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.DOWN2]);
 	public var buttonA:TouchButton = new TouchButton(0, 0, [MobileInputID.A]);
 	public var buttonB:TouchButton = new TouchButton(0, 0, [MobileInputID.B]);
 	public var buttonC:TouchButton = new TouchButton(0, 0, [MobileInputID.C]);
@@ -48,6 +49,9 @@ class TouchPad extends MobileInputManager implements IMobileControls
 	public var buttonExtra:TouchButton = new TouchButton(0, 0);
 	public var buttonExtra2:TouchButton = new TouchButton(0, 0);
 
+	public var onButtonUp:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
+	public var onButtonDown:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
+	
 	public var instance:MobileInputManager;
 
 	/**
@@ -109,14 +113,15 @@ class TouchPad extends MobileInputManager implements IMobileControls
 
 	override public function destroy()
 	{
-		super.destroy();
-
+		onButtonUp.destroy();
+		onButtonDown.destroy();
 		for (fieldName in Reflect.fields(this))
 		{
 			var field = Reflect.field(this, fieldName);
 			if (Std.isOfType(field, TouchButton))
 				Reflect.setField(this, fieldName, FlxDestroyUtil.destroy(field));
 		}
+		super.destroy();
 	}
 
 	public function setExtrasDefaultPos()
@@ -186,6 +191,9 @@ class TouchPad extends MobileInputManager implements IMobileControls
 		button.tag = Graphic.toUpperCase();
 		button.color = Color;
 		button.parentAlpha = button.alpha;
+
+		button.onUp.callback button.onOut.callback = () -> onButtonUp.dispatch(button, button.IDs);
+		button.onDown.callback = () -> onButtonDown.dispatch(button, button.IDs);
 		return button;
 	}
 
