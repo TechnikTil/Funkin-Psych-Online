@@ -1,4 +1,5 @@
 package mobile.objects;
+import flixel.util.FlxSignal;
 
 /**
  * ...
@@ -12,5 +13,7 @@ interface IMobileControls
 	public var buttonDown:TouchButton;
 	public var buttonExtra:TouchButton;
 	public var buttonExtra2:TouchButton;
+	public var onButtonUp:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>;
+	public var onButtonDown:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>;
 	public var instance:MobileInputManager;
 }
