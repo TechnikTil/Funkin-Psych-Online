@@ -155,9 +155,12 @@ class ReplayRecorder extends FlxBasic {
 //				data.inputs.push([time, 'KEY:SPACE', move]);
 //		}
 
+		if (ids == null)
+			return;
+
 		for (id in ids) {
 			var formattedID:String = formatIDName(id);
-			if (id == null || state.paused || formattedID == null || !REGISTER_BINDS.contains(formattedID))
+			if (state.paused || formattedID == null || !REGISTER_BINDS.contains(formattedID))
 				continue;
 			data.inputs.push([time, formattedID, move]);
 		}
