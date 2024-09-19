@@ -138,7 +138,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		}
 		else
 		{
-			hint.onUp.callback hint.onOut.callback = () -> onButtonUp.dispatch(hint, hint.IDs);
+			hint.onUp.callback = hint.onOut.callback = () -> onButtonUp.dispatch(hint, hint.IDs);
 			hint.onDown.callback = () -> onButtonDown.dispatch(hint, hint.IDs);
 		}
 
