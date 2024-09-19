@@ -192,7 +192,7 @@ class TouchPad extends MobileInputManager implements IMobileControls
 		button.color = Color;
 		button.parentAlpha = button.alpha;
 
-		button.onUp.callback button.onOut.callback = () -> onButtonUp.dispatch(button, button.IDs);
+		button.onUp.callback = button.onOut.callback = () -> onButtonUp.dispatch(button, button.IDs);
 		button.onDown.callback = () -> onButtonDown.dispatch(button, button.IDs);
 		return button;
 	}
