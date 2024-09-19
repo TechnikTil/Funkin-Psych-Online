@@ -82,10 +82,16 @@ class DownloadAlerts extends Sprite {
 				alert.setStatus("Installing...");
 			else if (downloader.isDownloading)
 				alert.updateProgress(downloader.gotContent, downloader.contentLength);
-
-			if (Controls.instance.mobileC && (alert.cancelBg.getBounds(Lib.current.stage).contains(openfl.ui.Mouse.screenX, openfl.ui.Mouse.screenY) && Lib.current.stage.hasEventListener(openfl.events.MouseEvent.MOUSE_DOWN)))
-				downloader.cancel();
-
+			
+			if (Controls.instance.mobileC)
+			{
+				alert.cancelBg.addEventListener(TouchEvent.TOUCH_BEGIN, e -> {
+					if (alert.cancelBg.getBounds(Lib.current.stage).contains(e.stageX, e.stageY)) {
+						downloader.cancel();
+					}
+				});
+			}
+		
 			prevAlert = alert;
 			i++;
 		}
