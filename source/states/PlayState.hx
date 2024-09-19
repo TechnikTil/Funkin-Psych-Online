@@ -1141,7 +1141,8 @@ class PlayState extends MusicBeatState
 		orderOffset = 2;
 
 		addMobileControls();
-        mobileControls.instance.visible = true;
+		mobileControls.instance.visible = true;
+		replayRecorder.initMobileCRecorder(mobileControls);
 		#if android
 		if (GameClient.isConnected()) {
 		#end
