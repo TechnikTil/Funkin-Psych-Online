@@ -84,8 +84,13 @@ class DownloadAlerts extends Sprite {
 				alert.updateProgress(downloader.gotContent, downloader.contentLength);
 			
 			if (Controls.instance.mobileC)
-				alert.cancelBg.addEventListener(openfl.events.MouseEvent.CLICK, () -> downloader.cancel());
-		
+			{
+				var overlaps:Bool = false;
+				FlxG.stage.addEventListener(MouseEvent.CLICK, (e) -> if (overlaps) downloader.cancel());
+				alert.cancelBg.addEventListener(MouseEvent.MOUSE_OVER, (e) -> overlaps = true);
+				alert.cancelBg.addEventListener(MouseEvent.MOUSE_OUT, (e) -> overlaps = false);
+			}
+
 			prevAlert = alert;
 			i++;
 		}
