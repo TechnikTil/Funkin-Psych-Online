@@ -84,13 +84,7 @@ class DownloadAlerts extends Sprite {
 				alert.updateProgress(downloader.gotContent, downloader.contentLength);
 			
 			if (Controls.instance.mobileC)
-			{
-				alert.cancelBg.addEventListener(openfl.events.TouchEvent.TOUCH_BEGIN, e -> {
-					if (alert.cancelBg.getBounds(Lib.current.stage).contains(e.stageX, e.stageY)) {
-						downloader.cancel();
-					}
-				});
-			}
+				alert.cancelBg.addEventListener(openfl.events.MouseEvent.CLICK, () -> downloader.cancel());
 		
 			prevAlert = alert;
 			i++;
