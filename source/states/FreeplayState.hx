@@ -313,13 +313,7 @@ class FreeplayState extends MusicBeatState
 			GameClient.send("status", "Choosing a Song");
 		}
 
-		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y' : 'A_B_X_Y');
-		if (!GameClient.isConnected())
-		{
-			touchPad.buttonX.x = 1032;
-			touchPad.buttonY.x = 1156;
-			touchPad.buttonX.y = touchPad.buttonY.y = 472;
-		}
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z' : 'A_B_X_Y_Z');
 
 		super.create();
 	}
@@ -346,13 +340,7 @@ class FreeplayState extends MusicBeatState
 		persistentUpdate = true;
 		super.closeSubState();
 		removeTouchPad();
-		addTouchPad('LEFT_FULL', ((GameClient.isConnected()) ? 'A_B_C_X_Y' : 'A_B_X_Y'));
-		if (!GameClient.isConnected())
-		{
-			touchPad.buttonX.x = 1032;
-			touchPad.buttonY.x = 1156;
-			touchPad.buttonX.y = touchPad.buttonY.y = 472;
-		}
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z' : 'A_B_X_Y_Z');
 	}
 
 	function setDiffVisibility(value:Bool) {
@@ -445,7 +433,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var shiftMult:Int = 1;
-		if(touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) shiftMult = 3;
+		if(touchPad.buttonZ.pressed || FlxG.keys.pressed.SHIFT) shiftMult = 3;
 
 		if (!selected) {
 			if(songs.length > 1)
@@ -533,6 +521,10 @@ class FreeplayState extends MusicBeatState
 				if (leaderboardTimer != null)
 					leaderboardTimer.cancel();
 				leaderboardTimer = new FlxTimer().start(0.5, t -> { generateLeaderboard(); });
+			}
+
+			if (touchPad.buttonY.justPressed || FlxG.keys.justPressed.TAB) {
+				FlxG.switchState(() -> new online.states.SkinsState());
 			}
 		}
 		else {
@@ -827,6 +819,7 @@ class FreeplayState extends MusicBeatState
 		final accept:String = (controls.mobileC) ? 'A' : 'ACCEPT';
 		final back:String = (controls.mobileC) ? 'B' : 'BACK';
 		final space:String = (controls.mobileC) ? 'X' : 'SPACE';
+		final tab:String = (controls.mobileC) ? 'Y' : 'TAB';
 
 		switch (selectedItem) {
 			case 0:
@@ -835,7 +828,7 @@ class FreeplayState extends MusicBeatState
 					camera.targetOffset.y += 200;
 				}
 				else
-					infoText.text = "Press " + accept + " to select the current Song / Press " + space + " to listen to the Song";
+					infoText.text = "Press " + accept + " to select the current Song / Press " + space + " to listen to the Song / Press " + tab + " to select your character!";
 
 				if (centerPoint == null)
 					centerPoint = new FlxObject(FlxG.width / 2, FlxG.height / 2);
