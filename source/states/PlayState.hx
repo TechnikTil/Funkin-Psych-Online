@@ -1142,7 +1142,8 @@ class PlayState extends MusicBeatState
 
 		addMobileControls();
 		mobileControls.instance.visible = true;
-		replayRecorder.initMobileCRecorder(mobileControls);
+		if (!ClientPrefs.data.disableReplays && !isInvalidScore() && !chartingMode)
+			replayRecorder.initMobileCRecorder(mobileControls);
 		#if android
 		if (GameClient.isConnected()) {
 		#end
