@@ -143,15 +143,15 @@ class ReplayRecorder extends FlxBasic {
 	function recordKeyMobileC(time:Float, ids:Array<MobileInputID>, move:Int) {
 		if (ids == null || ids.length < 0)
 			return;
-
-		for (id in ids) {
+		var id = ids[0];
+		//for (id in ids) {
 			trace('id is $id');
 			var formattedID:String = formatIDName(id);
 			trace('formatted id is $formattedID');
 			if (formattedID == null || state.paused || !REGISTER_BINDS.contains(formattedID))
-				continue;
+				/*continue;*/ return;
 			data.inputs.push([time, formattedID, move]);
-		}
+		//}
 	}
 
     public function save():Float {
