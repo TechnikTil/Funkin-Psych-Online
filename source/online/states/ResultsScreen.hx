@@ -296,7 +296,7 @@ class ResultsScreen extends MusicBeatState {
 			});
 		}
 
-		addTouchPad('NONE', 'B_C_X');
+		addTouchPad('NONE', 'B_C_T');
     }
 
 	function flickerLoop() {
@@ -340,7 +340,7 @@ class ResultsScreen extends MusicBeatState {
                 });
             }
 
-			if (!chatBox.focused && touchPad.buttonX.justPressed || controls.TAUNT) {
+			if (!chatBox.focused && controls.TAUNT) {
 				(GameClient.isOwner ? p1 : p2).playAnim('taunt', true);
 				if (GameClient.isConnected())
 					GameClient.send("charPlay", ["taunt"]);
