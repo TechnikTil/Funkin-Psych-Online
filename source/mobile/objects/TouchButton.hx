@@ -159,6 +159,11 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	public var justPressed(get, never):Bool;
 
 	/**
+   	 * An array of objects that blocks your input.
+   	 */
+ 	public var deadZones:Array<FunkinSprite> = [];
+
+	/**
 	 * We cast label to a `FlxSprite` for internal operations to avoid Dynamic casts in C++
 	 */
 	var _spriteLabel:FlxSprite;
@@ -212,6 +217,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		onOver = FlxDestroyUtil.destroy(onOver);
 		onOut = FlxDestroyUtil.destroy(onOut);
 
+		deadZones = FlxDestroyUtil.destroyArray(deadZones);
 		currentInput = null;
 		input = null;
 
@@ -287,12 +293,26 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		{
 			#if mac
 			var button = FlxMouseButton.getByID(FlxMouseButtonID.LEFT);
+
+			for (deadZone in deadZones)
+          			if (deadZone != null)
+            				if (deadZone.checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
+						overlap = false;
+
 			if (checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
+				overlap = true;
 			#else
 			for (touch in FlxG.touches.list)
+			{
+				for (deadZone in deadZones)
+					if (deadZone != null)
+            					if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
+							overlap = false;
+
 				if (checkInput(touch, touch, touch.justPressedPosition, camera))
+					overlap = true;
+			}
 			#end
-			overlap = true;
 		}
 
 		return overlap;
