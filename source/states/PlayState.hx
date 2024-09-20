@@ -1148,17 +1148,14 @@ class PlayState extends MusicBeatState
 		#end
 			addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C_T' : 'P');
 			addTouchPadCamera();
-			if (MobileData.mode == 3)
+			var buttons:Array<mobile.objects.TouchButton> = [MusicBeatState.getState().mobileControls.buttonLeft, MusicBeatState.getState().mobileControls.buttonRight, MusicBeatState.getState().mobileControls.buttonUp, MusicBeatState.getState().mobileControls.buttonDown];
+			if (MusicBeatState.getState().mobileControls.buttonExtra != null) hints.push(MusicBeatState.getState().mobileControls.buttonExtra);
+			if (MusicBeatState.getState().mobileControls.buttonExtra2 != null) hints.push(MusicBeatState.getState().mobileControls.buttonExtra2);
+			for (button in buttons)
 			{
-				var hints:Array<mobile.objects.TouchButton> = [MobileControls.hitbox.buttonLeft, MobileControls.hitbox.buttonRight, MobileControls.hitbox.buttonUp, MobileControls.hitbox.buttonDown];
-				if (MobileControls.hitbox.buttonExtra != null) hints.push(MobileControls.hitbox.buttonExtra);
-				if (MobileControls.hitbox.buttonExtra2 != null) hints.push(MobileControls.hitbox.buttonExtra2);
-				for (hint in hints)
-				{
-					hint.deadZones.push(touchPad.buttonT);
-					hint.deadZones.push(touchPad.buttonC);
-					hint.deadZones.push(touchPad.buttonP);
-				}
+				button.deadZones.push(touchPad.buttonT);
+				button.deadZones.push(touchPad.buttonC);
+				button.deadZones.push(touchPad.buttonP);
 			}
 		#if android
 		}
