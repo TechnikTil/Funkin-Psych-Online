@@ -161,7 +161,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	/**
    	 * An array of objects that blocks your input.
    	 */
- 	public var deadZones:Array<FunkinSprite> = [];
+ 	public var deadZones:Array<FlxSprite> = [];
 
 	/**
 	 * We cast label to a `FlxSprite` for internal operations to avoid Dynamic casts in C++
