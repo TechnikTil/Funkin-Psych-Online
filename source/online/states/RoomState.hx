@@ -402,7 +402,7 @@ class RoomState extends MusicBeatState {
 
 		verifyDownloadMod(false, true);
 
-		addTouchPad('NONE', 'B_C');
+		addTouchPad('LEFT_FULL', 'B_C_Y_T_M');
 		addTouchPadCamera();
 		touchPad.y -= 300;
 
@@ -650,8 +650,8 @@ class RoomState extends MusicBeatState {
 
 			// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
 
-			if (FlxG.keys.pressed.ALT) { // useless, but why not?
-				var suffix = FlxG.keys.pressed.CONTROL ? 'miss' : '';
+			if (touchPad.buttonY.pressed || FlxG.keys.pressed.ALT) { // useless, but why not?
+				var suffix = (touchPad.buttonM.pressed || FlxG.keys.pressed.CONTROL) ? 'miss' : '';
 				if (controls.NOTE_LEFT_P) {
 					playerAnim('singLEFT' + suffix);
 				}
@@ -692,7 +692,7 @@ class RoomState extends MusicBeatState {
 			danceLogic(p1);
 			danceLogic(p2);
 			
-			if ((!FlxG.keys.pressed.ALT && controls.ACCEPT) || FlxG.mouse.justPressed) {
+			if (((!FlxG.keys.pressed.ALT || !virtualPad.buttonY.pressed) && controls.ACCEPT) || FlxG.mouse.justPressed) {
 				switch (curSelected) {
 					case 0:
 						openSubState(new ServerSettingsSubstate());
@@ -779,6 +779,8 @@ class RoomState extends MusicBeatState {
 		else if (waitingForPlayer2Skin && FlxG.mouse.justPressed && FlxG.mouse.overlaps(p2)) {
 			loadCharacter(false, true, true);
 		}
+
+		touchPad.buttonLeft.visible = touchPad.buttonRight.visible = touchPad.buttonUp.visible = touchPad.buttonDown.visible = touchPad.buttonT.visible = touchPad.buttonM.visible = touchPad.buttonY.pressed;
 
         super.update(elapsed);
 
