@@ -294,6 +294,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			#if mac
 			var button = FlxMouseButton.getByID(FlxMouseButtonID.LEFT);
 
+			@:privateAccess
 			for (deadZone in deadZones)
           			if (deadZone != null)
             				if (deadZone.checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
