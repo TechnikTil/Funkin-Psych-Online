@@ -1148,6 +1148,18 @@ class PlayState extends MusicBeatState
 		#end
 			addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C_T' : 'P');
 			addTouchPadCamera();
+			if (MobileData.mode == 3)
+			{
+				var hints:Array<mobile.objects.TouchButton> = [MobileControls.hitbox.buttonLeft, MobileControls.hitbox.buttonRight, MobileControls.hitbox.buttonUp, MobileControls.hitbox.buttonDown];
+				if (MobileControls.hitbox.buttonExtra != null) hints.push(MobileControls.hitbox.buttonExtra);
+				if (MobileControls.hitbox.buttonExtra2 != null) hints.push(MobileControls.hitbox.buttonExtra2);
+				for (hint in hints)
+				{
+					hint.deadZones.push(touchPad.buttonT);
+					hint.deadZones.push(touchPad.buttonC);
+					hint.deadZones.push(touchPad.buttonP);
+				}
+			}
 		#if android
 		}
 		#end
