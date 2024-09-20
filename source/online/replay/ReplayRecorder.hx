@@ -151,9 +151,9 @@ class ReplayRecorder extends FlxBasic {
 		}
 
 		for (id in ids) {
-			trace('id is $id')
+			trace('id is $id');
 			var formattedID:String = formatIDName(id);
-			trace('formatted id is $formattedID')
+			trace('formatted id is $formattedID');
 			if (state.paused || formattedID == null || !REGISTER_BINDS.contains(formattedID))
 				continue;
 			data.inputs.push([time, formattedID, move]);
