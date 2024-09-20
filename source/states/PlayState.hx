@@ -1092,6 +1092,7 @@ class PlayState extends MusicBeatState
 
 				if (!ClientPrefs.data.disableReplays && !isInvalidScore() && !chartingMode) {
 					add(replayRecorder = new ReplayRecorder(this));
+					replayRecorder.initMobileCRecorder(mobileControls);
 				}
 			}
 
@@ -1142,8 +1143,6 @@ class PlayState extends MusicBeatState
 
 		addMobileControls();
 		mobileControls.instance.visible = true;
-		if (!ClientPrefs.data.disableReplays && !isInvalidScore() && !chartingMode)
-			replayRecorder.initMobileCRecorder(mobileControls);
 		#if android
 		if (GameClient.isConnected()) {
 		#end
