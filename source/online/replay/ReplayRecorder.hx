@@ -110,6 +110,9 @@ class ReplayRecorder extends FlxBasic {
 
 	public function initMobileCRecorder(mobileControls:IMobileControls)
 	{
+	var status:String = "not null";
+	if (mobileControls == null) status = "null";
+	trace('mobileControls is $status!!!')
 	mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 0));
 	mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 1));
 	}
@@ -141,25 +144,16 @@ class ReplayRecorder extends FlxBasic {
 	}
 
 	function recordKeyMobile(time:Float, ids:Array<MobileInputID>, move:Int) {
-		if(ids == null || ids.length < 0) return;
-		
-//		var id:MobileInputID = ids[0];
-//		switch (id) {
-//			case 16: // shift
-//				data.inputs.push([time, 'KEY:SHIFT', move]);
-//			case 17: // ctrl
-//				data.inputs.push([time, 'KEY:CONTROL', move]);
-//			case 18: // alt
-//				data.inputs.push([time, 'KEY:ALT', move]);
-//			case 32: // spaceeee
-//				data.inputs.push([time, 'KEY:SPACE', move]);
-//		}
-
-		if (ids == null)
+		if(ids == null || ids.length < 0)
+		{
+			trace('ids are null');
 			return;
+		}
 
 		for (id in ids) {
+			trace('id is $id')
 			var formattedID:String = formatIDName(id);
+			trace('formatted id is $formattedID')
 			if (state.paused || formattedID == null || !REGISTER_BINDS.contains(formattedID))
 				continue;
 			data.inputs.push([time, formattedID, move]);
