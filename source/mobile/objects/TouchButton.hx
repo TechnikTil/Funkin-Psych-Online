@@ -306,7 +306,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			{
 				for (deadZone in deadZones)
 					if (deadZone != null)
-            					if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
+            					@:privateAccess if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
 							overlap = false;
 
 				if (checkInput(touch, touch, touch.justPressedPosition, camera))
