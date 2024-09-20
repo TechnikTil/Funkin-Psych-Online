@@ -1148,19 +1148,14 @@ class PlayState extends MusicBeatState
 		#end
 			addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C_T' : 'P');
 			addTouchPadCamera();
-			var buttons:Array<mobile.objects.TouchButton> = [MusicBeatState.getState().mobileControls.buttonLeft, MusicBeatState.getState().mobileControls.buttonRight, MusicBeatState.getState().mobileControls.buttonUp, MusicBeatState.getState().mobileControls.buttonDown];
-			if (MusicBeatState.getState().mobileControls.buttonExtra != null) buttons.push(MusicBeatState.getState().mobileControls.buttonExtra);
-			if (MusicBeatState.getState().mobileControls.buttonExtra2 != null) buttons.push(MusicBeatState.getState().mobileControls.buttonExtra2);
-			for (button in buttons)
+			mobileControls.instance.forEachAlive((button) ->
 			{
 				if (touchPad.buttonT != null)
-					touchPad.buttonT.deadZones.push(button);
-
+    					button.deadZones.push(touchPad.buttonT);
 				if (touchPad.buttonC != null)
-					touchPad.buttonC.deadZones.push(button);
-
-				touchPad.buttonP.deadZones.push(button);
-			}
+    					button.deadZones.push(touchPad.buttonC);
+				button.deadZones.push(touchPad.buttonP);
+			});
 		#if android
 		}
 		#end
