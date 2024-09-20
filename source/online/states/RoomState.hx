@@ -612,6 +612,13 @@ class RoomState extends MusicBeatState {
 				item.scale.set(FlxMath.lerp(item.scale.x, 1, elapsed * 10), FlxMath.lerp(item.scale.y, 1, elapsed * 10));
 			}
 		}
+
+	    	if (touchPad.buttonC.justPressed)
+	    	{
+			chatIcon.angle = FlxMath.lerp(chatIcon.angle, 0, elapsed * 5);
+			chatIcon.scale.set(FlxMath.lerp(chatIcon.scale.x, 1, elapsed * 10), FlxMath.lerp(chatIcon.scale.y, 1, elapsed * 10));
+	    	}
+
 		playIcon.alpha = getSelfPlayer().hasSong ? 1.0 : 0.5;
 
 		if (!chatBox.focused) {
