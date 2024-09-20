@@ -77,7 +77,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
 		}
 
-		storedButtonsIDs.clear();
+		//storedButtonsIDs.clear();
 		scrollFactor.set();
 		updateTrackedButtons();
 
@@ -112,7 +112,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onDown.callback = function()
 			{
-				onButtonDown.dispatch(hint, hint.IDs);
+				onButtonDown.dispatch(hint, storedButtonsIDs.get(hint));
 				
 				if (hintTween != null)
 					hintTween.cancel();
@@ -125,7 +125,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onOut.callback = hint.onUp.callback = function()
 			{
-				onButtonUp.dispatch(hint, hint.IDs);
+				onButtonUp.dispatch(hint, storedButtonsIDs.get(hint));
 				
 				if (hintTween != null)
 					hintTween.cancel();
@@ -138,8 +138,8 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		}
 		else
 		{
-			hint.onUp.callback = hint.onOut.callback = () -> onButtonUp.dispatch(hint, hint.IDs);
-			hint.onDown.callback = () -> onButtonDown.dispatch(hint, hint.IDs);
+			hint.onUp.callback = hint.onOut.callback = () -> onButtonUp.dispatch(hint, storedButtonsIDs.get(hint));
+			hint.onDown.callback = () -> onButtonDown.dispatch(hint, storedButtonsIDs.get(hint) );
 		}
 
 		hint.immovable = hint.multiTouch = true;
