@@ -307,7 +307,7 @@ class ClientPrefs {
 		TitleState.volumeUpKeys = keyBinds.get('volume_up').copy();
 		toggleVolumeKeys(true);
 	}
-	public static function toggleVolumeKeys(turnOn:Bool) {
+	public static function toggleVolumeKeys(?turnOn:Bool = true) {
 		if(!Controls.instance.mobileC && turnOn)
 		{
 			FlxG.sound.muteKeys = TitleState.muteKeys;
