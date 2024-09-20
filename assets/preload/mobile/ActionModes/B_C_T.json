@@ -15,11 +15,11 @@
       "color": "0xFFCB00"
     },
     {
-      "button": "buttonX",
-      "graphic": "x",
+      "button": "buttonT",
+      "graphic": "t",
       "x": 1156,
       "y": 472,
-      "color": "0x99062D"
+      "color": "0x664215"
     }
   ]
 }
