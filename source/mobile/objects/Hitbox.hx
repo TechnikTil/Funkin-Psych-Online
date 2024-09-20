@@ -50,23 +50,23 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		switch (extraMode)
 		{
 			case NONE:
-				add(buttonLeft = createHint(0, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFFC24B99));
-				add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF00FFFF));
-				add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF12FA05));
-				add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), FlxG.height, 0xFFF9393F));
+				add(buttonLeft = createHint(0, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFFC24B99, "buttonLeft"));
+				add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF00FFFF, "buttonDown"));
+				add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF12FA05, "buttonUp"));
+				add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), FlxG.height, 0xFFF9393F, "buttonRight"));
 			case SINGLE:
-				add(buttonLeft = createHint(0, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFFC24B99));
-				add(buttonDown = createHint(FlxG.width / 4, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF00FFFF));
-				add(buttonUp = createHint(FlxG.width / 2, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF12FA05));
+				add(buttonLeft = createHint(0, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFFC24B99, "buttonLeft"));
+				add(buttonDown = createHint(FlxG.width / 4, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF00FFFF, "buttonDown"));
+				add(buttonUp = createHint(FlxG.width / 2, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF12FA05, "buttonUp"));
 				add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3,
-					0xFFF9393F));
+					0xFFF9393F, "buttonRight"));
 				add(buttonExtra = createHint(0, offsetFir, FlxG.width, Std.int(FlxG.height / 4), 0xFF0066FF));
 			case DOUBLE:
-				add(buttonLeft = createHint(0, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFFC24B99));
-				add(buttonDown = createHint(FlxG.width / 4, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF00FFFF));
-				add(buttonUp = createHint(FlxG.width / 2, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF12FA05));
+				add(buttonLeft = createHint(0, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFFC24B99, "buttonLeft"));
+				add(buttonDown = createHint(FlxG.width / 4, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF00FFFF, "buttonDown"));
+				add(buttonUp = createHint(FlxG.width / 2, offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3, 0xFF12FA05, "buttonUp"));
 				add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), offsetSec, Std.int(FlxG.width / 4), Std.int(FlxG.height / 4) * 3,
-					0xFFF9393F));
+					0xFFF9393F, "buttonRight"));
 				add(buttonExtra2 = createHint(Std.int(FlxG.width / 2), offsetFir, Std.int(FlxG.width / 2), Std.int(FlxG.height / 4), 0xA6FF00));
 				add(buttonExtra = createHint(0, offsetFir, Std.int(FlxG.width / 2), Std.int(FlxG.height / 4), 0xFF0066FF));
 		}
@@ -99,7 +99,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		}
 	}
 
-	private function createHint(X:Float, Y:Float, Width:Int, Height:Int, Color:Int = 0xFFFFFF):TouchButton
+	private function createHint(X:Float, Y:Float, Width:Int, Height:Int, Color:Int = 0xFFFFFF, ?mapKey:String):TouchButton
 	{
 		var hint = new TouchButton(X, Y);
 		hint.statusAlphas = [];
@@ -112,7 +112,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onDown.callback = function()
 			{
-				onButtonDown.dispatch(hint, storedButtonsIDs.get(hint));
+				onButtonDown.dispatch(hint, storedButtonsIDs.get(mapKey));
 				
 				if (hintTween != null)
 					hintTween.cancel();
@@ -125,7 +125,7 @@ class Hitbox extends MobileInputManager implements IMobileControls
 
 			hint.onOut.callback = hint.onUp.callback = function()
 			{
-				onButtonUp.dispatch(hint, storedButtonsIDs.get(hint));
+				onButtonUp.dispatch(hint, storedButtonsIDs.get(mapKey));
 				
 				if (hintTween != null)
 					hintTween.cancel();
@@ -138,8 +138,8 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		}
 		else
 		{
-			hint.onUp.callback = hint.onOut.callback = () -> onButtonUp.dispatch(hint, storedButtonsIDs.get(hint));
-			hint.onDown.callback = () -> onButtonDown.dispatch(hint, storedButtonsIDs.get(hint) );
+			hint.onUp.callback = hint.onOut.callback = () -> onButtonUp.dispatch(hint, storedButtonsIDs.get(mapKey));
+			hint.onDown.callback = () -> onButtonDown.dispatch(hint, storedButtonsIDs.get(mapKey));
 		}
 
 		hint.immovable = hint.multiTouch = true;
