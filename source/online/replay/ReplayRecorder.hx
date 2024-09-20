@@ -112,7 +112,7 @@ class ReplayRecorder extends FlxBasic {
 	{
 	var status:String = "not null";
 	if (mobileControls == null) status = "null";
-	trace('mobileControls is $status!!!')
+	trace('mobileControls is $status!!!');
 	mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 0));
 	mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobile(Conductor.songPosition, ids, 1));
 	}
