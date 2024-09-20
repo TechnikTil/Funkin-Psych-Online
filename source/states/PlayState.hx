@@ -1153,9 +1153,13 @@ class PlayState extends MusicBeatState
 			if (MusicBeatState.getState().mobileControls.buttonExtra2 != null) buttons.push(MusicBeatState.getState().mobileControls.buttonExtra2);
 			for (button in buttons)
 			{
-				button.deadZones.push(touchPad.buttonT);
-				button.deadZones.push(touchPad.buttonC);
-				button.deadZones.push(touchPad.buttonP);
+				if (touchPad.buttonT != null)
+					touchPad.buttonT.deadZones.push(button);
+
+				if (touchPad.buttonC != null)
+					touchPad.buttonC.deadZones.push(button);
+
+				touchPad.buttonP.deadZones.push(button);
 			}
 		#if android
 		}
