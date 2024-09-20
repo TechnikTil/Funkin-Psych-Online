@@ -84,7 +84,7 @@ class PauseSubState extends MusicBeatSubstate
 		pauseMusic = new FlxSound();
 		if(songName != null) {
 			pauseMusic.loadEmbedded(Paths.music(songName), true, true);
-		} else if (songName != 'None') {
+		} else if (songName.toLowerCase() != 'none') {
 			pauseMusic.loadEmbedded(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), true, true);
 		}
 		pauseMusic.volume = 0;
