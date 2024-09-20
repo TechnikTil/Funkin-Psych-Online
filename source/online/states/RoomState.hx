@@ -692,7 +692,7 @@ class RoomState extends MusicBeatState {
 			danceLogic(p1);
 			danceLogic(p2);
 			
-			if (((!FlxG.keys.pressed.ALT || !virtualPad.buttonY.pressed) && controls.ACCEPT) || FlxG.mouse.justPressed) {
+			if (((!FlxG.keys.pressed.ALT || !touchPad.buttonY.pressed) && controls.ACCEPT) || FlxG.mouse.justPressed) {
 				switch (curSelected) {
 					case 0:
 						openSubState(new ServerSettingsSubstate());
