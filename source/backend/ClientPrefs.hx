@@ -307,7 +307,7 @@ class ClientPrefs {
 		toggleVolumeKeys(true);
 	}
 	public static function toggleVolumeKeys(turnOn:Bool) {
-		if(turnOn)
+		if(!Controls.instance.mobileC && turnOn)
 		{
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
