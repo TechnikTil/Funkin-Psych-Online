@@ -46,8 +46,8 @@ class TouchPad extends MobileInputManager implements IMobileControls
 	public var buttonX:TouchButton = new TouchButton(0, 0, [MobileInputID.X]);
 	public var buttonY:TouchButton = new TouchButton(0, 0, [MobileInputID.Y]);
 	public var buttonZ:TouchButton = new TouchButton(0, 0, [MobileInputID.Z]);
-	public var buttonExtra:TouchButton = new TouchButton(0, 0);
-	public var buttonExtra2:TouchButton = new TouchButton(0, 0);
+	public var buttonExtra:TouchButton = new TouchButton(0, 0, [MobileInputID.EXTRA_1]);
+	public var buttonExtra2:TouchButton = new TouchButton(0, 0, [MobileInputID.EXTRA_2]);
 
 	public var onButtonUp:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
 	public var onButtonDown:FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void> = new FlxTypedSignal<(TouchButton, Array<MobileInputID>)->Void>();
@@ -95,11 +95,14 @@ class TouchPad extends MobileInputManager implements IMobileControls
 		switch (Extra)
 		{
 			case SINGLE:
-				add(buttonExtra = createButton(0, FlxG.height - 137, 's', 0xFF0066FF));
+				var ids = buttonExtra.IDs;
+				add(buttonExtra = createButton(0, FlxG.height - 137, 's', 0xFF0066FF, ids));
 				setExtrasPos();
 			case DOUBLE:
-				add(buttonExtra = createButton(0, FlxG.height - 137, 's', 0xFF0066FF));
-				add(buttonExtra2 = createButton(FlxG.width - 132, FlxG.height - 137, 'g', 0xA6FF00));
+				var ids = buttonExtra.IDs;
+				add(buttonExtra = createButton(0, FlxG.height - 137, 's', 0xFF0066FF, ids));
+				ids = buttonExtra2.IDs;
+				add(buttonExtra2 = createButton(FlxG.width - 132, FlxG.height - 137, 'g', 0xA6FF00, ids));
 				setExtrasPos();
 			case NONE: // nothing
 		}
@@ -136,9 +139,9 @@ class TouchPad extends MobileInputManager implements IMobileControls
 			var field = Reflect.field(this, button);
 			if (button.toLowerCase().contains('extra') && Std.isOfType(field, TouchButton))
 			{
-				// if (MobileData.save.data.extraData[int] == null)
-				// 	MobileData.save.data.extraData.push(FlxPoint.get(field.x, field.y));
-				// else
+				if (MobileData.save.data.extraData[int] == null)
+					MobileData.save.data.extraData.push(FlxPoint.get(field.x, field.y));
+				else
 				MobileData.save.data.extraData[int] = FlxPoint.get(field.x, field.y);
 				++int;
 			}

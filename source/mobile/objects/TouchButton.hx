@@ -161,7 +161,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	/**
    	 * An array of objects that blocks your input.
    	 */
- 	public var deadZones:Array<TouchButton> = [];
+ 	public var deadZones:Array<FlxSprite> = [];
 
 	/**
 	 * We cast label to a `FlxSprite` for internal operations to avoid Dynamic casts in C++
@@ -294,20 +294,30 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			#if mac
 			var button = FlxMouseButton.getByID(FlxMouseButtonID.LEFT);
 
-			for (deadZone in deadZones)
-          			if (deadZone != null)
-					@:privateAccess if (deadZone.checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
-						return false;
+			// for (deadZone in deadZones)
+          	// 		if (deadZone != null)
+			// 		@:privateAccess if (deadZone.checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
+			// 			return false;
 
 			if (checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
 				overlap = true;
 			#else
 			for (touch in FlxG.touches.list)
 			{
-				for (deadZone in deadZones)
-					if (deadZone != null)
-            					@:privateAccess if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
-							return false;
+				// for (deadZone in deadZones)
+				// 	if (deadZone != null)
+            	// 				@:privateAccess if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
+				// 			return false;
+
+				final worldPos:FlxPoint = touch.getWorldPosition(camera, _point);
+
+				for (zone in deadZones)
+				{
+				  if (zone != null)
+				  {
+					if (zone.overlapsPoint(worldPos, true, camera)) return false;
+				  }
+				}
 
 				if (checkInput(touch, touch, touch.justPressedPosition, camera))
 					overlap = true;

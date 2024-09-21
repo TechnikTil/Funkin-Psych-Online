@@ -1092,7 +1092,6 @@ class PlayState extends MusicBeatState
 
 				if (!ClientPrefs.data.disableReplays && !isInvalidScore() && !chartingMode) {
 					add(replayRecorder = new ReplayRecorder(this));
-					replayRecorder.initMobileCRecorder(mobileControls);
 				}
 			}
 
@@ -1147,14 +1146,22 @@ class PlayState extends MusicBeatState
 		if (GameClient.isConnected()) {
 		#end
 			addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C_T' : 'P');
+			if(GameClient.isConnected())
+			{
+				touchPad.buttonT.IDs = [TAUNT];
+				touchPad.buttonT.onUp.callback = touchPad.buttonT.onOut.callback = () -> touchPad.onButtonUp.dispatch(touchPad.buttonT, [TAUNT]);
+				touchPad.buttonT.onDown.callback = () -> touchPad.onButtonDown.dispatch(touchPad.buttonT, [TAUNT]);
+				touchPad.updateTrackedButtons();
+			}
 			addTouchPadCamera();
 			mobileControls.instance.forEachAlive((button) ->
 			{
 				if (touchPad.buttonT != null)
-    					button.deadZones.push(touchPad.buttonT);
+    				button.deadZones.push(touchPad.buttonT);
 				if (touchPad.buttonC != null)
-    					button.deadZones.push(touchPad.buttonC);
-				button.deadZones.push(touchPad.buttonP);
+    				button.deadZones.push(touchPad.buttonC);
+				if (touchPad.buttonP != null)			
+					button.deadZones.push(touchPad.buttonP);
 			});
 		#if android
 		}

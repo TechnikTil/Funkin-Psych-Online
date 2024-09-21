@@ -163,7 +163,7 @@ class ClientPrefs {
 		'back'			=> [B],
 		'pause'			=> [#if android NONE #else P #end],
 		'reset'			=> [NONE],
-		'taunt'			=> [T]
+		'taunt'			=> [TAUNT]
 	];
 	public static var defaultMobileBinds:Map<String, Array<MobileInputID>> = null;
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;

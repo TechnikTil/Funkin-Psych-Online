@@ -12,10 +12,11 @@ enum abstract MobileInputID(Int) from Int to Int
 {
 	public static var fromStringMap(default, null):Map<String, MobileInputID> = FlxMacroUtil.buildMap("mobile.input.MobileInputID");
 	public static var toStringMap(default, null):Map<MobileInputID, String> = FlxMacroUtil.buildMap("mobile.input.MobileInputID", true);
-	// Nothing & Anything
+	// Anything
 	var ANY = -2;
+	// Nothing
 	var NONE = -1;
-	// Notes IDs
+	// Notes
 	var NOTE_LEFT = 0;
 	var NOTE_DOWN = 1;
 	var NOTE_UP = 2;
@@ -61,6 +62,11 @@ enum abstract MobileInputID(Int) from Int to Int
 	var HITBOX_DOWN = 39;
 	var HITBOX_LEFT = 40;
 	var HITBOX_RIGHT = 41;
+
+	// Aditionals
+	var EXTRA_1 = 42;
+	var EXTRA_2 = 43;
+	var TAUNT = 44;
 
 	@:from
 	public static inline function fromString(s:String)

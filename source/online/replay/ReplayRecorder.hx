@@ -19,10 +19,6 @@ class ReplayRecorder extends FlxBasic {
 		"note_up", "note_down", "note_left", "note_right", "taunt",
 	];
 
-	public static final REGISTER_BINDS_C = [
-		"note_left", "note_down", "note_up", "note_right", "taunt",
-	];
-
 	public var data:ReplayData = {
 		player: "",
 		song: "",
@@ -98,6 +94,28 @@ class ReplayRecorder extends FlxBasic {
 
 		state.add(this);
 
+		var mobileControls:IMobileControls = state.controls.requestedMobileC;
+		if(mobileControls != null)
+		{
+			mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
+			mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
+		}
+		else
+		{
+			trace("[WARNING] Tried to init replay recorder for mobile controls but failed.");
+		}
+
+		var touchPad:TouchPad = state.controls.requestedInstance.touchPad;
+		if(touchPad != null)
+		{
+			touchPad.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
+			touchPad.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
+		}
+		else
+		{
+			trace("[WARNING] Tried to init replay recorder for touch pad but failed.");
+		}
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
     }
@@ -112,12 +130,6 @@ class ReplayRecorder extends FlxBasic {
 	function onKeyDown(e:KeyboardEvent) {
 		recordKey(Conductor.songPosition, keyboardIds.get(e.keyCode) ?? (state.controls.controllerMode ? controllerIds.get(e.keyCode) : null), e.keyCode, 0);
     }
-
-	public function initMobileCRecorder(mobileControls:IMobileControls)
-	{
-		mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
-		mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
-	}
 
 	function onKeyUp(e:KeyboardEvent) {
 		recordKey(Conductor.songPosition, keyboardIds.get(e.keyCode) ?? (state.controls.controllerMode ? controllerIds.get(e.keyCode) : null), e.keyCode, 1);
@@ -149,12 +161,28 @@ class ReplayRecorder extends FlxBasic {
 		if (IDs == null || IDs.length < 0)
 			return;
 
+		if(IDs.length == 1 && !REGISTER_BINDS.contains(IDs[0].toString().toLowerCase()))
+		{
+			switch(IDs[0])
+			{
+				case EXTRA_1:
+					data.inputs.push([time, 'KEY:SPACE', move]);
+				case EXTRA_2:
+					data.inputs.push([time, 'KEY:SHIFT', move]);
+				default:
+					// nothing
+			}
+			return;
+		}
+
 		for (id in IDs)
 		{
-			var idNote:String = REGISTER_BINDS_C[id];
-			if (idNote == null || state.paused || !REGISTER_BINDS.contains(idNote))
+			var idName:String = id.toString().toLowerCase();
+
+			if (idName == null || state.paused || !REGISTER_BINDS.contains(idName))
 				continue;
-			data.inputs.push([time, idNote, move]);
+
+			data.inputs.push([time, idName, move]);
 		}
 	}
 
