@@ -597,9 +597,7 @@ class FreeplayState extends MusicBeatState
 							openSubState(new GameplayChangersSubstate());
 						}
 					case 2:
-						#if mobile
-						return;
-						#else
+						#if !mobile
 						if (!GameClient.isConnected()) {
 							if (!FileSystem.exists("replays/"))
 								FileSystem.createDirectory("replays/");
@@ -902,9 +900,11 @@ class FreeplayState extends MusicBeatState
 			infoText.text += " / Press " + back + " to return to Songs";
 
 		if (GameClient.isConnected()) {
-			replaysSelect.alpha -= 0.4;
+			#if !mobile replaysSelect.alpha -= 0.4; #end
 			modifiersSelect.alpha -= 0.4;
-		}
+		} #if mobile else
+			replaysSelect.alpha -= 0.4;
+		#end
 	}
 
 	function listenToSong() {
