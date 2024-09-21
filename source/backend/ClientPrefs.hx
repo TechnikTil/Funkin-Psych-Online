@@ -149,15 +149,15 @@ class ClientPrefs {
 		'taunt'			=> [A]
 	];
 	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
-		'note_up'		=> [noteUP, UP2],
-		'note_left'		=> [noteLEFT, LEFT2],
-		'note_down'		=> [noteDOWN, DOWN2],
-		'note_right'	=> [noteRIGHT, RIGHT2],
+		'note_up'		=> [NOTE_UP, UP2],
+		'note_left'		=> [NOTE_LEFT, LEFT2],
+		'note_down'		=> [NOTE_DOWN, DOWN2],
+		'note_right'	=> [NOTE_RIGHT, RIGHT2],
 
-		'ui_up'			=> [UP, noteUP],
-		'ui_left'		=> [LEFT, noteLEFT],
-		'ui_down'		=> [DOWN, noteDOWN],
-		'ui_right'		=> [RIGHT, noteRIGHT],
+		'ui_up'			=> [UP, NOTE_UP],
+		'ui_left'		=> [LEFT, NOTE_LEFT],
+		'ui_down'		=> [DOWN, NOTE_DOWN],
+		'ui_right'		=> [RIGHT, NOTE_RIGHT],
 
 		'accept'		=> [A],
 		'back'			=> [B],

@@ -19,10 +19,10 @@ class Hitbox extends MobileInputManager implements IMobileControls
 	final offsetFir:Int = (ClientPrefs.data.hitbox2 ? Std.int(FlxG.height / 4) * 3 : 0);
 	final offsetSec:Int = (ClientPrefs.data.hitbox2 ? 0 : Std.int(FlxG.height / 4));
 
-	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.hitboxLEFT]);
-	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.hitboxDOWN]);
-	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.hitboxUP]);
-	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.hitboxRIGHT]);
+	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_LEFT, MobileInputID.HITBOX_LEFT]);
+	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_DOWN, MobileInputID.HITBOX_DOWN]);
+	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_UP, MobileInputID.HITBOX_UP]);
+	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_RIGHT, MobileInputID.HITBOX_RIGHT]);
 	public var buttonExtra:TouchButton = new TouchButton(0, 0);
 	public var buttonExtra2:TouchButton = new TouchButton(0, 0);
 

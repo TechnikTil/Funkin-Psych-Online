@@ -1,5 +1,6 @@
 package online.replay;
 
+import mobile.input.MobileInputID;
 import states.FreeplayState;
 import online.net.Leaderboard;
 import haxe.crypto.Md5;
@@ -16,6 +17,10 @@ import flixel.FlxBasic;
 class ReplayRecorder extends FlxBasic {
 	public static final REGISTER_BINDS = [
 		"note_up", "note_down", "note_left", "note_right", "taunt",
+	];
+
+	public static final REGISTER_BINDS_C = [
+		"note_left", "note_down", "note_up", "note_right", "taunt",
 	];
 
 	public var data:ReplayData = {
@@ -140,18 +145,17 @@ class ReplayRecorder extends FlxBasic {
 		}
 	}
 
-	function recordKeyMobileC(time:Float, ids:Array<MobileInputID>, move:Int) {
-		if (ids == null || ids.length < 0)
+	function recordKeyMobileC(time:Float, IDs:Array<MobileInputID>, move:Int) {
+		if (IDs == null || IDs.length < 0)
 			return;
-		var id = ids[0];
-		//for (id in ids) {
-			trace('id is $id');
-			var formattedID:String = formatIDName(id);
-			trace('formatted id is $formattedID');
-			if (formattedID == null || state.paused || !REGISTER_BINDS.contains(formattedID))
-				/*continue;*/ return;
-			data.inputs.push([time, formattedID, move]);
-		//}
+
+		for (id in IDs)
+		{
+			var idNote:String = REGISTER_BINDS_C[id];
+			if (idNote == null || state.paused || !REGISTER_BINDS.contains(idNote))
+				continue;
+			data.inputs.push([time, idNote, move]);
+		}
 	}
 
     public function save():Float {
@@ -186,18 +190,6 @@ class ReplayRecorder extends FlxBasic {
 			}
 		}
 		return 0;
-    }
-
-    function formatIDName(id:MobileInputID):String
-    {
-        var note:String = id.toString();
-	if(!note.startsWith("note")) return null;
-	
-        var splitIndex = "note".length;
-        var prefix = note.substr(0, splitIndex);
-        var suffix = note.substr(splitIndex).toLowerCase();
-        
-        return prefix + "_" + suffix;
     }
 }
 

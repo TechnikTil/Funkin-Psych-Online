@@ -12,14 +12,14 @@ import flixel.util.FlxSignal;
 @:access(mobile.objects.TouchButton)
 class TouchPad extends MobileInputManager implements IMobileControls
 {
-	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.LEFT]);
-	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.UP]);
-	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.RIGHT]);
-	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.DOWN]);
-	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteLEFT, MobileInputID.LEFT2]);
-	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteUP, MobileInputID.UP2]);
-	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteRIGHT, MobileInputID.RIGHT2]);
-	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.noteDOWN, MobileInputID.DOWN2]);
+	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_LEFT, MobileInputID.LEFT]);
+	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_UP, MobileInputID.UP]);
+	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_RIGHT, MobileInputID.RIGHT]);
+	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_DOWN, MobileInputID.DOWN]);
+	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_LEFT, MobileInputID.LEFT2]);
+	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_UP, MobileInputID.UP2]);
+	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_RIGHT, MobileInputID.RIGHT2]);
+	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_DOWN, MobileInputID.DOWN2]);
 	public var buttonA:TouchButton = new TouchButton(0, 0, [MobileInputID.A]);
 	public var buttonB:TouchButton = new TouchButton(0, 0, [MobileInputID.B]);
 	public var buttonC:TouchButton = new TouchButton(0, 0, [MobileInputID.C]);
