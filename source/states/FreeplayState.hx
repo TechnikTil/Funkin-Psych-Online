@@ -522,8 +522,8 @@ class FreeplayState extends MusicBeatState
 					leaderboardTimer.cancel();
 				leaderboardTimer = new FlxTimer().start(0.5, t -> { generateLeaderboard(); });
 			}
-
 			if (touchPad.buttonY.justPressed || FlxG.keys.justPressed.TAB) {
+				persistentUpdate = false;
 				FlxG.switchState(() -> new online.states.SkinsState());
 			}
 		}
