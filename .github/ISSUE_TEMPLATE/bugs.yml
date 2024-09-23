@@ -51,6 +51,8 @@ body:
         - "Windows"
         - "Linux"
         - "MacOS"
+        - "Android"
+        - "iOS"
         - "Not in this list (WILL BE CLOSED)"
     validations:
       required: true
