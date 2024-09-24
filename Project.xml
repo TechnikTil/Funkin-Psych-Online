@@ -177,7 +177,7 @@
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="psychonline" alias="psychonlineport" alias-password="psychonline" if="android" unless="debug" />
 
-	<haxedef name="message.reporting" value="pretty" />
+	<!-- <haxedef name="message.reporting" value="pretty" /> -->
 	<haxedef name='no-deprecation-warnings' />
 
 	<!--Avoid memory leaks with for loops in HScript-->
