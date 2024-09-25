@@ -316,7 +316,7 @@ class SkinsState extends MusicBeatState {
 		add(tip1);
 		
 		// both of these don't have a button so idk what to do
-		var hints = [controls.mobileC ? 'Y' : 'F1', controls.mobileC ? 'Z' : 'F2']
+		var hints = [controls.mobileC ? 'Y' : 'F1', controls.mobileC ? 'Z' : 'F2'];
 		var tip2 = new FlxText(-20, 0, FlxG.width, '${hints[0]} for Help!\n${hints[1]} to Browse Verified Skins');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
