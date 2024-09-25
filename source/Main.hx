@@ -131,6 +131,11 @@ class Main extends Sprite
 			game.zoom = 1.0;
 		#end
 
+		#if LUA_ALLOWED
+		Mods.pushGlobalMods();
+		#end
+		Mods.loadTopMod();
+
 		CoolUtil.setDarkMode(true);
 
 		Lumod.get_scriptsRootPath = () -> {
@@ -169,6 +174,10 @@ class Main extends Sprite
 		FlxG.mouse.visible = false;
 		#end
 
+		FlxG.fixedTimestep = false;
+		FlxG.game.focusLostFramerate = #if mobile 30 #else 60 #end;
+		FlxG.keys.preventDefaultKeys = [TAB];
+
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
 
 		#if DISCORD_ALLOWED
@@ -176,7 +185,6 @@ class Main extends Sprite
 		#end
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-		ClientPrefs.loadPrefs();
 
 		#if mobile
 		lime.system.System.allowScreenTimeout = ClientPrefs.data.screensaver; 		
