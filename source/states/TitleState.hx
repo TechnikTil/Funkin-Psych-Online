@@ -79,16 +79,7 @@ class TitleState extends MusicBeatState
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-
-		#if LUA_ALLOWED
-		Mods.pushGlobalMods();
-		#end
-		Mods.loadTopMod();
-		MobileData.init();
-
-		FlxG.fixedTimestep = false;
-		FlxG.game.focusLostFramerate = 60;
-		FlxG.keys.preventDefaultKeys = [TAB];
+		ClientPrefs.loadPrefs();
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
@@ -149,6 +140,7 @@ class TitleState extends MusicBeatState
 			}
 			persistentUpdate = true;
 			persistentDraw = true;
+			MobileData.init();
 		}
 
 		if (FlxG.save.data.weekCompleted != null)
