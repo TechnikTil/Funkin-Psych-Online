@@ -308,7 +308,7 @@ class SkinsState extends MusicBeatState {
 		final tab:String = (controls.mobileC) ? "C" : "TAB";
 		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin');
 		if (!controls.mobileC)
-			tip1.text +='\n8 - Edit skin'
+			tip1.text +='\n8 - Edit skin';
 		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y;
 		tip1.alpha = 0.5;
