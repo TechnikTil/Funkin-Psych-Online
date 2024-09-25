@@ -1140,25 +1140,30 @@ class PlayState extends MusicBeatState
 
 		orderOffset = 2;
 
-		addMobileControls();
-		addTouchPad('NONE', (GameClient.isConnected()) ? 'P_C_T' : #if android 'T' #else 'P_T' #end);
+		addTouchPad((replayData != null) ? 'LEFT_RIGHT' : 'NONE', (GameClient.isConnected()) ? 'P_C_T' : (replayData != null) ? #if android 'X_Y' : 'T' #else 'P_X_Y' : 'P_T' #end);
 		addTouchPadCamera();
-
-		mobileControls.instance.visible = true;
-		mobileControls.instance.forEachAlive((button) ->
+		if (touchPad.buttonT != null)
 		{
-			if (touchPad.buttonT != null)
-    				button.deadZones.push(touchPad.buttonT);
-			if (touchPad.buttonC != null)
-    				button.deadZones.push(touchPad.buttonC);
-			if (touchPad.buttonP != null)			
-				button.deadZones.push(touchPad.buttonP);
-		});
+			touchPad.buttonT.IDs = [TAUNT];
+			touchPad.buttonT.onUp.callback = touchPad.buttonT.onOut.callback = () -> touchPad.onButtonUp.dispatch(touchPad.buttonT, [TAUNT]);
+			touchPad.buttonT.onDown.callback = () -> touchPad.onButtonDown.dispatch(touchPad.buttonT, [TAUNT]);
+			touchPad.updateTrackedButtons();
+		}
 
-		touchPad.buttonT.IDs = [TAUNT];
-		touchPad.buttonT.onUp.callback = touchPad.buttonT.onOut.callback = () -> touchPad.onButtonUp.dispatch(touchPad.buttonT, [TAUNT]);
-		touchPad.buttonT.onDown.callback = () -> touchPad.onButtonDown.dispatch(touchPad.buttonT, [TAUNT]);
-		touchPad.updateTrackedButtons();
+		if (replayData != null)
+		{
+			addMobileControls();
+			mobileControls.instance.visible = true;
+			mobileControls.instance.forEachAlive((button) ->
+			{
+				if (touchPad.buttonT != null)
+    					button.deadZones.push(touchPad.buttonT);
+				if (touchPad.buttonC != null)
+    					button.deadZones.push(touchPad.buttonC);
+				if (touchPad.buttonP != null)			
+					button.deadZones.push(touchPad.buttonP);
+			});
+		}
 
 		super.create();
 	}
