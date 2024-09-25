@@ -110,8 +110,6 @@ class TitleState extends MusicBeatState
 		}
 		#end
 
-		Highscore.load();
-
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
 
