@@ -269,14 +269,6 @@ class SkinsState extends MusicBeatState {
 		barDown.cameras = [hud];
 		add(barDown);
 
-		var swagText = new FlxText(10, 10);
-		swagText.text = 'Press F1 for Help!';
-		swagText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		swagText.alpha = 0.4;
-		swagText.cameras = [hud];
-		swagText.x = FlxG.width - swagText.width - 10;
-		if (!controls.mobileC) add(swagText);
-
 		title = new Alphabet(0, 0, "BOYFRIEND", true);
 		title.cameras = [hud];
 		title.y = barUp.height / 2 - title.height / 2;
@@ -303,7 +295,7 @@ class SkinsState extends MusicBeatState {
 		charSelect.cameras = [hud];
 		add(charSelect);
 
-		final gofuckurself:String = (controls.mobileC) ? "Use Arrow Keys while pressing Y to move!" : "Use Note keybinds while pressing SHIFT to move!";
+		final gofuckurself:String = (controls.mobileC) ? "Use Arrow Keys while pressing X to move!" : "Use Note keybinds while pressing SHIFT to move!";
 
 		var swagText = new FlxText(0, charSelect.y + charSelect.height + 5, FlxG.width);
 		swagText.text = gofuckurself;
@@ -312,17 +304,21 @@ class SkinsState extends MusicBeatState {
 		swagText.cameras = [hud];
 		add(swagText);
 
-		var tip1 = new FlxText(20, 0, FlxG.width, '8 - Edit skin');
-		tip1.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		// lily idfk what to do with the hints and i have no idea what the menu looks like so don't blame if anything isn't correct
+		final tab:String = (controls.mobileC) ? "C" : "TAB";
+		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin');
+		if (!controls.mobileC)
+			tip1.text +='\n8 - Edit skin'
+		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y;
-		tip1.alpha = 0.6;
+		tip1.alpha = 0.5;
 		tip1.cameras = [hud];
-		if (!controls.mobileC) add(tip1);
-
-		final tab:String = (controls.mobileC) ? "X" : "TAB";
-
-		var tip2 = new FlxText(-20, 0, FlxG.width, '$tab - Flip skin');
-		tip2.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(tip1);
+		
+		// both of these don't have a button so idk what to do
+		var hints = [controls.mobileC ? 'Y' : 'F1', controls.mobileC ? 'Z' : 'F2']
+		var tip2 = new FlxText(-20, 0, FlxG.width, '${hints[0]} for Help!\n${hints[1]} to Browse Verified Skins');
+		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
 		tip2.cameras = [hud];
@@ -334,7 +330,7 @@ class SkinsState extends MusicBeatState {
 		
 		CustomFadeTransition.nextCamera = hud; // wat
 
-		addTouchPad('LEFT_FULL', 'A_B_X_Y');
+		addTouchPad('LEFT_FULL', 'A_B_C_X_Y_Z');
 		addTouchPadCamera();
 
 		GameClient.send("status", "Selects their skin");
@@ -370,7 +366,7 @@ class SkinsState extends MusicBeatState {
 			Conductor.songPosition = music.time;
 		}
 
-        if (touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) {
+        if (touchPad.buttonX.pressed || FlxG.keys.pressed.SHIFT) {
 			if (character.members[0] != null) {
 				if (controls.NOTE_UP) {
 					character.members[0].playAnim("singUP");
@@ -396,43 +392,7 @@ class SkinsState extends MusicBeatState {
         }
 
         if (controls.BACK) {
-			stopUpdates = true;
-			camera.follow(camFollow, LOCKON, 0.01);
-			characterCamera.follow(camFollow, LOCKON, 0.01);
-
-			FlxG.sound.play(Paths.sound('cancelMenu'));
-			if (GameClient.isConnected()) {
-				if (ClientPrefs.data.modSkin != null && ClientPrefs.data.modSkin.length >= 2) {
-					GameClient.send("setSkin", [ClientPrefs.data.modSkin[0], ClientPrefs.data.modSkin[1], OnlineMods.getModURL(ClientPrefs.data.modSkin[0])]);
-				}
-				else {
-					GameClient.send("setSkin", null);
-				}
-			}
-
-			FlxTween.tween(blackRectangle, {alpha: 1}, 0.5, {ease: FlxEase.quadInOut});
-			blackRectangle.alpha = 0;
-			add(blackRectangle);
-
-			var funkySound = music.playing ? music : musicIntro;
-			funkySound.fadeOut(0.5, 0, t -> {
-				musicIntro.stop();
-				music.stop();
-
-				for (v in [FlxG.sound.music, FreeplayState.vocals, FreeplayState.opponentVocals]) {
-					if (v == null)
-						continue;
-
-					v.play();
-					v.fadeIn(0.5, 0, 1);
-				}
-
-				Conductor.bpm = prevConBPM;
-				Conductor.bpmChangeMap = prevConBPMChanges;
-				Conductor.songPosition = prevConTime;
-
-				FlxG.switchState(() -> Type.createInstance(backClass, []));
-			});
+			switchState(() -> Type.createInstance(backClass, []));
         }
 
         if (controls.ACCEPT) {
@@ -466,16 +426,20 @@ class SkinsState extends MusicBeatState {
 
 		if (FlxG.keys.justPressed.EIGHT) {
 			Mods.currentModDirectory = charactersMod.get(charactersName.get(curCharacter));
-			FlxG.switchState(() -> new CharacterEditorState(charactersName.get(curCharacter), false, true));
+			switchState(() -> new CharacterEditorState(charactersName.get(curCharacter), false, true));
 		}
 
-		if (touchPad.buttonX.justPressed || FlxG.keys.justPressed.TAB) {
+		if (touchPad.buttonC.justPressed || FlxG.keys.justPressed.TAB) {
 			flipped = !flipped;
 			LoadingState.loadAndSwitchState(new SkinsState());
 		}
 
-		if (FlxG.keys.justPressed.F1) {
+		if (touchPad.buttonY.justPressed || FlxG.keys.justPressed.F1) {
 			RequestState.requestURL("https://github.com/Snirozu/Funkin-Psych-Online/wiki#skins", true);
+		}
+
+		if (touchPad.buttonZ.justPressed || FlxG.keys.justPressed.F2) {
+			switchState(() -> new BananaDownload('collection:110039'));
 		}
 
 		if (character.members[0] != null) {
@@ -491,6 +455,59 @@ class SkinsState extends MusicBeatState {
 			}
 		}
     }
+
+	function switchState(switchFunction:flixel.util.typeLimit.NextState) {
+		stopUpdates = true;
+		camera.follow(camFollow, LOCKON, 0.01);
+		characterCamera.follow(camFollow, LOCKON, 0.01);
+
+		FlxG.sound.play(Paths.sound('cancelMenu'));
+		if (GameClient.isConnected()) {
+			if (ClientPrefs.data.modSkin != null && ClientPrefs.data.modSkin.length >= 2) {
+				GameClient.send("setSkin", [
+					ClientPrefs.data.modSkin[0],
+					ClientPrefs.data.modSkin[1],
+					OnlineMods.getModURL(ClientPrefs.data.modSkin[0])
+				]);
+			}
+			else {
+				GameClient.send("setSkin", null);
+			}
+		}
+
+		FlxTween.tween(blackRectangle, {alpha: 1}, 0.5, {ease: FlxEase.quadInOut});
+		blackRectangle.alpha = 0;
+		add(blackRectangle);
+
+		var funkySound = music.playing ? music : musicIntro;
+		funkySound.fadeOut(0.5, 0, t -> {
+			musicIntro.stop();
+			music.stop();
+
+			for (v in [FlxG.sound.music, FreeplayState.vocals, FreeplayState.opponentVocals]) {
+				if (v == null)
+					continue;
+
+				v.play();
+				v.fadeIn(0.5, 0, 1);
+			}
+
+			Conductor.bpm = prevConBPM;
+			Conductor.bpmChangeMap = prevConBPMChanges;
+			Conductor.songPosition = prevConTime;
+
+			FlxG.switchState(switchFunction);
+		});
+	}
+
+	override function destroy() {
+		super.destroy();
+
+		if (musicIntro != null)
+			musicIntro.stop();
+		if (music != null)
+			music.stop();
+	}
 
     function setCharacter(difference:Int, ?beatHold:Bool = false) {
 		var prevCharacter = curCharacter;
