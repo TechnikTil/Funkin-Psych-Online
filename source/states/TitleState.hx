@@ -78,11 +78,14 @@ class TitleState extends MusicBeatState
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		ClientPrefs.loadPrefs();
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
 		super.create();
+
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
+
+		ClientPrefs.loadPrefs();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
