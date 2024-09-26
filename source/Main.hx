@@ -1,7 +1,6 @@
 package;
 
 import lumod.Lumod;
-import backend.Highscore;
 #if AWAY_TEST
 import states.stages.AwayStage;
 #end
