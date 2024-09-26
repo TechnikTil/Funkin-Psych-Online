@@ -1143,8 +1143,6 @@ class PlayState extends MusicBeatState
 		addMobileControls();
 		addTouchPad((replayData != null) ? 'LEFT_RIGHT' : 'NONE', (GameClient.isConnected()) ? 'P_C_T' : (replayData != null) ? #if android 'X_Y' : 'T' #else 'P_X_Y' : 'P_T' #end);
 		addTouchPadCamera();
-		if (replayData != null)
-			mobileControls.instance.visible = true;
 		if (touchPad.buttonT != null)
 		{
 			touchPad.buttonT.IDs = [TAUNT];
@@ -1161,6 +1159,8 @@ class PlayState extends MusicBeatState
 			if (touchPad.buttonP != null)			
 				button.deadZones.push(touchPad.buttonP);
 		});
+		if (replayData != null)
+			mobileControls.instance.visible = true;
 
 		super.create();
 	}
