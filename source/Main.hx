@@ -184,10 +184,6 @@ class Main extends Sprite
 		DiscordClient.start();
 		#end
 
-		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-
-		Highscore.load();
-
 		#if mobile
 		lime.system.System.allowScreenTimeout = ClientPrefs.data.screensaver; 		
 		FlxG.scaleMode = new MobileScaleMode();
