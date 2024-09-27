@@ -52,9 +52,9 @@ class FlxShader extends OriginalFlxShader
 		var gl = __context.gl;
 
 		#if lime_opengles
-		var prefix = "#version 300 es\n";
+		var prefix = "#version 100\n";
 		#else
-		var prefix = "#version 330\n";
+		var prefix = "#version 120\n";
 		#end
 
 		#if (js && html5)
