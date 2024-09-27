@@ -80,6 +80,8 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		this.chatHeight = chatHeight;
 
 		instance = this;
+
+		scrollFactor.set(0, 0);
         
         bg = new FlxSprite();
 		bg.makeGraphic(600, 1, FlxColor.BLACK);

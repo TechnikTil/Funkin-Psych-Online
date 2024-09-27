@@ -341,6 +341,7 @@ class SkinsState extends MusicBeatState {
 	var leftHoldTime:Float = 0;
 	var rightHoldTime:Float = 0;
 	var leavingState:Bool = false;
+	var skipStaticDestroy:Bool = false;
 
     override function update(elapsed) {
         super.update(elapsed);
@@ -431,6 +432,7 @@ class SkinsState extends MusicBeatState {
 
 		if (touchPad.buttonC.justPressed || FlxG.keys.justPressed.TAB) {
 			flipped = !flipped;
+			skipStaticDestroy = true;
 			LoadingState.loadAndSwitchState(new SkinsState());
 		}
 
@@ -502,6 +504,9 @@ class SkinsState extends MusicBeatState {
 
 	override function destroy() {
 		super.destroy();
+
+		if (skipStaticDestroy)
+			return;
 
 		if (musicIntro != null)
 			musicIntro.stop();

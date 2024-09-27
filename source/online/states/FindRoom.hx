@@ -127,7 +127,7 @@ class FindRoom extends MusicBeatState {
                 var newSelected = null;
 
                 for (room in rooms) {
-					var swagRoom = new RoomBox(room.metadata.name, room.roomId, room.metadata.ping ?? "?");
+					var swagRoom = new RoomBox(room.metadata.name, room.roomId, room.metadata.ping ?? "?", room.metadata.points, room.metadata.verified);
 					swagRoom.ID = i++;
 					items.add(swagRoom);
                     
@@ -160,7 +160,7 @@ class RoomBox extends FlxSpriteGroup {
 
     public var hitbox:FlxObject;
 
-    public function new(name:String, code:String, pingMs:String) {
+    public function new(name:String, code:String, pingMs:String, points:Null<Float>, verified:Bool) {
         super();
 
 		this.code = code;
@@ -171,9 +171,11 @@ class RoomBox extends FlxSpriteGroup {
 		bg.makeGraphic(Std.int(hitbox.width), 1, 0x81000000);
         add(bg);
 
-		title = new FlxText(0, 0, bg.width - 20, name);
+		title = new FlxText(0, 0, bg.width - 20, name + (points != null ? ' [${points}FP]' : ''));
 		title.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT);
 		title.setPosition(10, 10);
+		if (verified)
+			title.color = FlxColor.YELLOW;
 		add(title);
 
 		ping = new FlxText(0, 0, bg.width - 20, pingMs + "ms");

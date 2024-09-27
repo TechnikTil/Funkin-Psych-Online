@@ -18,6 +18,7 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
     //options
 	var skinSelect:Option;
 	var gameOptions:Option;
+	var stageSelect:Option;
 	var publicRoom:Option;
 	var anarchyMode:Option;
 	var swapSides:Option;
@@ -52,6 +53,7 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 		bg = new FlxSprite();
 		bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.7;
+		bg.scrollFactor.set(0, 0);
 		add(bg);
 
 		items = new FlxTypedSpriteGroup<Option>(40, 40);
@@ -103,12 +105,34 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 		}, 0, 80 * i, GameClient.room.state.permitModifiers));
 		unlockModifiers.ID = i++;
 
+		var hideGF:Option;
+		items.add(hideGF = new Option("Hide Girlfriend", "This will hide GF from the stage.", () -> {
+			if (GameClient.hasPerms()) {
+				GameClient.send("toggleGF");
+			}
+		}, (elapsed) -> {
+			hideGF.alpha = GameClient.hasPerms() ? 1 : 0.8;
+
+			hideGF.checked = GameClient.room.state.hideGF;
+		}, 0, 80 * i, GameClient.room.state.hideGF));
+		hideGF.ID = i++;
+
 		var modifers:Option;
 		items.add(modifers = new Option("Game Modifiers", "Select room's gameplay modifiers here!", () -> {
 			close();
 			FlxG.state.openSubState(new GameplayChangersSubstate());
 		}, null, 0, 80 * i, false, true));
 		modifers.ID = i++;
+
+		items.add(stageSelect = new Option("Select Stage", "Currently Selected: " + (GameClient.room.state.stageName == "" ? '(default)' : GameClient.room.state.stageName), () -> {
+			if (GameClient.hasPerms()) {
+				close();
+				FlxG.state.openSubState(new StageSelect());
+			}
+		}, (elapsed) -> {
+			stageSelect.alpha = GameClient.hasPerms() ? 1 : 0.8;
+		}, 0, 80 * i, false, true));
+		stageSelect.ID = i++;
 
 		items.add(skinSelect = new Option("Select Skin", "Select your skin here!", () -> {
 			GameClient.clearOnMessage();
@@ -126,10 +150,14 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 
 		add(items);
 
-		addTouchPad('NONE', 'B');
-		controls.isInSubstate = true;
+		var lastItem = items.members[items.length - 1];
+
+		coolCam.setScrollBounds(FlxG.width, FlxG.width, 0, lastItem.y + lastItem.height + 40 > FlxG.height ? lastItem.y + lastItem.height + 40 : FlxG.height);
 
 		GameClient.send("status", "In the Room Settings");
+
+		addTouchPad('NONE', 'B');
+		controls.isInSubstate = true;
 	}
 
 	override function closeSubState() {
@@ -188,6 +216,7 @@ class ServerSettingsSubstate extends MusicBeatSubstate {
 			}
 
 			if (option.ID == curSelectedID) {
+				coolCam.follow(option, null, 0.1);
 				option.text.alpha = 1;
 
                 if (controls.ACCEPT) {
