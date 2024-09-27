@@ -4,6 +4,7 @@ import openfl.filters.BlurFilter;
 
 class StageSelect extends MusicBeatSubstate {
     var blurFilter:BlurFilter;
+    var blackSprite:FlxSprite;
 	public var coolCam:FlxCamera;
 
     public var options:FlxTypedGroup<StageText>;
@@ -16,11 +17,18 @@ class StageSelect extends MusicBeatSubstate {
     override function create() {
 		super.create();
 		
-		blurFilter = new BlurFilter();
-		for (cam in FlxG.cameras.list) {
-			if (cam.filters == null)
-				cam.filters = [];
-			cam.filters.push(blurFilter);
+		if (!ClientPrefs.data.disableOnlineShaders) {
+			blurFilter = new BlurFilter();
+			for (cam in FlxG.cameras.list) {
+				if (cam.filters == null)
+					cam.filters = [];
+				cam.filters.push(blurFilter);
+			}
+		} else {
+			blackSprite = new FlxSprite();
+       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
 		}
 
 		coolCam = new FlxCamera();
@@ -67,6 +75,9 @@ class StageSelect extends MusicBeatSubstate {
         }
 
         coolCam.setScrollBounds(FlxG.width, FlxG.width, 0, endScrollY > FlxG.height ? endScrollY : FlxG.height);
+
+        addTouchPad('LEFT_FULL', 'B_Y');
+        controls.isInSubstate = true;
     }
 
     var holdUp = 0.0;
@@ -91,12 +102,12 @@ class StageSelect extends MusicBeatSubstate {
             holdDown = 0;
 
         if (controls.UI_UP_P || FlxG.mouse.wheel == 1) {
-            curSelected -= FlxG.keys.pressed.SHIFT ? 3 : 1;
+            curSelected -= (touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) ? 3 : 1;
             updateSelection();
         }
 
         if (controls.UI_DOWN_P || FlxG.mouse.wheel == -1) {
-            curSelected += FlxG.keys.pressed.SHIFT ? 3 : 1;
+            curSelected += (touchPad.buttonY.pressed || FlxG.keys.pressed.SHIFT) ? 3 : 1;
             updateSelection();
         }
 
@@ -130,10 +141,13 @@ class StageSelect extends MusicBeatSubstate {
     override function destroy() {
 		super.destroy();
 
-		for (cam in FlxG.cameras.list) {
-			if (cam?.filters != null)
-				cam.filters.remove(blurFilter);
-		}
+		if (!ClientPrefs.data.disableOnlineShaders) {
+			for (cam in FlxG.cameras.list) {
+				if (cam?.filters != null)
+					cam.filters.remove(blurFilter);
+			}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 
