@@ -74,7 +74,7 @@ class StorageUtil
 		}
 	}
 
-	public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void
+	/*public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void
 	{
 		try
 		{
@@ -90,7 +90,7 @@ class StorageUtil
 				CoolUtil.showPopUp('$fileName couldn\'t be saved.\n(${e.message})', "Error!")
 			else
 				trace('$fileName couldn\'t be saved. (${e.message})');
-	}
+	}*/
 
 	#if android
 	public static function requestPermissions():Void
@@ -125,26 +125,6 @@ class StorageUtil
 			LimeSystem.exit(1);
 		}
 	}
-
-	public static function checkExternalPaths(?splitStorage = false):Array<String>
-	{
-		var process = new Process('grep -o "/storage/....-...." /proc/mounts | paste -sd \',\'');
-		var paths:String = process.stdout.readAll().toString();
-		if (splitStorage)
-			paths = paths.replace('/storage/', '');
-		return paths.split(',');
-	}
-
-	public static function getExternalDirectory(externalDir:String):String
-	{
-		var daPath:String = '';
-		for (path in checkExternalPaths())
-			if (path.contains(externalDir))
-				daPath = path;
-
-		daPath = haxe.io.Path.addTrailingSlash(daPath.endsWith("\n") ? daPath.substr(0, daPath.length - 1) : daPath);
-		return daPath;
-	}
 	#end
 	#end
 }
@@ -171,11 +151,10 @@ enum abstract StorageType(String) from String to String
 
 		return switch (str)
 		{
-			case "EXTERNAL_DATA": EXTERNAL_DATA;
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
-			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
+			default: EXTERNAL_DATA;
 		}
 	}
 
@@ -188,11 +167,10 @@ enum abstract StorageType(String) from String to String
 
 		return switch (str)
 		{
-			case "EXTERNAL_DATA": EXTERNAL_DATA;
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
-			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
+			default: EXTERNAL_DATA;
 		}
 	}
 }
