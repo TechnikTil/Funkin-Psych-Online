@@ -3,7 +3,7 @@ package shaders.flixel.system;
 import flixel.system.FlxAssets.FlxShader as OriginalFlxShader;
 
 /**
- * A modded FlxShader that allows using GL 2.0 in all platforms.
+ * A modded FlxShader that allows using GLSL Es 300 and GLSL 330
  * @author Mihai Alexandru (M.A. Jigsaw)
  */
 class FlxShader extends OriginalFlxShader
@@ -52,9 +52,9 @@ class FlxShader extends OriginalFlxShader
 		var gl = __context.gl;
 
 		#if lime_opengles
-		var prefix = "#version 100\n";
+		var prefix = "#version 300 es\n";
 		#else
-		var prefix = "#version 120\n";
+		var prefix = "#version 330\n";
 		#end
 
 		#if (js && html5)
