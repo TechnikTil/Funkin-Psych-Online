@@ -430,7 +430,7 @@ class Paths
 			} catch (e:Dynamic) {
 				if (ClientPrefs.isDebug())
 					Sys.println('Paths.returnSound(): SOUND NOT FOUND: $key');
-				return openfl.utils.Assets.getSound('assets/sounds/none.$SOUND_EXT');
+				return /*openfl.utils.Assets.getSound('assets/sounds/none.$SOUND_EXT')*/ null;
 			}
 			localTrackedAssets.push(key);
 			return currentTrackedSounds.get(file);
