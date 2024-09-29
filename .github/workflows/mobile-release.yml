@@ -9,7 +9,7 @@ jobs:
       - name: Get The Version
         id: get_version
         run: |
-          version=$(curl -s https://raw.githubusercontent.com/MobilePorting/Funkin-Psych-Online-Mobile/refs/heads/main/gitVersion.txt)
+          version=$(curl -s "https://api.github.com/repos/Snirozu/Funkin-Psych-Online/releases/latest" | jq -r .tag_name)
           echo "Latest version is $version"
           echo "::set-output name=VERSION::$version"
 
