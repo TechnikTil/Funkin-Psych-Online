@@ -584,6 +584,7 @@ class PlayState extends MusicBeatState
 		});
 
 		preloadTasks.push(() -> {
+			stageModDir = Mods.currentModDirectory; // thats a big woops 
 			oldModDir = Mods.currentModDirectory;
 
 			var swagStage = SONG.stage;
@@ -605,7 +606,8 @@ class PlayState extends MusicBeatState
 
 			Mods.currentModDirectory = oldModDir;
 
-			Paths.setCurrentLevel(stageData.directory);
+			trace(Paths.currentLevel);
+			//Paths.setCurrentLevel(stageData.directory);
 
 			defaultCamZoom = stageData.defaultZoom;
 
