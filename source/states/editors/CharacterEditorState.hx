@@ -157,7 +157,15 @@ class CharacterEditorState extends MusicBeatState {
 		camFollow.screenCenter();
 		add(camFollow);
 
-		var tipTextArray:Array<String> = "E/Q - Camera Zoom In/Out
+		var tipTextArray:Array<String> = (controls.mobileC) ?
+		"X/Y - Camera Zoom In/Out
+		\nZ - Reset Camera Zoom
+		\nV/D - Previous/Next Animation
+		\nArrow Keys - Move Character Offset
+		\nA - Reset Current Offset
+		\nHold C to Move 10x faster\n".split('\n')
+		:
+		"E/Q - Camera Zoom In/Out
 		\nR - Reset Camera Zoom
 		\nJKLI - Move Camera
 		\nW/S - Previous/Next Animation
@@ -214,6 +222,9 @@ class CharacterEditorState extends MusicBeatState {
 
 		FlxG.mouse.visible = true;
 		reloadCharacterOptions();
+
+		addTouchPad('LEFT_FULL', 'A_B_C_D_V_X_Y_Z');
+		addTouchPadCamera();
 
 		super.create();
 	}
@@ -1107,6 +1118,8 @@ class CharacterEditorState extends MusicBeatState {
 		#end
 	}
 
+	var cameraPosition:Array<Float> = [0, 0];
+	var overlapsToButton:Bool = false;
 	override function update(elapsed:Float) {
 		MusicBeatState.camBeat = FlxG.camera;
 		if (char.animationsArray[curAnim] != null) {
@@ -1138,7 +1151,7 @@ class CharacterEditorState extends MusicBeatState {
 		ClientPrefs.toggleVolumeKeys(true);
 
 		if (!charDropDown.dropPanel.visible) {
-			if (FlxG.keys.justPressed.ESCAPE) {
+			if (touchPad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
 				if (goToSkins) {
 					FlxG.switchState(() -> new SkinsState());
 				}
@@ -1153,16 +1166,16 @@ class CharacterEditorState extends MusicBeatState {
 				return;
 			}
 
-			if (FlxG.keys.justPressed.R) {
+			if (touchPad.buttonZ.justPressed || FlxG.keys.justPressed.R) {
 				FlxG.camera.zoom = 1;
 			}
 
-			if (FlxG.keys.pressed.E && FlxG.camera.zoom < 3) {
+			if (touchPad.buttonX.pressed || FlxG.keys.pressed.E && FlxG.camera.zoom < 3) {
 				FlxG.camera.zoom += elapsed * FlxG.camera.zoom;
 				if (FlxG.camera.zoom > 3)
 					FlxG.camera.zoom = 3;
 			}
-			if (FlxG.keys.pressed.Q && FlxG.camera.zoom > 0.1) {
+			if (touchPad.buttonY.pressed || FlxG.keys.pressed.Q && FlxG.camera.zoom > 0.1) {
 				FlxG.camera.zoom -= elapsed * FlxG.camera.zoom;
 				if (FlxG.camera.zoom < 0.1)
 					FlxG.camera.zoom = 0.1;
@@ -1184,12 +1197,35 @@ class CharacterEditorState extends MusicBeatState {
 					camFollow.x += addToCam;
 			}
 
+			touchPad.forEachAlive((button:TouchButton) ->
+			{
+				if (button.justPressed || button.pressed)
+					overlapsToButton = true;
+				else
+					overlapsToButton = false;
+			});
+
+			if (controls.mobileC && !overlapsToButton)
+			{
+				var mouse = FlxG.mouse.getScreenPosition(); // using FlxG.mouse cuz FlxTouch suck
+				if (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(UI_characterbox))
+				{
+					cameraPosition[0] = camFollow.x + mouse.x;
+					cameraPosition[1] = camFollow.y + mouse.y;
+				}
+				else if (FlxG.mouse.pressed && !FlxG.mouse.overlaps(UI_characterbox))
+				{
+					camFollow.x = cameraPosition[0] - mouse.x;
+					camFollow.y = cameraPosition[1] - mouse.y;
+				}
+			}
+
 			if (char.animationsArray.length > 0) {
-				if (FlxG.keys.justPressed.W) {
+				if (touchPad.buttonV.justPressed || FlxG.keys.justPressed.W) {
 					curAnim -= 1;
 				}
 
-				if (FlxG.keys.justPressed.S) {
+				if (touchPad.buttonD.justPressed || FlxG.keys.justPressed.S) {
 					curAnim += 1;
 				}
 
@@ -1199,11 +1235,11 @@ class CharacterEditorState extends MusicBeatState {
 				if (curAnim >= char.animationsArray.length)
 					curAnim = 0;
 
-				if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
+				if (touchPad.buttonV.justPressed || touchPad.buttonD.justPressed || FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
 					char.playAnim(char.animationsArray[curAnim].anim, true);
 					genBoyOffsets();
 				}
-				if (FlxG.keys.justPressed.T) {
+				if (touchPad.buttonA.justPressed || FlxG.keys.justPressed.T) {
 					char.animationsArray[curAnim].offsets = [0, 0];
 
 					char.addOffset(char.animationsArray[curAnim].anim, char.animationsArray[curAnim].offsets[0], char.animationsArray[curAnim].offsets[1]);
@@ -1212,15 +1248,15 @@ class CharacterEditorState extends MusicBeatState {
 				}
 
 				var controlArray:Array<Bool> = [
-					FlxG.keys.justPressed.LEFT,
-					FlxG.keys.justPressed.RIGHT,
-					FlxG.keys.justPressed.UP,
-					FlxG.keys.justPressed.DOWN
-				];
+					FlxG.keys.justPressed.LEFT || touchPad.buttonLeft.justPressed,
+					FlxG.keys.justPressed.RIGHT || touchPad.buttonRight.justPressed,
+					FlxG.keys.justPressed.UP || touchPad.buttonUp.justPressed,
+					FlxG.keys.justPressed.DOWN || touchPad.buttonDown.justPressed
+			   ];
 
 				for (i in 0...controlArray.length) {
 					if (controlArray[i]) {
-						var holdShift = FlxG.keys.pressed.SHIFT;
+						var holdShift = (touchPad.buttonC.pressed || FlxG.keys.pressed.SHIFT);
 						var multiplier = 1;
 						if (holdShift)
 							multiplier = 10;
@@ -1319,12 +1355,17 @@ class CharacterEditorState extends MusicBeatState {
 
 		var data:String = haxe.Json.stringify(json, "\t");
 
+		
 		if (data.length > 0) {
+			#if mobile
+			StorageUtil.saveContent('$daAnim.json', data);
+			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 			_file.save(data, daAnim + ".json");
+			#end
 		}
 	}
 

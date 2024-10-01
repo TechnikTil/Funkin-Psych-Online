@@ -304,20 +304,18 @@ class SkinsState extends MusicBeatState {
 		swagText.cameras = [hud];
 		add(swagText);
 
-		// lily idfk what to do with the hints and i have no idea what the menu looks like so don't blame if anything isn't correct
 		final tab:String = (controls.mobileC) ? "C" : "TAB";
-		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin');
-		if (!controls.mobileC)
-			tip1.text +='\n8 - Edit skin';
+		final eight:String = (controls.mobileC) ? "D" : "8";
+		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin\n$eight - Edit skin');
 		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y;
 		tip1.alpha = 0.5;
 		tip1.cameras = [hud];
 		add(tip1);
-		
-		// both of these don't have a button so idk what to do
-		var hints = [controls.mobileC ? 'Y' : 'F1', controls.mobileC ? 'Z' : 'F2'];
-		var tip2 = new FlxText(-20, 0, FlxG.width, '${hints[0]} for Help!\n${hints[1]} to Browse Verified Skins');
+
+		var f1:String = (controls.mobileC) ? "Y" : "F1";
+		var f2:String = (controls.mobileC) ? "Z" : "F2";
+		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 for Help!\n$f2 to Browse Verified Skins');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -330,7 +328,7 @@ class SkinsState extends MusicBeatState {
 		
 		CustomFadeTransition.nextCamera = hud; // wat
 
-		addTouchPad('LEFT_FULL', 'A_B_C_X_Y_Z');
+		addTouchPad('LEFT_FULL', 'A_B_C_D_X_Y_Z');
 		addTouchPadCamera();
 
 		GameClient.send("status", "Selects their skin");
@@ -425,7 +423,7 @@ class SkinsState extends MusicBeatState {
 				character.members[0].playAnim("hey");
         }
 
-		if (FlxG.keys.justPressed.EIGHT) {
+		if (touchPad.buttonD.justPressed || FlxG.keys.justPressed.EIGHT) {
 			Mods.currentModDirectory = charactersMod.get(charactersName.get(curCharacter));
 			switchState(() -> new CharacterEditorState(charactersName.get(curCharacter), false, true));
 		}

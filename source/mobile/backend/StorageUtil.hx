@@ -74,7 +74,7 @@ class StorageUtil
 		}
 	}
 
-	/*public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void
+	public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void
 	{
 		try
 		{
@@ -90,7 +90,7 @@ class StorageUtil
 				CoolUtil.showPopUp('$fileName couldn\'t be saved.\n(${e.message})', "Error!")
 			else
 				trace('$fileName couldn\'t be saved. (${e.message})');
-	}*/
+	}
 
 	#if android
 	public static function requestPermissions():Void
