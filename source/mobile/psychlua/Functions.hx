@@ -15,6 +15,8 @@ class MobileFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
+		funk.set('mobileC', Controls.instance.mobileC);
+
 		funk.set('mobileControlsMode', getMobileControlsAsString());
 
 		funk.set("extraButtonPressed", (button:String) ->
@@ -189,7 +191,7 @@ class MobileFunctions
 			case 3:
 				return 'hitbox';
 			default:
-				return 'unknown';
+				return 'none';
 		}
 	}
 }
@@ -200,7 +202,7 @@ class AndroidFunctions
 	// static var spicyPillow:AndroidBatteryManager = new AndroidBatteryManager();
 	public static function implement(funk:FunkinLua)
 	{
-		// funk.set("isRooted", AndroidTools.isRooted());
+		funk.set("isRooted", AndroidTools.isRooted());
 		funk.set("isDolbyAtmos", AndroidTools.isDolbyAtmos());
 		funk.set("isAndroidTV", AndroidTools.isAndroidTV());
 		funk.set("isTablet", AndroidTools.isTablet());
