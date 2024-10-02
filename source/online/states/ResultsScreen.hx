@@ -283,6 +283,13 @@ class ResultsScreen extends MusicBeatState {
 
 		});
 
+		registerMessages();
+		addTouchPad('NONE', 'B_C_T');
+    }
+
+	function registerMessages() {
+		GameClient.initStateListeners(this, this.registerMessages);
+
 		if (GameClient.isConnected()) {
 			GameClient.send("status", "Viewing results");
 
@@ -295,9 +302,7 @@ class ResultsScreen extends MusicBeatState {
 				});
 			});
 		}
-
-		addTouchPad('NONE', 'B_C_T');
-    }
+	}
 
 	function flickerLoop() {
 		FlxFlicker.flicker(spotlight, 0.2, 0.05, true);
