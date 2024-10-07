@@ -279,7 +279,14 @@ class PlayState extends MusicBeatState
 	public var luaTpadCam:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
-	public var songScore:Int = 0;
+	var _tempDiff:Float = 0;
+	public var songScore(default, set):Int = 0;
+	function set_songScore(v) {
+		_tempDiff = v - songScore;
+		_tempDiff *= 1 + (playbackRate - 1) * 0.1;
+		_tempDiff *= 1 + (songSpeed - PlayState.SONG.speed) * 0.1;
+		return songScore += Math.floor(_tempDiff);
+	}
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
 	public var songSicks:Int = 0;
@@ -867,6 +874,7 @@ class PlayState extends MusicBeatState
 			SustainSplash.frameRate = Math.floor(24 / 100 * SONG.bpm);
 			var splash:SustainSplash = new SustainSplash();
 			grpHoldSplashes.add(splash);
+			splash.visible = true;
 			splash.alpha = 0.0001;
 
 			opponentStrums = new FlxTypedGroup<StrumNote>();
@@ -3197,7 +3205,7 @@ class PlayState extends MusicBeatState
 		else
 		{
 			var noMissWeek:String = WeekData.getWeekFileName() + '_nomiss';
-			var achieve:String = checkForAchievement([noMissWeek, 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']);
+			var achieve:String = checkForAchievement([noMissWeek, 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger', '1000combo']);
 			if(achieve != null) {
 				startAchievement(achieve);
 				return false;
@@ -4717,6 +4725,9 @@ class PlayState extends MusicBeatState
 
 						case 'debugger':
 							unlock = (Paths.formatToSongPath(SONG.song) == 'test' && !usedPractice);
+
+						case '1000combo':
+							unlock = combo > 1000;
 					}
 				}
 
