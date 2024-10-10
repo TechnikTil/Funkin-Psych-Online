@@ -1967,11 +1967,35 @@ class PlayState extends MusicBeatState
 			{
 				var daStrumTime:Float = songNotes[0];
 				var daNoteData:Int = Std.int(songNotes[1] % 4);
-				if (songNotes[1] < 0 || songNotes[1] > 7) // this should prevent most exe mods from crashing
+				var maniaKeys:Int = 4;
+				switch (SONG.mania) {
+					case 1, 5, 6: // 6k
+						maniaKeys = 6;
+						daNoteData = Std.int(songNotes[1] % maniaKeys);
+
+						if (daNoteData > 3)
+							daNoteData -= 4;
+					case 2, 7: // 7k
+						maniaKeys = 7;
+						daNoteData = Std.int(songNotes[1] % maniaKeys);
+
+						if (daNoteData > 3)
+							daNoteData -= 4;
+					case 3, 8: // 9k
+						maniaKeys = 9;
+						daNoteData = Std.int(songNotes[1] % maniaKeys);
+
+						if (daNoteData > 7)
+							daNoteData -= 4;
+						
+						if (daNoteData > 3)
+							daNoteData -= 4;
+				}
+				if (songNotes[1] < 0 || songNotes[1] > maniaKeys * 2 - 1) // this should prevent most exe mods from crashing
 					continue;
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > 3)
+				if (songNotes[1] > maniaKeys - 1)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
@@ -1993,7 +2017,7 @@ class PlayState extends MusicBeatState
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 				swagNote.mustPress = gottaHitNote;
 				swagNote.sustainLength = songNotes[2];
-				swagNote.gfNote = (section.gfSection && (songNotes[1]<4));
+				swagNote.gfNote = (section.gfSection && (songNotes[1]<maniaKeys));
 				swagNote.noteType = songNotes[3];
 				if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
 
@@ -2012,7 +2036,7 @@ class PlayState extends MusicBeatState
 
 						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote), daNoteData, oldNote, true);
 						sustainNote.mustPress = gottaHitNote;
-						sustainNote.gfNote = (section.gfSection && (songNotes[1]<4));
+						sustainNote.gfNote = (section.gfSection && (songNotes[1]<maniaKeys));
 						sustainNote.noteType = swagNote.noteType;
 						sustainNote.scrollFactor.set();
 						swagNote.tail.push(sustainNote);
@@ -2479,7 +2503,7 @@ class PlayState extends MusicBeatState
 			if(secondsTotal < 0) secondsTotal = 0;
 
 			if(ClientPrefs.data.timeBarType != 'Song Name')
-				timeTxt.text = FlxStringUtil.formatTime(secondsTotal, false);
+				timeTxt.text = FlxStringUtil.formatTime(secondsTotal / playbackRate, false);
 		}
 
 		if (camZooming)
@@ -4020,7 +4044,10 @@ class PlayState extends MusicBeatState
 
 		// play character anims
 		var char:Character = getPlayer();
-		if((note != null && note.gfNote) || (SONG.notes[curSection] != null && SONG.notes[curSection].gfSection)) char = gf;
+		if ((SONG.notes[curSection] != null && (SONG.notes[curSection].mustHitSection ? playsAsBF() : !playsAsBF()) && SONG.notes[curSection].gfSection)
+			|| (note != null && note.gfNote)) {
+				char = gf;
+		}
 		
 		if(char != null /*&& char.hasMissAnimations*/)
 		{
@@ -4679,7 +4706,7 @@ class PlayState extends MusicBeatState
 			else if (sicks > 0) ratingFC = 'SFC';
 		}
 		else if (songMisses < 10)
-			ratingFC = 'SDCB';
+			ratingFC = 'SDCB'; // what the fuck is SDCB
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
