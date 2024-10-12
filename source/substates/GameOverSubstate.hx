@@ -52,6 +52,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float, camX:Float, camY:Float)
 	{
+		controls.isInSubstate = true;
 		super();
 
 		PlayState.instance.setOnScripts('inGameOver', true);
@@ -76,7 +77,6 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		addTouchPad('NONE', 'A_B');
 		addTouchPadCamera();
-		controls.isInSubstate = true;
 	}
 
 	public var startedDeath:Bool = false;
