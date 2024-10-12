@@ -94,7 +94,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 	public function new()
 	{
-		controls.inInSubstate = true;
+		controls.isInSubstate = true;
 		super();
 		
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -156,7 +156,6 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 
 		addTouchPad('LEFT_FULL', 'A_B_C');
-		controls.isInSubstate = true;
 	}
 
 	function receiveChange(_:Dynamic, __:Dynamic) {
@@ -191,7 +190,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 
 		if (controls.BACK) {
-			controls.inInSubstate = false;
+			controls.isInSubstate = false;
 			close();
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
