@@ -36,7 +36,7 @@ class OutdatedState extends MusicBeatState
 		if(!leftState) {
 			if (controls.ACCEPT) {
 				CoolUtil.browserLoad("https://github.com/MobilePorting/Funkin-Psych-Online-Mobile/releases");
-				online.net.Auth.saveClose();
+				online.network.Auth.saveClose();
 				Sys.exit(1);
 			}
 			else if(controls.BACK) {
