@@ -40,6 +40,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float)
 	{
+		controls.isInSubstate = true;
 		super();
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
@@ -165,7 +166,6 @@ class PauseSubState extends MusicBeatSubstate
 
 		addTouchPad((PlayState.chartingMode || PlayState.replayData != null) ? 'LEFT_FULL' : 'UP_DOWN', 'A_B');
 		addTouchPadCamera();
-		controls.isInSubstate = true;
 	}
 
 	var holdTime:Float = 0;
