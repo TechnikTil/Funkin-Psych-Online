@@ -1,7 +1,6 @@
 package objects;
 
 import shaders.RGBPalette;
-import shaders.flixel.system.FlxShader;
 import flixel.graphics.frames.FlxFrame;
 
 typedef NoteSplashConfig = {

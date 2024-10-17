@@ -77,6 +77,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import shaders.flixel.system.FlxShader;
 import online.backend.Deflection;
 
 using StringTools;

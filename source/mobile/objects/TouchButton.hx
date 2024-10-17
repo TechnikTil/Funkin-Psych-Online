@@ -5,7 +5,6 @@ import flixel.input.FlxPointer;
 import flixel.input.IFlxInput;
 import flixel.math.FlxPoint;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
-import shaders.flixel.system.FlxShader;
 #if mac
 import flixel.input.mouse.FlxMouseButton;
 #end
@@ -178,6 +177,8 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	 */
 	var currentInput:IFlxInput;
 
+	public var canChangeLabelAlpha:Bool = true;
+
 	/**
 	 * Creates a new `FlxTypedButton` object with a gray background.
 	 *
@@ -294,21 +295,11 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			#if mac
 			var button = FlxMouseButton.getByID(FlxMouseButtonID.LEFT);
 
-			// for (deadZone in deadZones)
-          	// 		if (deadZone != null)
-			// 		@:privateAccess if (deadZone.checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
-			// 			return false;
-
 			if (checkInput(FlxG.mouse, button, button.justPressedPosition, camera))
 				overlap = true;
 			#else
 			for (touch in FlxG.touches.list)
 			{
-				// for (deadZone in deadZones)
-				// 	if (deadZone != null)
-            	// 				@:privateAccess if (deadZone.checkInput(touch, touch, touch.justPressedPosition, camera))
-				// 			return false;
-
 				final worldPos:FlxPoint = touch.getWorldPosition(camera, _point);
 
 				for (zone in deadZones)
@@ -462,7 +453,7 @@ class TypedTouchButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	override function set_alpha(Value:Float):Float
 	{
 		super.set_alpha(Value);
-		if (_spriteLabel != null)
+		if (_spriteLabel != null && canChangeLabelAlpha)
 			_spriteLabel.alpha = alpha == 0 ? 0 : alpha + labelStatusDiff;
 		return Value;
 	}

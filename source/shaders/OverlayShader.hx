@@ -1,7 +1,5 @@
 package shaders;
 
-import shaders.flixel.system.FlxShader;
-
 class OverlayShader extends FlxShader
 {
 	@:glFragmentSource('
