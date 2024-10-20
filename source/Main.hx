@@ -19,7 +19,7 @@ import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import states.TitleState;
 #if COPYSTATE_ALLOWED
-import mobile.states.CopyState;
+import states.CopyState;
 #end
 #if mobile
 import mobile.backend.MobileScaleMode;
