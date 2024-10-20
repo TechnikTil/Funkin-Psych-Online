@@ -87,6 +87,7 @@ class TopPlayerSubstate extends MusicBeatSubstate {
 	}
 
 	override function destroy() {
+		controls.isInSubstate = false;
 		super.destroy();
 
 		if (leaderboardTimer != null)

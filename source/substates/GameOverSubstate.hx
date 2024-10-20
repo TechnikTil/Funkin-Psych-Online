@@ -189,6 +189,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	override function destroy()
 	{
+		controls.isInSubstate = false;
 		instance = null;
 		super.destroy();
 	}

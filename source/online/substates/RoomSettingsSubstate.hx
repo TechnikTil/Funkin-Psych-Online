@@ -162,6 +162,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 	override function closeSubState() {
 		super.closeSubState();
+		controls.isInSubstate = true;
 
 		GameClient.send("status", "In the Room Settings");
 	}
@@ -181,6 +182,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
     override function update(elapsed) {
         if (controls.BACK) {
+			controls.isInSubstate = false;
             close();
 			FlxG.mouse.visible = prevMouseVisibility;
         }

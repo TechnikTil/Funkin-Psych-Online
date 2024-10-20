@@ -380,6 +380,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	override function destroy()
 	{
+		controls.isInSubstate = false;
 		pauseMusic.destroy();
 
 		super.destroy();

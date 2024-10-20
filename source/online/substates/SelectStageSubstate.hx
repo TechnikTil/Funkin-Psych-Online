@@ -88,6 +88,7 @@ class SelectStageSubstate extends MusicBeatSubstate {
         Conductor.songPosition = FlxG.sound.music.time;
 
         if (controls.BACK) {
+            controls.isInSubstate = false;
             close();
         }
 

@@ -27,6 +27,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 
 	public function new()
 	{
+		controls.isInSubstate = true;
 		super();
 		if (ClientPrefs.data.extraButtons != 'NONE')
 			options.push('Pad-Extra');
