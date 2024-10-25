@@ -46,7 +46,7 @@ class SkinsState extends MusicBeatState {
 	var blackRectangle:FlxSprite;
 
 	public static var music:FlxSound;
-	public static var musicIntro:FlxSound;
+	// public static var musicIntro:FlxSound;
 	
 	static var prevConBPM:Float;
 	static var prevConBPMChanges:Array<backend.BPMChangeEvent>;
@@ -58,6 +58,7 @@ class SkinsState extends MusicBeatState {
 	var stageCrowd:FlxAnimate;
 	var stageSpeakers:FlxAnimate;
 	var camFollow:FlxObject;
+	// static var introPlayed:Bool = false;
 
     override function create() {
 		Paths.clearUnusedMemory();
@@ -82,22 +83,26 @@ class SkinsState extends MusicBeatState {
 			prevConBPMChanges = Conductor.bpmChangeMap;
 			prevConTime = Conductor.songPosition;
 
-			if (musicIntro != null)
-				musicIntro.stop();
+			// if (musicIntro != null)
+			// 	musicIntro.stop();
 			if (music != null)
 				music.stop();
 
-			musicIntro = FlxG.sound.play(Paths.music('stayFunky-intro'), 1, false);
 			music = FlxG.sound.play(Paths.music('stayFunky'), 1, true);
-			music.pause();
-			musicIntro.onComplete = () -> {
-				music.play();
-			}
-
-			musicIntro.persist = true;
 			music.persist = true;
-			FlxG.sound.list.add(musicIntro);
 			FlxG.sound.list.add(music);
+
+			// if (!introPlayed) {
+			//  music.pause();
+			//
+			// 	musicIntro = FlxG.sound.play(Paths.music('stayFunky-intro'), 1, false);
+			// 	musicIntro.onComplete = () -> {
+			// 		introPlayed = true;
+			// 		music.play();
+			// 	}
+			// 	musicIntro.persist = true;
+			// 	FlxG.sound.list.add(musicIntro);
+			// }
 
 			Conductor.bpm = 90;
 			Conductor.bpmChangeMap = [];
@@ -476,9 +481,9 @@ class SkinsState extends MusicBeatState {
 		blackRectangle.alpha = 0;
 		add(blackRectangle);
 
-		var funkySound = music.playing ? music : musicIntro;
-		funkySound.fadeOut(0.5, 0, t -> {
-			musicIntro.stop();
+		//var funkySound = music.playing ? music : musicIntro;
+		music.fadeOut(0.5, 0, t -> {
+			//musicIntro.stop();
 			music.stop();
 
 			for (v in [FlxG.sound.music, FreeplayState.vocals, FreeplayState.opponentVocals]) {
@@ -503,8 +508,8 @@ class SkinsState extends MusicBeatState {
 		if (skipStaticDestroy)
 			return;
 
-		if (musicIntro != null)
-			musicIntro.stop();
+		// if (musicIntro != null)
+		// 	musicIntro.stop();
 		if (music != null)
 			music.stop();
 	}
@@ -572,7 +577,7 @@ class SkinsState extends MusicBeatState {
 
 			curCharName = !flipped ? curCharName : curCharName.substring(0, curCharName.length - "-player".length);
 
-			title.text = curCharName == "default" ? "BOYFRIEND" : curCharName;
+			title.text = curCharName == "default" ? "BOYFRIEND" : curCharName.replace('-', ' ');
 			title.x = FlxG.width / 2 - title.width / 2;
 
 			if (isEquiped(charactersMod.get(curCharName), curCharName)) {

@@ -48,7 +48,7 @@ class CreditsState extends MusicBeatState
 			['mcagabe19',			'lily',             'Porter of Psych Engine Online and Author of linc_luajit-rewriten',                       'https://youtube.com/@mcagabe19',		'FFE7C0'],
 			[''],
 			['Psych Online'],
-			['Snirozu', 'snirozu', 'Developer', 'https://twitter.com/snirozu', '32a852'],
+			['Snirozu', 'snirozu', 'Developer', 'https://bsky.app/profile/sniro.boo', 'FFCC33'],
 			[''],
 			['Contributors'],
 			['Magniill', 'notmagniill', 'Remade the Online button sprite!', 'https://twitter.com/magniill', '910000'],
