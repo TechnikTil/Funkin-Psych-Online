@@ -5,7 +5,6 @@ import psychlua.CustomSubstate;
 import lime.ui.Haptic;
 import psychlua.FunkinLua;
 import psychlua.LuaUtils;
-import mobile.backend.TouchUtil;
 #if android import mobile.backend.PsychJNI; #end
 
 /**

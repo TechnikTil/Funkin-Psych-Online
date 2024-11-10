@@ -19,6 +19,7 @@ import mobile.objects.TouchButton;
 import mobile.input.MobileInputID;
 import mobile.backend.MobileData;
 import mobile.input.MobileInputManager;
+import mobile.backend.TouchUtil;
 
 #if sys
 import sys.*;
