@@ -406,7 +406,7 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		updateTexts();
 
-		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z' : 'A_B_X_Y_Z');
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F' : 'A_B_X_Y_Z_F');
 
 		super.create();
 
@@ -437,7 +437,7 @@ class FreeplayState extends MusicBeatState
 		persistentUpdate = true;
 		super.closeSubState();
 		removeTouchPad();
-		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z' : 'A_B_X_Y_Z');
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F' : 'A_B_X_Y_Z_F');
 	}
 
 	function setDiffVisibility(value:Bool) {
@@ -536,7 +536,8 @@ class FreeplayState extends MusicBeatState
 			return;
 		}
 
-		if (!searchInputWait && FlxG.keys.justPressed.F) {
+		if (!searchInputWait && (touchPad.buttonF.justPressed || FlxG.keys.justPressed.F)) {
+			FlxG.stage.window.textInputEnabled = true;
 			searchInputWait = true;
 			searchString = searchString;
 		}
@@ -1516,6 +1517,7 @@ class FreeplayState extends MusicBeatState
             return;
         }
 		else if (key == 13) { //enter
+			FlxG.stage.window.textInputEnabled = false;
 			search();
 			tempDisableInput();
             return;
