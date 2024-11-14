@@ -21,6 +21,7 @@ import haxe.ds.Map;
 import haxe.Json;
 import haxe.io.Path;
 import openfl.utils.Assets;
+import flixel.math.FlxPoint;
 import flixel.util.FlxSave;
 
 /**
@@ -42,10 +43,10 @@ class MobileData
 		save = new FlxSave();
 		save.bind('MobileControls', CoolUtil.getSavePath());
 
-		readDirectory(Paths.getSharedPath('mobile/DPadModes'), dpadModes);
-		readDirectory(Paths.getSharedPath('mobile/ActionModes'), actionModes);
+		readDirectory(Paths.getLibraryPathForce('mobile/DPadModes', 'shared'), dpadModes);
+		readDirectory(Paths.getLibraryPathForce('mobile/ActionModes', 'shared'), actionModes);
 		#if MODS_ALLOWED
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/'))
+		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/'))
 		{
 			readDirectory(Path.join([folder, 'DPadModes']), dpadModes);
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);

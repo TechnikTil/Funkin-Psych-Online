@@ -16,6 +16,8 @@
  */
 
 package mobile.objects;
+import flixel.math.FlxPoint;
+import flixel.util.FlxSignal;
 
 /**
  * ...
