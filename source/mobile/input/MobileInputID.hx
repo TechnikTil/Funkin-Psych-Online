@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package mobile.input;
 
 import flixel.system.macros.FlxMacroUtil;
@@ -12,9 +29,8 @@ enum abstract MobileInputID(Int) from Int to Int
 {
 	public static var fromStringMap(default, null):Map<String, MobileInputID> = FlxMacroUtil.buildMap("mobile.input.MobileInputID");
 	public static var toStringMap(default, null):Map<MobileInputID, String> = FlxMacroUtil.buildMap("mobile.input.MobileInputID", true);
-	// Anything
+	// Nothing & Anything
 	var ANY = -2;
-	// Nothing
 	var NONE = -1;
 	// Notes
 	var NOTE_LEFT = 0;
@@ -48,7 +64,7 @@ enum abstract MobileInputID(Int) from Int to Int
 	var X = 27;
 	var Y = 28;
 	var Z = 29;
-	// Touch Pad Directional Buttons Buttons
+	// Touch Pad Directional Buttons
 	var UP = 30;
 	var UP2 = 31;
 	var DOWN = 32;
@@ -57,7 +73,7 @@ enum abstract MobileInputID(Int) from Int to Int
 	var LEFT2 = 35;
 	var RIGHT = 36;
 	var RIGHT2 = 37;
-	// Hitbox Buttons
+	// Hitbox Hints
 	var HITBOX_UP = 38;
 	var HITBOX_DOWN = 39;
 	var HITBOX_LEFT = 40;

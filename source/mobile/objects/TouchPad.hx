@@ -1,9 +1,21 @@
-package mobile.objects;
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-import mobile.objects.TouchButton;
-import mobile.input.MobileInputManager;
-import flixel.math.FlxPoint;
-import flixel.util.FlxSignal;
+package mobile.objects;
 
 /**
  * ...
@@ -12,14 +24,14 @@ import flixel.util.FlxSignal;
 @:access(mobile.objects.TouchButton)
 class TouchPad extends MobileInputManager implements IMobileControls
 {
-	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_LEFT, MobileInputID.LEFT]);
-	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_UP, MobileInputID.UP]);
-	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_RIGHT, MobileInputID.RIGHT]);
-	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_DOWN, MobileInputID.DOWN]);
-	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_LEFT, MobileInputID.LEFT2]);
-	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_UP, MobileInputID.UP2]);
-	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_RIGHT, MobileInputID.RIGHT2]);
-	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.NOTE_DOWN, MobileInputID.DOWN2]);
+	public var buttonLeft:TouchButton = new TouchButton(0, 0, [MobileInputID.LEFT, MobileInputID.NOTE_LEFT]);
+	public var buttonUp:TouchButton = new TouchButton(0, 0, [MobileInputID.UP, MobileInputID.NOTE_UP]);
+	public var buttonRight:TouchButton = new TouchButton(0, 0, [MobileInputID.RIGHT, MobileInputID.NOTE_RIGHT]);
+	public var buttonDown:TouchButton = new TouchButton(0, 0, [MobileInputID.DOWN, MobileInputID.NOTE_DOWN]);
+	public var buttonLeft2:TouchButton = new TouchButton(0, 0, [MobileInputID.LEFT2, MobileInputID.NOTE_LEFT]);
+	public var buttonUp2:TouchButton = new TouchButton(0, 0, [MobileInputID.UP2, MobileInputID.NOTE_UP]);
+	public var buttonRight2:TouchButton = new TouchButton(0, 0, [MobileInputID.RIGHT2, MobileInputID.NOTE_RIGHT]);
+	public var buttonDown2:TouchButton = new TouchButton(0, 0, [MobileInputID.DOWN2, MobileInputID.NOTE_DOWN]);
 	public var buttonA:TouchButton = new TouchButton(0, 0, [MobileInputID.A]);
 	public var buttonB:TouchButton = new TouchButton(0, 0, [MobileInputID.B]);
 	public var buttonC:TouchButton = new TouchButton(0, 0, [MobileInputID.C]);
@@ -116,6 +128,7 @@ class TouchPad extends MobileInputManager implements IMobileControls
 
 	override public function destroy()
 	{
+		super.destroy();
 		onButtonUp.destroy();
 		onButtonDown.destroy();
 		for (fieldName in Reflect.fields(this))
@@ -124,7 +137,6 @@ class TouchPad extends MobileInputManager implements IMobileControls
 			if (Std.isOfType(field, TouchButton))
 				Reflect.setField(this, fieldName, FlxDestroyUtil.destroy(field));
 		}
-		super.destroy();
 	}
 
 	public function setExtrasDefaultPos()
@@ -139,9 +151,6 @@ class TouchPad extends MobileInputManager implements IMobileControls
 			var field = Reflect.field(this, button);
 			if (button.toLowerCase().contains('extra') && Std.isOfType(field, TouchButton))
 			{
-				if (MobileData.save.data.extraData[int] == null)
-					MobileData.save.data.extraData.push(FlxPoint.get(field.x, field.y));
-				else
 				MobileData.save.data.extraData[int] = FlxPoint.get(field.x, field.y);
 				++int;
 			}

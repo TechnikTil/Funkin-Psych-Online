@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package mobile.backend;
 
 import haxe.ds.Map;
@@ -5,7 +22,6 @@ import haxe.Json;
 import haxe.io.Path;
 import openfl.utils.Assets;
 import flixel.util.FlxSave;
-import flixel.math.FlxPoint;
 
 /**
  * ...
@@ -26,10 +42,10 @@ class MobileData
 		save = new FlxSave();
 		save.bind('MobileControls', CoolUtil.getSavePath());
 
-		readDirectory(Paths.getLibraryPathForce('mobile/DPadModes', 'shared'), dpadModes);
-		readDirectory(Paths.getLibraryPathForce('mobile/ActionModes', 'shared'), actionModes);
+		readDirectory(Paths.getSharedPath('mobile/DPadModes'), dpadModes);
+		readDirectory(Paths.getSharedPath('mobile/ActionModes'), actionModes);
 		#if MODS_ALLOWED
-		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/'))
 		{
 			readDirectory(Path.join([folder, 'DPadModes']), dpadModes);
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);
@@ -108,7 +124,7 @@ class MobileData
 			var fileWithNoLib:String = file.contains(':') ? file.split(':')[1] : file;
 			if (Path.extension(fileWithNoLib) == 'json')
 			{
-				#if MODS_ALLOWED file = Path.join([folder, Path.withoutDirectory(file)]); #end
+				file = Path.join([folder, Path.withoutDirectory(file)]);
 				var str = #if MODS_ALLOWED File.getContent(file) #else Assets.getText(file) #end;
 				var json:TouchButtonsData = cast Json.parse(str);
 				var mapKey:String = Path.withoutDirectory(Path.withoutExtension(fileWithNoLib));

@@ -1,12 +1,21 @@
-package mobile.objects;
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-import haxe.ds.Map;
-import flixel.math.FlxPoint;
-import mobile.input.MobileInputManager;
-import haxe.extern.EitherType;
-import mobile.objects.TouchButton;
-import flixel.util.FlxSave;
-import flixel.util.typeLimit.OneOfTwo;
+package mobile.objects;
 
 // I wanted to delete this but i have no idea how i coded MobileControlSelectSubState so idk how to implement IMobileControls into it... yet...
 

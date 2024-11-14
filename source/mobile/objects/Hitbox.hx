@@ -1,15 +1,32 @@
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package mobile.objects;
 
 import openfl.display.BitmapData;
 import openfl.display.Shape;
 import flixel.graphics.FlxGraphic;
-import flixel.util.FlxSignal;
+import openfl.geom.Matrix;
 
 /**
  * A zone with 4 hint's (A hitbox).
  * It's really easy to customize the layout.
  *
- * @author: Mihai Alexandru and Karim Akra
+ * @author: Karim Akra and Lily Ross (mcagabe19)
  */
 class Hitbox extends MobileInputManager implements IMobileControls
 {
@@ -74,7 +91,6 @@ class Hitbox extends MobileInputManager implements IMobileControls
 				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
 		}
 
-		//storedButtonsIDs.clear();
 		scrollFactor.set();
 		updateTrackedButtons();
 
@@ -182,7 +198,25 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		var shape:Shape = new Shape();
 		shape.graphics.beginFill(0xFFFFFF);
 
-		if (ClientPrefs.data.hitboxType == 'Gradient')
+		if (ClientPrefs.data.hitboxType == "No Gradient")
+		{
+			var matrix:Matrix = new Matrix();
+			matrix.createGradientBox(Width, Height, 0, 0, 0);
+
+			if (isLane)
+				shape.graphics.beginFill(0xFFFFFF);
+			else
+				shape.graphics.beginGradientFill(RADIAL, [0xFFFFFF, 0xFFFFFF], [0, 1], [60, 255], matrix, PAD, RGB, 0);
+			shape.graphics.drawRect(0, 0, Width, Height);
+			shape.graphics.endFill();
+		}
+		else if (ClientPrefs.data.hitboxType == "No Gradient (Old)")
+		{
+			shape.graphics.lineStyle(10, 0xFFFFFF, 1);
+			shape.graphics.drawRect(0, 0, Width, Height);
+			shape.graphics.endFill();
+		}
+		else // if (ClientPrefs.data.hitboxType == 'Gradient')
 		{
 			shape.graphics.lineStyle(3, 0xFFFFFF, 1);
 			shape.graphics.drawRect(0, 0, Width, Height);
@@ -194,12 +228,6 @@ class Hitbox extends MobileInputManager implements IMobileControls
 			else
 				shape.graphics.beginGradientFill(RADIAL, [0xFFFFFF, FlxColor.TRANSPARENT], [1, 0], [0, 255], null, null, null, 0.5);
 			shape.graphics.drawRect(3, 3, Width - 6, Height - 6);
-			shape.graphics.endFill();
-		}
-		else
-		{
-			shape.graphics.lineStyle(10, 0xFFFFFF, 1);
-			shape.graphics.drawRect(0, 0, Width, Height);
 			shape.graphics.endFill();
 		}
 

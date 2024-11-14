@@ -1,16 +1,29 @@
+/*
+ * Copyright (C) 2024 Mobile Porting Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package mobile.backend;
 
 import lime.system.System as LimeSystem;
 import haxe.io.Path;
 import haxe.Exception;
-#if android
-import android.Tools;
-import android.callback.CallBack;
-#end
 
 /**
  * A storage class for mobile.
- * @author Mihai Alexandru (M.A. Jigsaw), Karim Akra and Lily Ross (mcagabe19)
+ * @author Karim Akra and Lily Ross (mcagabe19)
  */
 class StorageUtil
 {
@@ -29,6 +42,8 @@ class StorageUtil
 		daPath = Path.addTrailingSlash(daPath);
 		#elseif ios
 		daPath = LimeSystem.documentsDirectory;
+		#else
+		daPath = Sys.getCwd();
 		#end
 
 		return daPath;
@@ -85,6 +100,26 @@ class StorageUtil
 			LimeSystem.exit(1);
 		}
 	}
+
+	public static function checkExternalPaths(?splitStorage = false):Array<String>
+	{
+		var process = new Process('grep -o "/storage/....-...." /proc/mounts | paste -sd \',\'');
+		var paths:String = process.stdout.readAll().toString();
+		if (splitStorage)
+			paths = paths.replace('/storage/', '');
+		return paths.split(',');
+	}
+
+	public static function getExternalDirectory(externalDir:String):String
+	{
+		var daPath:String = '';
+		for (path in checkExternalPaths())
+			if (path.contains(externalDir))
+				daPath = path;
+
+		daPath = Path.addTrailingSlash(daPath.endsWith("\n") ? daPath.substr(0, daPath.length - 1) : daPath);
+		return daPath;
+	}
 	#end
 	#end
 }
@@ -94,8 +129,8 @@ class StorageUtil
 enum abstract StorageType(String) from String to String
 {
 	final forcedPath = '/storage/emulated/0/';
-	final packageNameLocal = 'com.snirozu.psychonline';
-	final fileLocal = 'PsychOnline';
+	final packageNameLocal = 'com.shadowmario.psychengine';
+	final fileLocal = 'PsychEngine';
 
 	var EXTERNAL_DATA = "EXTERNAL_DATA";
 	var EXTERNAL_OBB = "EXTERNAL_OBB";
@@ -111,10 +146,11 @@ enum abstract StorageType(String) from String to String
 
 		return switch (str)
 		{
+			case "EXTERNAL_DATA": EXTERNAL_DATA;
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
-			default: EXTERNAL_DATA;
+			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
 		}
 	}
 
@@ -127,10 +163,11 @@ enum abstract StorageType(String) from String to String
 
 		return switch (str)
 		{
+			case "EXTERNAL_DATA": EXTERNAL_DATA;
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
-			default: EXTERNAL_DATA;
+			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
 		}
 	}
 }
