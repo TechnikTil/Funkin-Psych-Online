@@ -99,6 +99,14 @@ import states.TitleState;
 	public var showNoteTiming:Bool = false;
 	public var disableAutoDownloads:Bool = false;
 	public var disableSongComments:Bool = false;
+	public var disableFreeplayIcons:Bool = false;
+	public var showFP:Bool = false;
+	public var disableFreeplayAlphabet:Bool = false;
+
+	public function new()
+	{
+		//Why does haxe needs this again?
+	}
 }
 
 class ClientPrefs {
