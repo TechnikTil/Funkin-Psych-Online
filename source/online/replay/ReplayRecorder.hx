@@ -41,7 +41,7 @@ class ReplayRecorder extends FlxBasic {
 		ghost_tapping: true,
 		rating_offset: null,
 		safe_frames: null,
-		version: 2,
+		version: 3,
 		mod_url: ''
     };
 

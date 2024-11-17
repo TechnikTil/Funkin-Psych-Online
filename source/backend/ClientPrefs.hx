@@ -131,6 +131,7 @@ class ClientPrefs {
 		'pause'			=> [ENTER, ESCAPE],
 		'reset'			=> [R],
 		'taunt'			=> [SPACE],
+		'sidebar'		=> [GRAVEACCENT],
 		
 		'volume_mute'	=> [ZERO],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
@@ -154,7 +155,8 @@ class ClientPrefs {
 		'back'			=> [B],
 		'pause'			=> [START],
 		'reset'			=> [BACK],
-		'taunt'			=> [A]
+		'taunt'			=> [A],
+		'sidebar'		=> []
 	];
 	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
 		'note_up'		=> [NOTE_UP, UP2],
