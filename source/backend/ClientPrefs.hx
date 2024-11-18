@@ -102,6 +102,7 @@ import states.TitleState;
 	public var disableFreeplayIcons:Bool = false;
 	public var showFP:Bool = false;
 	public var disableFreeplayAlphabet:Bool = false;
+	public var disableLagDetection:Bool = false;
 
 	public function new()
 	{
