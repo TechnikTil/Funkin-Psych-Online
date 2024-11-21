@@ -1968,6 +1968,8 @@ class PlayState extends MusicBeatState
 		var playingNoteCount:Float = 0;
 		var lastStrumTime:Float = 0;
 
+		var isPsychRelease = songData.format == 'psych_v1';
+
 		for (section in noteData)
 		{
 			for (songNotes in section.sectionNotes)
@@ -2004,10 +2006,16 @@ class PlayState extends MusicBeatState
 					continue;
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > maniaKeys - 1)
-				{
-					gottaHitNote = !section.mustHitSection;
+				if (!isPsychRelease) {
+					if (songNotes[1] > maniaKeys - 1)
+					{
+						gottaHitNote = !section.mustHitSection;
+					}
 				}
+				else {
+					gottaHitNote = songNotes[1] > maniaKeys - 1;
+				}
+				
 
 				if (playsAsBF() ? gottaHitNote : !gottaHitNote && daStrumTime - lastStrumTime > 10) {
 					playingNoteCount++;
@@ -4765,7 +4773,8 @@ class PlayState extends MusicBeatState
 		ratingFC = 'Clear';
 		if(songMisses < 1)
 		{
-			if (bads > 0 || shits > 0) ratingFC = 'FC';
+			if (shits > 0) ratingFC = 'NM';
+			else if (bads > 0) ratingFC = 'FC';
 			else if (goods > 0) ratingFC = 'GFC';
 			else if (sicks > 0) ratingFC = 'SFC';
 		}
@@ -5225,12 +5234,10 @@ class PlayState extends MusicBeatState
 
 			opRatingFC = 'Clear';
 			if (op.misses < 1) {
-				if (op.bads > 0 || op.shits > 0)
-					opRatingFC = 'FC';
-				else if (op.goods > 0)
-					opRatingFC = 'GFC';
-				else if (op.sicks > 0)
-					opRatingFC = 'SFC';
+				if (op.shits > 0) opRatingFC = 'NM';
+				if (op.bads > 0) opRatingFC = 'FC';
+				else if (op.goods > 0) opRatingFC = 'GFC';
+				else if (op.sicks > 0) opRatingFC = 'SFC';
 			}
 			else if (op.misses < 10)
 				opRatingFC = 'SDCB';
