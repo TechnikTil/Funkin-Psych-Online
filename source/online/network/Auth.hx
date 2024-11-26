@@ -50,6 +50,16 @@ class Auth {
     public static function save(id:String, token:String) {
 		saveData.id = authID = id;
 		saveData.token = authToken = token;
+		#if mobile // guh snirozu
+		if (saveData.id == null || saveData.token == null) {
+			saveData = {
+				id: authID,
+				token: authToken,
+			}
+		}
+		File.saveContent(savePath, Json.stringify(saveData));
+		trace("Saved Auth Credentials...");
+		#end
     }
 
 	public static function saveClose() {
