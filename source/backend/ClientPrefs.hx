@@ -84,7 +84,7 @@ import states.TitleState;
 	public final badWindow:Int = 135;
 	public var safeFrames:Float = 10;
 	public var discordRPC:Bool = true;
-	//ONLINE
+	// PSYCH ONLINE
 	private var nickname:String = "Boyfriend";
 	public var serverAddress:String = null;
 	public var modSkin:Array<String> = null;
@@ -103,6 +103,7 @@ import states.TitleState;
 	public var showFP:Bool = false;
 	public var disableFreeplayAlphabet:Bool = false;
 	public var disableLagDetection:Bool = false;
+	public var groupSongsBy:String = 'No Grouping';
 
 	public function new()
 	{

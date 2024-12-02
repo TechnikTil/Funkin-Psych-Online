@@ -10,6 +10,10 @@ import llua.*;
 import llua.Lua;
 #end
 
+#if flxanimate
+import flxanimate.FlxAnimate;
+#end
+
 //Mobile Controls
 import mobile.objects.MobileControls;
 import mobile.objects.IMobileControls;
@@ -26,7 +30,7 @@ import sys.*;
 import sys.io.*;
 #elseif js
 import js.html.*;
-#end    
+#end
 
 import backend.Paths;
 import backend.Controls;
