@@ -41,6 +41,13 @@
       "x": 1156,
       "y": 348,
       "color": "0xA87932"
+    },
+    {
+      "button": "buttonR",
+      "graphic": "r",
+      "x": 908,
+      "y": 472,
+      "color": "0xBEBD7F"
     }
   ]
 }

@@ -55,7 +55,7 @@ class FreeplayState extends MusicBeatState
 
 	var selector:FlxText;
 	public static var curSelected:Int = 0; 
-	var lerpSelected:Float = 0;
+	public var lerpSelected:Float = 0;
 	var curDifficulty:Int = -1;
 	private static var lastDifficultyName:String = Difficulty.getDefault();
 
@@ -98,6 +98,9 @@ class FreeplayState extends MusicBeatState
 	var selected:Bool = false;
 	var selectedItem:Int = 0;
 	var selectedScore:Int = 0;
+
+	static var bustSound:FlxSound;
+	var explods:FlxTypedGroup<Explod>;
 
 	// var dTime:Alphabet = new Alphabet(0, 0, "0:00", false);
 	// var dShots:FlxTypedGroup<FlxEffectSprite> = new FlxTypedGroup<FlxEffectSprite>();
@@ -252,6 +255,20 @@ class FreeplayState extends MusicBeatState
 		randomIcon.cameras = [itemsCamera];
 		add(randomIcon);
 
+		if (bustSound == null) {
+			bustSound = new FlxSound();
+			bustSound.loadEmbedded(Paths.sound('badexplosion'));
+			bustSound.persist = true;
+		}
+
+		explods = new FlxTypedGroup<Explod>();
+		explods.cameras = [itemsCamera];
+		explods.add(new Explod());
+		add(explods);
+
+		// preload random music
+		Paths.music('freeplayRandom');
+
 		Mods.loadTopMod();
 
 		trace("drawing songs");
@@ -297,6 +314,8 @@ class FreeplayState extends MusicBeatState
 				newGroup = MOD;
 			case 'Character Mix':
 				newGroup = MIX;
+			case 'Hidden':
+				newGroup = HIDDEN;
 			default:
 				newGroup = NONE;
 		}
@@ -311,6 +330,8 @@ class FreeplayState extends MusicBeatState
 					searchGroupVList = modList;
 				case MIX:
 					searchGroupVList = [];
+				case HIDDEN:
+					searchGroupVList = ['Hidden', 'Visible'];
 				default:
 					searchGroupVList = [];
 			}
@@ -504,7 +525,8 @@ class FreeplayState extends MusicBeatState
 		updateTexts();
 		searchString = searchString;
 
-		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F' : 'A_B_X_Y_Z_F');
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F_R' : 'A_B_X_Y_Z_F_R');
+		addTouchPadCamera();
 
 		super.create();
 
@@ -555,7 +577,8 @@ class FreeplayState extends MusicBeatState
 
 		super.closeSubState();
 		removeTouchPad();
-		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F' : 'A_B_X_Y_Z_F');
+		addTouchPad('LEFT_FULL', (GameClient.isConnected()) ? 'A_B_C_X_Y_Z_F_R' : 'A_B_X_Y_Z_F_R');
+		addTouchPadCamera();
 	}
 
 	function setDiffVisibility(value:Bool) {
@@ -602,6 +625,8 @@ class FreeplayState extends MusicBeatState
 	public static var vocals:FlxSound = null;
 	public static var opponentVocals:FlxSound = null;
 	var holdTime:Float = 0;
+	var doSongReset:Bool = false;
+	var resetTotalHeld:Float = 0;
 	override function update(elapsed:Float)
 	{
 		Conductor.songPosition = FlxG.sound.music.time;
@@ -689,16 +714,28 @@ class FreeplayState extends MusicBeatState
 					holdTime = 0;
 				}
 
-				if (controls.UI_LEFT_P) {
-					searchGroupValue--;
-					search();
-					updateGroupTitle();
-				}
+				if ((touchPad.buttonR.justReleased || controls.RESET) && curSelected != -1 && !FlxG.keys.pressed.ALT) {
+					var songId = songs[curSelected].songName + '-' + songs[curSelected].folder;
+					if (ClientPrefs.data.hiddenSongs.contains(songId)) {
+						ClientPrefs.data.hiddenSongs.remove(songId);
+					}
+					else {
+						ClientPrefs.data.hiddenSongs.push(songId);
+						destroyFreeplayVocals();
+						playFreakyMusic();
+						FlxG.sound.music.fadeIn(bustSound.length / 1000 + 1, 0, 0.7);
 
-				if (controls.UI_RIGHT_P) {
-					searchGroupValue++;
+						bustSound.volume = 1;
+						bustSound.play(true);
+
+						var exploAmount:Int = Std.int((grpSongs.members[curSelected].width + grpIcons.members[curSelected].width) / 80) + 1;
+						for (i in 0...exploAmount) {
+							var explood = explods.recycle(Explod);
+							explood.boom(cast grpSongs.members[curSelected], i);
+						}
+					}
+					ClientPrefs.saveSettings();
 					search();
-					updateGroupTitle();
 				}
 
 				if(controls.UI_DOWN || controls.UI_UP)
@@ -715,6 +752,51 @@ class FreeplayState extends MusicBeatState
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
 					changeSelection(-shiftMult * FlxG.mouse.wheel, false);
+				}
+			}
+
+			if (touchPad.buttonR.pressed)
+			{
+				resetTotalHeld += elapsed;
+				if (resetTotalHeld >= 3.5)
+				{
+					trace('song reset');
+					doSongReset = true;
+					resetTotalHeld = 0;
+				}
+			} else
+			resetTotalHeld = 0;
+
+			if ((touchPad.buttonR.pressed && doSongReset) || (controls.RESET && FlxG.keys.pressed.ALT)) {
+				doSongReset = false;
+				ClientPrefs.data.hiddenSongs = [];
+				ClientPrefs.saveSettings();
+				search();
+			}
+
+			if (searchGroupVList.length > 0) {
+				if (controls.UI_LEFT_P) {
+					searchGroupValue--;
+					search();
+					updateGroupTitle();
+				}
+				if (controls.UI_RIGHT_P) {
+					searchGroupValue++;
+					search();
+					updateGroupTitle();
+				}
+
+				if (FlxG.keys.justPressed.CONTROL) {
+					persistentUpdate = false;
+					var daCopy = searchGroupVList.copy();
+					if (daCopy[0] == null || daCopy[0].trim().length < 1)
+						daCopy[0] = "Default";
+					openSubState(new online.substates.SoFunkinSubstate(daCopy, searchGroupValue, i -> {
+						searchGroupValue = i;
+						search();
+						updateGroupTitle();
+						return true;
+					}));
 				}
 			}
 
@@ -757,7 +839,7 @@ class FreeplayState extends MusicBeatState
 
 				listenToSong();
 			}
-			else if (controls.ACCEPT)
+			else if (controls.ACCEPT && songs.length > 0)
 			{
 				if (curSelected == -1) {
 					var newSel = FlxG.random.int(0, songs.length - 1);
@@ -969,6 +1051,11 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
+		#if android
+		if (FlxG.android.justReleased.BACK)
+			tempDisableInput();
+		#end
+
 		updateTexts(elapsed);
 		if (FlxG.keys.pressed.SHIFT && !selected) {
 			itemsCameraZoom = FlxMath.lerp(itemsCameraZoom, 0.65, elapsed * 10);
@@ -1107,24 +1194,25 @@ class FreeplayState extends MusicBeatState
 		final back:String = (controls.mobileC) ? 'B' : 'BACK';
 		final space:String = (controls.mobileC) ? 'X' : 'SPACE';
 		final tab:String = (controls.mobileC) ? 'Y' : 'TAB';
+		final reset:String = (controls.mobileC) ? 'R' : 'RESET';
 
 		if (curSelected == -1) {
-			infoText.text = "Press " + accept + " to select a random song / Press " + space + " to select without loading";
+			infoText.text = accept + " to select a random song / " + space + " to select without loading";
 			if (chatBox == null)
-				infoText.text += ' / Press $tab to select your character!';	
+				infoText.text += ' / $tab to select your character!';	
 			return;
 		}
 
 		switch (selectedItem) {
 			case 0:
 				if (selected) {
-					infoText.text = "Press " + accept + " to enter the Song / Use your Arrow Keys to change the Difficulty";
+					infoText.text = accept + " to enter the Song / Use your Arrow Keys to change the Difficulty";
 					itemsCamera.targetOffset.y += 200;
 				}
 				else {
-					infoText.text = "Press " + accept + " to select the current Song / Press " + space + " to listen to the Song";
+					infoText.text = accept + " to select the Song / " + space + " to listen to the Song / " + reset + " to " + (searchGroup == HIDDEN && searchGroupValue == 0 ? 'show' : 'hide') + " the Song";
 					if (chatBox == null)
-						infoText.text += ' / Press $tab to select your character!';	
+						infoText.text += ' / TAB to select your character!';
 				}
 
 				if (centerPoint == null)
@@ -1139,7 +1227,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 1:
-				infoText.text = "Press " + accept + " to open Gameplay Modifers Menu";
+				infoText.text = accept + " to open Gameplay Modifers Menu";
 
 				itemsCamera.follow(modifiersSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1152,7 +1240,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 2:
-				infoText.text = "Press " + accept + " to load a Replay data file";
+				infoText.text = accept + " to load a Replay data file";
 				
 				itemsCamera.follow(replaysSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1165,7 +1253,7 @@ class FreeplayState extends MusicBeatState
 				topTitle.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 3:
-				infoText.text = "Press " + accept + " to reset Score and Accuracy of this Song";
+				infoText.text = accept + " to reset Score and Accuracy of this Song";
 
 				itemsCamera.follow(resetSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1196,7 +1284,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (selected)
-			infoText.text += " / Press " + back + " to return to Songs";
+			infoText.text += " / " + back + " to return to Songs";
 
 		if (GameClient.isConnected()) {
 			#if !mobile replaysSelect.alpha -= 0.4; #end
@@ -1258,6 +1346,7 @@ class FreeplayState extends MusicBeatState
 				instPlaying = curSelected;
 				trackPlaying = track;
 				listening = true;
+				bustSound.onComplete = null;
 				#end
 			}
 			catch (e:Dynamic) {
@@ -1445,7 +1534,7 @@ class FreeplayState extends MusicBeatState
 	private function updateGroupTitle() {
 		var textValue = '';
 		switch (searchGroup) {
-			case MOD:
+			case MOD, HIDDEN:
 				textValue = searchGroupVList[searchGroupValue] ?? '';
 			case ALPHABET:
 				textValue = searchGroupVList[searchGroupValue].charAt(0).toUpperCase() + '-' + searchGroupVList[searchGroupValue].charAt(1).toUpperCase();
@@ -1687,6 +1776,17 @@ class FreeplayState extends MusicBeatState
 				continue;
 			}
 
+			// dumb asf idk how to shorten this
+			// if song is hidden
+			if (ClientPrefs.data.hiddenSongs.contains(song.songName + '-' + song.folder)) {
+				// the tab is not HIDDEN
+				if (!(searchGroup == HIDDEN && searchGroupValue == 0))
+					continue;
+			}
+			else if (searchGroup == HIDDEN && searchGroupValue == 0) {
+				continue;
+			}
+
 			if (
 				searchString.length < 1 || 
 				song.songName.toLowerCase().replace('-', ' ').contains(searchString.toLowerCase()) || 
@@ -1748,9 +1848,12 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (songs.length < 1) {
-			searchString = '';
-			search(init);
-			return;
+			curSelected = -1;
+			if (searchString.length > 0) {
+				searchString = '';
+				search(init);
+				return;
+			}
 		}
 
 		if (init) {
@@ -1758,7 +1861,6 @@ class FreeplayState extends MusicBeatState
 			return;
 		}
 
-		curSelected = -1;
 		instPlaying = -1;
 		changeSelection();
 		updateTexts();
@@ -1783,7 +1885,6 @@ class FreeplayState extends MusicBeatState
             return;
         }
 		else if (key == 13) { //enter
-			FlxG.stage.window.textInputEnabled = false;
 			search();
 			tempDisableInput();
             return;
@@ -1805,7 +1906,7 @@ class FreeplayState extends MusicBeatState
 
 	function tempDisableInput() {
 		new FlxTimer().start(0.05, (t) -> {
-			searchInputWait = false;
+			FlxG.stage.window.textInputEnabled = searchInputWait = false;
 			searchString = searchString;
 		});
 	}
@@ -1840,4 +1941,46 @@ enum GroupType {
 	ALPHABET;
 	MOD;
 	MIX;
+	HIDDEN;
+}
+
+class Explod extends FlxSprite {
+	public static var distancePerItem:FlxPoint = new FlxPoint(20, 120);
+	var targetY:Float = 0;
+	var offsetX:Float = 0;
+	var startX:Float = 0;
+	var startY:Float = 0;
+
+	public function new() {
+		super(-500, -500);
+
+		var graphic = Paths.image('gm_explosion');
+		loadGraphic(graphic, true, 67, 67);
+		animation.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 24, false);
+		scale.set(2, 2);
+		updateHitbox();
+		targetY = -5000;
+		animation.finishCallback = _ -> {
+			kill();
+		};
+		animation.play('boom');
+	}
+
+	public function boom(of:Scrollable, ox:Float) {
+		visible = true;
+		setPosition(x, y);
+		animation.play('boom');
+
+		targetY = of.targetY;
+		startX = of.startPosition.x;
+		startY = of.startPosition.y;
+		offsetX = ox;
+	}
+
+	override function update(elapsed:Float) {
+		x = ((targetY - FreeplayState.instance.lerpSelected) * distancePerItem.x) + startX + offsetX * 80 - 40;
+		y = ((targetY - FreeplayState.instance.lerpSelected) * 1.3 * distancePerItem.y) + startY - 40;
+
+		super.update(elapsed);
+	}
 }

@@ -104,6 +104,7 @@ import states.TitleState;
 	public var disableFreeplayAlphabet:Bool = false;
 	public var disableLagDetection:Bool = false;
 	public var groupSongsBy:String = 'No Grouping';
+	public var hiddenSongs:Array<String> = []; //format: 'songname-originfolder'
 
 	public function new()
 	{
