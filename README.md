@@ -22,8 +22,8 @@
 * [Server Source Code](https://github.com/Snirozu/Funkin-Online-Server)
 
 ## Contributors!
-<a href="https://github.com/Snirozu/Funkin-Psych-Online/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Snirozu/Funkin-Psych-Online" />
+<a href="https://github.com/MobilePorting/Funkin-Psych-Online-Mobile/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MobilePorting/Funkin-Psych-Online-Mobile" />
 </a>
 
 ###### Generated with [contrib.rocks](https://contrib.rocks)!
