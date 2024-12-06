@@ -422,6 +422,8 @@ class SkinsState extends MusicBeatState {
 			if (selectTimer != null)
 				selectTimer.active = false;
 
+			touchPad.visible = false;
+
 			var daCopy = charactersName.copy();
 			daCopy[0] = "Default";
 			openSubState(new online.substates.SoFunkinSubstate(daCopy, curCharacter, i -> {
@@ -442,7 +444,6 @@ class SkinsState extends MusicBeatState {
 				}
 				return null;
 			}));
-			removeTouchPad();
 		}
 
         if (controls.BACK) {

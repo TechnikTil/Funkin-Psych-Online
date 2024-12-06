@@ -714,7 +714,7 @@ class FreeplayState extends MusicBeatState
 					holdTime = 0;
 				}
 
-				if ((touchPad.buttonR.justReleased || controls.RESET) && curSelected != -1 && !FlxG.keys.pressed.ALT) {
+				if (((touchPad.buttonR.justReleased && resetTotalHeld <= 3.5) || controls.RESET) && curSelected != -1 && !FlxG.keys.pressed.ALT) {
 					var songId = songs[curSelected].songName + '-' + songs[curSelected].folder;
 					if (ClientPrefs.data.hiddenSongs.contains(songId)) {
 						ClientPrefs.data.hiddenSongs.remove(songId);
@@ -755,17 +755,13 @@ class FreeplayState extends MusicBeatState
 				}
 			}
 
-			if (touchPad.buttonR.pressed)
+			if (touchPad.buttonR.pressed && resetTotalHeld <= 3.5)
 			{
 				resetTotalHeld += elapsed;
 				if (resetTotalHeld >= 3.5)
-				{
-					trace('song reset');
 					doSongReset = true;
-					resetTotalHeld = 0;
-				}
-			} else
-			resetTotalHeld = 0;
+			} else if (touchPad.buttonR.released)
+				resetTotalHeld = 0;
 
 			if ((touchPad.buttonR.pressed && doSongReset) || (controls.RESET && FlxG.keys.pressed.ALT)) {
 				doSongReset = false;
