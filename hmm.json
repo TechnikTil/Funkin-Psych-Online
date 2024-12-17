@@ -81,8 +81,8 @@
       "name": "linc_luajit",
       "type": "git",
       "dir": null,
-      "ref": "main",
-      "url": "https://github.com/mcagabe19-stuff/linc_luajit-rewriten"
+      "ref": "master",
+      "url": "https://github.com/MobilePorting/linc_luajit-0.7plus"
     },
     {
       "name": "colyseus",
