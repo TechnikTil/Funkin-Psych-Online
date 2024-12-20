@@ -92,7 +92,6 @@ class Hitbox extends MobileInputManager implements IMobileControls {
 				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
 		}
 
-		//storedButtonsIDs.clear();
 		scrollFactor.set();
 		updateTrackedButtons();
 
@@ -104,6 +103,8 @@ class Hitbox extends MobileInputManager implements IMobileControls {
 	 */
 	override function destroy() {
 		super.destroy();
+		onButtonUp.destroy();
+		onButtonDown.destroy();
 
 		for (fieldName in Reflect.fields(this)) {
 			var field = Reflect.field(this, fieldName);

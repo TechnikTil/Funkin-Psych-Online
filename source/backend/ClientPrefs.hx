@@ -162,15 +162,15 @@ class ClientPrefs {
 		'sidebar'		=> []
 	];
 	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
-		'note_up'		=> [NOTE_UP, UP2],
-		'note_left'		=> [NOTE_LEFT, LEFT2],
-		'note_down'		=> [NOTE_DOWN, DOWN2],
-		'note_right'	=> [NOTE_RIGHT, RIGHT2],
+		'note_up'		=> [NOTE_UP],
+		'note_left'		=> [NOTE_LEFT],
+		'note_down'		=> [NOTE_DOWN],
+		'note_right'	=> [NOTE_RIGHT],
 
-		'ui_up'			=> [UP, NOTE_UP],
-		'ui_left'		=> [LEFT, NOTE_LEFT],
-		'ui_down'		=> [DOWN, NOTE_DOWN],
-		'ui_right'		=> [RIGHT, NOTE_RIGHT],
+		'ui_up'			=> [UP],
+		'ui_left'		=> [LEFT],
+		'ui_down'		=> [DOWN],
+		'ui_right'		=> [RIGHT],
 
 		'accept'		=> [A],
 		'back'			=> [B],

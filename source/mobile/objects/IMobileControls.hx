@@ -21,6 +21,7 @@
  */
 
 package mobile.objects;
+
 import flixel.util.FlxSignal;
 
 /**

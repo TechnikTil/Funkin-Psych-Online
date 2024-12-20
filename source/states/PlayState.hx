@@ -1189,6 +1189,8 @@ class PlayState extends MusicBeatState
 		addMobileControls();
 		addTouchPad((replayData != null) ? 'LEFT_RIGHT' : 'NONE', (GameClient.isConnected()) ? 'P_C_T' : (replayData != null) ? #if android 'X_Y' : 'T' #else 'P_X_Y' : 'P_T' #end);
 		addTouchPadCamera();
+		mobileControls.onButtonDown.add(onButtonPress);
+		mobileControls.onButtonUp.add(onButtonRelease);
 		if (replayData == null)
 			mobileControls.instance.visible = true;
 		if (touchPad.buttonT != null)
@@ -1205,7 +1207,7 @@ class PlayState extends MusicBeatState
 			if (touchPad.buttonC != null)
     				button.deadZones.push(touchPad.buttonC);
 			if (touchPad.buttonP != null)			
-				button.deadZones.push(touchPad.buttonP);
+					button.deadZones.push(touchPad.buttonP);
 		});
 
 		super.create();
@@ -3999,6 +4001,22 @@ class PlayState extends MusicBeatState
 			}
 		}
 		return -1;
+	}
+
+	private function onButtonPress(button:TouchButton, ids:Array<MobileInputID>):Void
+	{
+		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
+		callOnScripts('onButtonPressPre', [buttonCode]);
+		if (button.justPressed) keyPressed(buttonCode);
+		callOnScripts('onButtonPress', [buttonCode]);
+	}
+
+	private function onButtonRelease(button:TouchButton, ids:Array<MobileInputID>):Void
+	{
+		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
+		callOnScripts('onButtonReleasePre', [buttonCode]);
+		if(buttonCode > -1) keyReleased(buttonCode);
+		callOnScripts('onButtonRelease', [buttonCode]);
 	}
 
 	// Hold notes
