@@ -2283,6 +2283,8 @@ class PlayState extends MusicBeatState
 					resyncVocals();
 				}
 
+				touchPad.visible = true;
+
 				if (startTimer != null && !startTimer.finished)
 					startTimer.active = true;
 				if (finishTimer != null && !finishTimer.finished)
@@ -2751,7 +2753,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		FlxG.camera.followLerp = 0;
-		persistentUpdate = false;
+		touchPad.visible = persistentUpdate = false;
 		persistentDraw = true;
 		paused = true;
 
