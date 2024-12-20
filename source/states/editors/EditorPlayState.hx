@@ -228,7 +228,7 @@ class EditorPlayState extends MusicBeatSubstate
 					daNote.active = false;
 					daNote.visible = false;
 
-					daNote.kill();
+					if(!ClientPrefs.data.lowQuality) daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
 				}
@@ -573,6 +573,7 @@ class EditorPlayState extends MusicBeatSubstate
 		var pixelShitPart1:String = "";
 		var pixelShitPart2:String = '';
 
+		if (ClientPrefs.data.popUpRating){
 		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating.image + pixelShitPart2));
 		rating.screenCenter();
 		rating.x = coolText.x - 40;
@@ -692,6 +693,7 @@ class EditorPlayState extends MusicBeatSubstate
 			},
 			startDelay: Conductor.crochet * 0.002 / playbackRate
 		});
+		}
 	}
 
 	private function onKeyPress(event:KeyboardEvent):Void
@@ -732,7 +734,7 @@ class EditorPlayState extends MusicBeatSubstate
 				{
 					for (doubleNote in pressNotes) {
 						if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1) {
-							doubleNote.kill();
+							if(!ClientPrefs.data.lowQuality) doubleNote.kill();
 							notes.remove(doubleNote, true);
 							doubleNote.destroy();
 						} else
@@ -829,7 +831,7 @@ class EditorPlayState extends MusicBeatSubstate
 
 		if (!note.isSustainNote)
 		{
-			note.kill();
+			if(!ClientPrefs.data.lowQuality) note.kill();
 			notes.remove(note, true);
 			note.destroy();
 		}
@@ -850,7 +852,7 @@ class EditorPlayState extends MusicBeatSubstate
 
 				if (!note.isSustainNote)
 				{
-					note.kill();
+					if(!ClientPrefs.data.lowQuality) note.kill();
 					notes.remove(note, true);
 					note.destroy();
 				}
@@ -870,7 +872,7 @@ class EditorPlayState extends MusicBeatSubstate
 
 			if (!note.isSustainNote)
 			{
-				note.kill();
+				if(!ClientPrefs.data.lowQuality) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -881,7 +883,7 @@ class EditorPlayState extends MusicBeatSubstate
 		//Dupe note remove
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && daNote.mustPress && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
-				note.kill();
+				if(!ClientPrefs.data.lowQuality) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
