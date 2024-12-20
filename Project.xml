@@ -72,7 +72,7 @@
 		<assets path="assets/secrets" rename="assets" exclude="*.mp3" unless="web" />
 	</section>
 
-	<define name="CHECK_FOR_UPDATES" unless="LOCAL || ios" />
+	<define name="CHECK_FOR_UPDATES" unless="LOCAL" />
 
 	<!-- Week Assets -->
 	<library name="videos" preload="true" />

@@ -104,7 +104,7 @@ class ReplayRecorder extends FlxBasic {
 		}
 		else
 		{
-			trace("[WARNING] Tried to init replay recorder for mobile controls but failed.");
+			trace("Tried to init replay recorder for mobile controls but failed.");
 		}
 
 		var touchPad:TouchPad = state.controls.requestedInstance.touchPad;
@@ -115,7 +115,7 @@ class ReplayRecorder extends FlxBasic {
 		}
 		else
 		{
-			trace("[WARNING] Tried to init replay recorder for touch pad but failed.");
+			trace("Tried to init replay recorder for touch pad but failed.");
 		}
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);

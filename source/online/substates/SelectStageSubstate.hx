@@ -28,7 +28,7 @@ class SelectStageSubstate extends MusicBeatSubstate {
 			}
 		} else {
 			blackSprite = new FlxSprite();
-       	 	blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 			blackSprite.alpha = 0.75;
 			add(blackSprite);
 		}

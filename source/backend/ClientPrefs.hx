@@ -10,7 +10,7 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import states.TitleState;
 
 // Add a variable here and it will get automatically saved
-@:structInit class SaveVariables {
+class SaveVariables {
 	// Mobile and Mobile Controls Releated
 	public var extraButtons:String = "NONE"; // mobile extra button option
 	public var hitboxPos:Bool = true; // hitbox extra button position option
@@ -113,8 +113,8 @@ import states.TitleState;
 }
 
 class ClientPrefs {
-	public static var data:SaveVariables = {};
-	public static var defaultData:SaveVariables = {};
+	public static var data:SaveVariables = null;
+	public static var defaultData:SaveVariables = null;
 
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -237,6 +237,9 @@ class ClientPrefs {
 	}
 
 	public static function loadPrefs() {
+		if(data == null) data = new SaveVariables();
+		if(defaultData == null) defaultData = new SaveVariables();
+
 		for (key in Reflect.fields(data)) {
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key)) {
 				//trace('loaded variable: $key');

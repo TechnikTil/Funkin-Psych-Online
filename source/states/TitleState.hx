@@ -113,10 +113,10 @@ class TitleState extends MusicBeatState
 		}
 		#end
 
+		Highscore.load();
+
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
-
-		Highscore.load();
 
 		#if TITLE_SCREEN_EASTER_EGG
 		if (FlxG.save.data.psychDevsEasterEgg == null) FlxG.save.data.psychDevsEasterEgg = ''; //Crash prevention
@@ -357,6 +357,7 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
+		#if FLX_TOUCH
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)
@@ -364,6 +365,7 @@ class TitleState extends MusicBeatState
 				pressedEnter = true;
 			}
 		}
+		#end
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 

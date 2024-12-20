@@ -24,8 +24,6 @@ class MusicBeatState extends FlxUIState
 		return Controls.instance;
 	}
 
-	public static var camBeat:FlxCamera;
-
 	public var touchPad:TouchPad;
 	public var touchPadCam:FlxCamera;
 	public var mobileControls:IMobileControls;
@@ -112,6 +110,8 @@ class MusicBeatState extends FlxUIState
 		
 		super.destroy();
 	}
+
+	public static var camBeat:FlxCamera;
 
 	override function create() {
 		instance = this;

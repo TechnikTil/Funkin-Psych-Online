@@ -58,7 +58,7 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
-		#if !mobile
+		#if !mobile // would crash the game
 		if (Path.normalize(Sys.getCwd()) != Path.normalize(lime.system.System.applicationDirectory)) {
 			Lib.application.window.alert("Your path is either not run from the game directory,\nor contains illegal UTF-8 characters!\n\nRun from: "
 				+ Sys.getCwd()
@@ -177,7 +177,11 @@ class Main extends Sprite
 
 		FlxG.fixedTimestep = false;
 		FlxG.game.focusLostFramerate = #if mobile 30 #else 60 #end;
+		#if web
+		FlxG.keys.preventDefaultKeys.push(TAB);
+		#else
 		FlxG.keys.preventDefaultKeys = [TAB];
+		#end
 
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
 

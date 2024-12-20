@@ -3,10 +3,6 @@ package options;
 import online.states.RoomState;
 import states.MainMenuState;
 import backend.StageData;
-#if (target.threaded)
-import sys.thread.Thread;
-import sys.thread.Mutex;
-#end
 
 class OptionsState extends MusicBeatState
 {
@@ -16,7 +12,6 @@ class OptionsState extends MusicBeatState
 	public static var menuBG:FlxSprite;
 	public static var onPlayState:Bool = false;
 	public static var onOnlineRoom:Bool = false;
-	#if (target.threaded) var mutex:Mutex = new Mutex(); #end
 
 	function openSelectedSubstate(label:String) {
 		if (label != "Adjust Delay and Combo"){
@@ -82,20 +77,6 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
-		#if (target.threaded)
-		Thread.create(()->{
-			mutex.acquire();
-
-			for (music in VisualsUISubState.pauseMusics)
-			{
-				if (music.toLowerCase() != "none")
-					Paths.music(Paths.formatToSongPath(music));
-			}
-
-			mutex.release();
-		});
-		#end
-
 		addTouchPad('UP_DOWN', 'A_B');
 
 		super.create();
@@ -107,7 +88,7 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 		controls.isInSubstate = false;
-        removeTouchPad();
+		removeTouchPad();
 		addTouchPad('UP_DOWN', 'A_B');
 		persistentUpdate = true;
 	}

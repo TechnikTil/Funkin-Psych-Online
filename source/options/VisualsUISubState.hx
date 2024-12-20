@@ -6,7 +6,6 @@ import objects.Alphabet;
 
 class VisualsUISubState extends BaseOptionsMenu
 {
-	public static var pauseMusics:Array<String> = ['None', 'Tea Time', 'Breakfast'];
 	var noteOptionID:Int = -1;
 	var notes:FlxTypedGroup<StrumNote>;
 	var notesTween:Array<FlxTween> = [];
@@ -135,7 +134,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-
+		
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',
 			'showFPS',
@@ -162,7 +161,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			"What song do you prefer for the Pause Screen?",
 			'pauseMusic',
 			'string',
-			pauseMusics);
+			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 		
