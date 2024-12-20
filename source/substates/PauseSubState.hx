@@ -23,7 +23,7 @@ class PauseSubState extends MusicBeatSubstate
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit to menu'];
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Chart Editor', 'Change Difficulty', 'Options', 'Exit to menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 
@@ -46,26 +46,27 @@ class PauseSubState extends MusicBeatSubstate
 
 		if(PlayState.chartingMode)
 		{
-			menuItemsOG.insert(2, 'Leave Charting Mode');
+			menuItemsOG.insert(3, 'Leave Charting Mode');
 			
 			var num:Int = 0;
 			if(!PlayState.instance.startingSong)
 			{
 				num = 1;
-				menuItemsOG.insert(3, 'Skip Time');
+				menuItemsOG.insert(4, 'Skip Time');
 			}
-			menuItemsOG.insert(3 + num, 'End Song');
-			menuItemsOG.insert(4 + num, 'Toggle Practice Mode');
-			menuItemsOG.insert(5 + num, 'Toggle Botplay');
+			menuItemsOG.insert(4 + num, 'End Song');
+			menuItemsOG.insert(5 + num, 'Toggle Practice Mode');
+			menuItemsOG.insert(6 + num, 'Toggle Botplay');
 		}
 
 		var oof = 0;
 		if (!ClientPrefs.data.disableSongComments && PlayState.instance.songId != null) {
-			menuItemsOG.insert(3, 'Leave a Comment Now');
+			menuItemsOG.insert(4, 'Leave a Comment Now');
 			oof++;
 		}
 
 		if (PlayState.replayData != null) {
+			menuItemsOG.remove('Chart Editor');
 			menuItemsOG.remove('Change Difficulty');
 			menuItemsOG.insert(2 + oof, 'Skip Time');
 			menuItemsOG.insert(3 + oof, 'Save Replay');
@@ -275,6 +276,8 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song":
 					PlayState.deathCounter++;
 					restartSong();
+				case 'Chart Editor':
+					PlayState.instance.openChartEditor();
 				case "Leave Charting Mode":
 					PlayState.deathCounter = 0;
 					restartSong();

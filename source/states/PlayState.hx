@@ -2785,7 +2785,7 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	function openChartEditor()
+	public function openChartEditor()
 	{
 		if (GameClient.isConnected() || redditMod)
 			return;

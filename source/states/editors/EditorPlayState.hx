@@ -129,7 +129,17 @@ class EditorPlayState extends MusicBeatSubstate
 		dataTxt.borderSize = 1.25;
 		add(dataTxt);
 
-		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press ESC to Go Back to Chart Editor', 16);
+		var daButton:String;
+		#if android
+		daButton = "BACK";
+		#else
+		if (controls.mobileC)
+			daButton = "P";
+		else
+			daButton = "ESC";
+		#end
+
+		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press ' + daButton + ' to Go Back to Chart Editor', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tipText.borderSize = 2;
 		tipText.scrollFactor.set();
@@ -145,13 +155,23 @@ class EditorPlayState extends MusicBeatSubstate
 		// Updating Discord Rich Presence (with Time Left)
 		DiscordClient.changePresence('Playtesting on Chart Editor', PlayState.SONG.song, null, true, songLength);
 		#end
+
+		#if !android
+		addTouchPad("NONE", "P");
+		addTouchPadCamera();
+		#end
+
+		addMobileControls();
+		mobileControls.instance.visible = true;
+
 		RecalculateRating();
 	}
 
 	override function update(elapsed:Float)
 	{
-		if(controls.BACK || FlxG.keys.justPressed.ESCAPE)
+		if(#if android FlxG.android.justReleased.BACK #else touchPad.buttonP.justPressed #end || controls.BACK || FlxG.keys.justPressed.ESCAPE)
 		{
+			mobileControls.instance.visible = false;
 			endSong();
 			super.update(elapsed);
 			return;

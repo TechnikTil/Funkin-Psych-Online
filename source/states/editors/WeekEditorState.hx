@@ -110,6 +110,8 @@ class WeekEditorState extends MusicBeatState
 
 		FlxG.mouse.visible = true;
 
+		addTouchPad("UP_DOWN", "B");
+
 		super.create();
 	}
 
@@ -436,7 +438,7 @@ class WeekEditorState extends MusicBeatState
 
 		if(!blockInput) {
 			ClientPrefs.toggleVolumeKeys(true);
-			if(FlxG.keys.justPressed.ESCAPE) {
+			if(FlxG.keys.justPressed.ESCAPE || touchPad.buttonB.justPressed) {
 				FlxG.switchState(() -> new MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
@@ -621,6 +623,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 
 		addEditorBox();
 		changeSelection();
+		addTouchPad("UP_DOWN", "B");
 		super.create();
 	}
 	
@@ -799,7 +802,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 			}
 		} else {
 			ClientPrefs.toggleVolumeKeys(true);
-			if(FlxG.keys.justPressed.ESCAPE) {
+			if(FlxG.keys.justPressed.ESCAPE || touchPad.buttonB.justPressed) {
 				FlxG.switchState(() -> new MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
