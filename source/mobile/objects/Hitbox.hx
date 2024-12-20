@@ -131,6 +131,7 @@ class Hitbox extends MobileInputManager implements IMobileControls {
 			var hintLaneTween:FlxTween = null;
 
 			hint.onDown.callback = function() {
+
 				onButtonDown.dispatch(hint, storedButtonsIDs.get(mapKey));
 
 				if (hintTween != null)
