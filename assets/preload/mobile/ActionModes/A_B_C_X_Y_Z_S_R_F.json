@@ -43,11 +43,11 @@
       "color": "0xFF0000"
     },
     {
-      "button": "buttonF",
-      "graphic": "f",
+      "button": "buttonS",
+      "graphic": "s",
       "x": 1156,
       "y": 348,
-      "color": "0xA87932"
+      "color": "0x231A24"
     },
     {
       "button": "buttonR",
@@ -55,6 +55,13 @@
       "x": 1032,
       "y": 348,
       "color": "0xBEBD7F"
+    },
+    {
+      "button": "buttonF",
+      "graphic": "f",
+      "x": 908,
+      "y": 348,
+      "color": "0xA87932"
     }
   ]
 }
