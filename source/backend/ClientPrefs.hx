@@ -74,7 +74,8 @@ import states.TitleState;
 		'instakill' => false,
 		'practice' => false,
 		'botplay' => false,
-		'opponentplay' => false
+		'opponentplay' => false,
+		'nospecialnotes' => false,
 	];
 
 	public var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -105,6 +106,8 @@ import states.TitleState;
 	public var disableLagDetection:Bool = false;
 	public var groupSongsBy:String = 'No Grouping';
 	public var hiddenSongs:Array<String> = []; //format: 'songname-originfolder'
+	public var favSongs:Array<String> = []; //format: 'songname-originfolder'
+	public var modchartSkinChanges:Bool = false;
 
 	public function new()
 	{
@@ -135,6 +138,7 @@ class ClientPrefs {
 		'reset'			=> [R],
 		'taunt'			=> [SPACE],
 		'sidebar'		=> [GRAVEACCENT],
+		'fav'			=> [Q],
 		
 		'volume_mute'	=> [ZERO],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
@@ -159,7 +163,8 @@ class ClientPrefs {
 		'pause'			=> [START],
 		'reset'			=> [BACK],
 		'taunt'			=> [A],
-		'sidebar'		=> []
+		'sidebar'		=> [],
+		'fav'			=> []
 	];
 	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
 		'note_up'		=> [NOTE_UP],

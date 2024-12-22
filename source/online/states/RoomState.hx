@@ -619,7 +619,7 @@ class RoomState extends MusicBeatState {
 		if (FlxG.keys.justPressed.F12) {
 			trace('reloading lumod');
 			Lumod.cache.scripts.clear();
-			luaLoad();
+			lmLoad();
 		}
 		
 		if (!GameClient.isConnected())
