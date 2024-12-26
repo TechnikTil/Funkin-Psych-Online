@@ -1749,7 +1749,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 				unspawnNotes.remove(daNote);
 				daNote.destroy();
 			}
@@ -1765,7 +1765,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 				notes.remove(daNote, true);
 				daNote.destroy();
 			}
@@ -2705,7 +2705,7 @@ class PlayState extends MusicBeatState
 								daNote.active = false;
 								daNote.visible = false;
 
-								if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
+								//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 								notes.remove(daNote, true);
 								daNote.destroy();
 							}
@@ -3464,7 +3464,7 @@ class PlayState extends MusicBeatState
 			daNote.active = false;
 			daNote.visible = false;
 
-			if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
+			//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
 		}
@@ -3923,7 +3923,7 @@ class PlayState extends MusicBeatState
 					{
 						for (doubleNote in pressNotes) {
 							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1) {
-								if(!ClientPrefs.data.lowQuality || !cpuControlled) doubleNote.kill();
+								//if(!ClientPrefs.data.lowQuality || !cpuControlled) doubleNote.kill();
 								notes.remove(doubleNote, true);
 								doubleNote.destroy();
 							} else
@@ -4103,7 +4103,7 @@ class PlayState extends MusicBeatState
 		//Dupe note remove
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && isPlayerNote(daNote) && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
-				if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -4230,7 +4230,7 @@ class PlayState extends MusicBeatState
 
 		if (!note.isSustainNote)
 		{
-			if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
+			//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 			notes.remove(note, true);
 			note.destroy();
 		}
@@ -4267,7 +4267,7 @@ class PlayState extends MusicBeatState
 
 				if (!note.isSustainNote)
 				{
-					if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
+					//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 					notes.remove(note, true);
 					note.destroy();
 				}
@@ -4356,7 +4356,7 @@ class PlayState extends MusicBeatState
 
 			if (!note.isSustainNote)
 			{
-				if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -5190,7 +5190,7 @@ class PlayState extends MusicBeatState
 						&& note.isSustainNote == message[2]
 						&& Math.abs(note.strumTime - message[0]) < 1) 
 					{
-						if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
+						//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 						unspawnNotes.remove(note);
 						note.destroy();
 					}
