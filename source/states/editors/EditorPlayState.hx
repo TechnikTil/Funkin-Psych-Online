@@ -784,12 +784,18 @@ class EditorPlayState extends MusicBeatSubstate
 
 	private function onButtonPress(button:TouchButton, ids:Array<MobileInputID>):Void
 	{
+		if (ids.filter(id -> id.toString().startsWith("EXTRA")).length > 0 || ids.filter(id -> id.toString().startsWith("TAUNT")).length > 0)
+			return;
+
 		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
 		if (button.justPressed) keyPressed(buttonCode);
 	}
 
 	private function onButtonRelease(button:TouchButton, ids:Array<MobileInputID>):Void
 	{
+		if (ids.filter(id -> id.toString().startsWith("EXTRA")).length > 0 || ids.filter(id -> id.toString().startsWith("TAUNT")).length > 0)
+			return;
+
 		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
 		if(buttonCode > -1) keyReleased(buttonCode);
 	}
