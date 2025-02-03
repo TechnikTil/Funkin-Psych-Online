@@ -1,5 +1,6 @@
 package online.replay;
 
+import mobile.input.MobileInputID;
 import states.FreeplayState;
 import online.network.Leaderboard;
 import haxe.crypto.Md5;
@@ -94,7 +95,29 @@ class ReplayRecorder extends FlxBasic {
 		}
 
 		state.add(this);
-        
+
+		var mobileControls:IMobileControls = state.controls.requestedMobileC;
+		if(mobileControls != null)
+		{
+			mobileControls.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
+			mobileControls.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
+		}
+		else
+		{
+			trace("Tried to init replay recorder for mobile controls but failed.");
+		}
+
+		var touchPad:TouchPad = state.controls.requestedInstance.touchPad;
+		if(touchPad != null)
+		{
+			touchPad.onButtonDown.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
+			touchPad.onButtonUp.add((button:TouchButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
+		}
+		else
+		{
+			trace("Tried to init replay recorder for touch pad but failed.");
+		}
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
     }
@@ -133,6 +156,35 @@ class ReplayRecorder extends FlxBasic {
 			if (id == null || state.paused || !REGISTER_BINDS.contains(id))
 				continue;
 			data.inputs.push([time, id, move]);
+		}
+	}
+
+	function recordKeyMobileC(time:Float, IDs:Array<MobileInputID>, move:Int) {
+		if (IDs == null || IDs.length < 0)
+			return;
+
+		if(IDs.length == 1 && !REGISTER_BINDS.contains(IDs[0].toString().toLowerCase()))
+		{
+			switch(IDs[0])
+			{
+				case EXTRA_1:
+					data.inputs.push([time, 'KEY:SPACE', move]);
+				case EXTRA_2:
+					data.inputs.push([time, 'KEY:SHIFT', move]);
+				default:
+					// nothing
+			}
+			return;
+		}
+
+		for (id in IDs)
+		{
+			var idName:String = id.toString().toLowerCase();
+
+			if (idName == null || state.paused || !REGISTER_BINDS.contains(idName))
+				continue;
+
+			data.inputs.push([time, idName, move]);
 		}
 	}
 

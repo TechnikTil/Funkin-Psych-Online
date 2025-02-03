@@ -43,6 +43,8 @@ import psychlua.HScript;
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
 
+import mobile.psychlua.Functions;
+
 class FunkinLua {
 	public static var Function_Stop:Dynamic = "##PSYCHLUA_FUNCTIONSTOP";
 	public static var Function_Continue:Dynamic = "##PSYCHLUA_FUNCTIONCONTINUE";
@@ -1620,6 +1622,8 @@ class FunkinLua {
 		CustomSubstate.implement(this);
 		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
+		MobileFunctions.implement(this);
+		#if android AndroidFunctions.implement(this); #end
 		
 		try{
 			var result:Dynamic = LuaL.dofile(lua, scriptName);
@@ -1627,8 +1631,8 @@ class FunkinLua {
 			if(resultStr != null && result != 0) {
 				if (ClientPrefs.isDebug()) {
 					Sys.println("Lua: " + resultStr);
-					#if desktop
-					lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
+					#if (desktop || android)
+					CoolUtil.showPopUp(resultStr, 'Error on lua script!');
 					#else
 					luaTrace('$scriptName\n$resultStr', true, false, FlxColor.RED);
 					#end

@@ -51,7 +51,7 @@ class DownloadAlerts extends Sprite {
 				alert.cancelText.text = 'Cancelling...';
 			}
 			else {
-				alert.cancelText.text = 'Cancel: ALT + $i ';
+				alert.cancelText.text = Controls.instance.mobileC ? 'Cancel: Touch Here ' : 'Cancel: ALT + $i ';
 				if (i >= 10) {
 					alert.cancelText.text = "";
 				}
@@ -84,6 +84,9 @@ class DownloadAlerts extends Sprite {
 				alert.updateProgress(downloader.gotContent, downloader.contentLength);
 			else
 				alert.setStatus(alert.newStatus);
+
+			if (Controls.instance.mobileC && alert.cancelBg.getBounds(FlxG.stage).contains(FlxG.stage.mouseX, FlxG.stage.mouseY) && FlxG.mouse.justPressed)
+				downloader.cancel();
 
 			prevAlert = alert;
 			i++;

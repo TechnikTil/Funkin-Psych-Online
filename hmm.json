@@ -7,8 +7,10 @@
     },
     {
       "name": "lime",
-      "type": "haxelib",
-      "version": "8.1.2"
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/mcagabe19-stuff/lime.git"
     },
     {
       "name": "openfl",
@@ -17,8 +19,10 @@
     },
     {
       "name": "flixel",
-      "type": "haxelib",
-      "version": "5.6.2"
+      "type": "git",
+      "dir": null,
+      "ref": "5.6.2",
+      "url": "https://github.com/MobilePorting/flixel.git"
     },
     {
       "name": "flixel-addons",
@@ -37,8 +41,10 @@
     },
     {
       "name": "hxcpp",
-      "type": "haxelib",
-      "version": "4.3.2"
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/mcagabe19-stuff/hxcpp.git"
     },
     {
       "name": "tjson",
@@ -61,8 +67,8 @@
       "name": "SScript",
       "type": "git",
       "dir": null,
-      "ref": "patch-1",
-      "url": "https://github.com/Snirozu/SScript-7.7.0"
+      "ref": "main",
+      "url": "https://github.com/mcagabe19-stuff/SScript-7.7.0"
     },
     {
       "name": "discord_rpc",
@@ -75,8 +81,8 @@
       "name": "linc_luajit",
       "type": "git",
       "dir": null,
-      "ref": "main",
-      "url": "https://github.com/mcagabe19-stuff/linc_luajit-rewriten"
+      "ref": "master",
+      "url": "https://github.com/MobilePorting/linc_luajit-0.7plus"
     },
     {
       "name": "colyseus",
@@ -108,7 +114,7 @@
       "type": "git",
       "dir": null,
       "ref": "dev",
-      "url": "https://github.com/ShadowMario/flxanimate"
+      "url": "https://github.com/FunkinExtraKeys/flxanimate"
     },
     {
       "name": "lumod",
@@ -124,6 +130,13 @@
       "name": "compiletime",
       "type": "haxelib",
       "version": "2.8.0"
+    },
+    {
+      "name": "extension-androidtools",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/MAJigsaw77/extension-androidtools/"
     }
   ]
 }

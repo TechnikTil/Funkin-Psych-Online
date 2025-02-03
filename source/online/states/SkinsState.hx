@@ -32,6 +32,7 @@ class SkinsState extends MusicBeatState {
 
 	static var flipped:Bool = false;
 
+	final accept:String = (Controls.instance.mobileC) ? "A" : "ACCEPT";
 	static var backClass:Class<Dynamic>;
 
 	var reloadedState:Bool = false;
@@ -229,7 +230,7 @@ class SkinsState extends MusicBeatState {
 				characters = Paths.mods(name + '/characters/');
 			}
 			if (FileSystem.exists(characters)) {
-				for (file in FileSystem.readDirectory(characters)) {
+				for (file in Paths.readDirectory(characters)) {
 					var path = Path.join([characters, file]);
 					if (!sys.FileSystem.isDirectory(path) && file.endsWith('.json')) {
 						var character:String = file.substr(0, file.length - 5);
@@ -311,28 +312,35 @@ class SkinsState extends MusicBeatState {
 		add(arrowRight);
 
 		charSelect = new FlxText(0, 0, FlxG.width);
-		charSelect.text = 'Press ACCEPT to select!';
+		charSelect.text = 'Press $accept to select!';
 		charSelect.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charSelect.y = barDown.y + barDown.height / 2 - charSelect.height / 2;
 		charSelect.alpha = 0.8;
 		charSelect.cameras = [hud];
 		add(charSelect);
 
+		final gofuckurself:String = (controls.mobileC) ? "Use Arrow Keys while pressing X to move!" : "Use Note keybinds while pressing SHIFT to move!";
+
 		var swagText = new FlxText(0, charSelect.y + charSelect.height + 5, FlxG.width);
-		swagText.text = 'Use Note keybinds while pressing SHIFT to move!';
+		swagText.text = gofuckurself;
 		swagText.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		swagText.alpha = 0.8;
 		swagText.cameras = [hud];
 		add(swagText);
 
-		var tip1 = new FlxText(20, 0, FlxG.width, 'TAB - Flip skin\n8 - Edit skin\nCTRL - Open the Character List');
+		final tab:String = (controls.mobileC) ? "C" : "TAB";
+		final eight:String = (controls.mobileC) ? "D" : "8";
+		final ctrl:String = (controls.mobileC) ? "V" : "CTRL";
+		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin\n$eight - Edit skin\n$ctrl - Open the Character List');
 		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y - 10;
 		tip1.alpha = 0.5;
 		tip1.cameras = [hud];
 		add(tip1);
 
-		var tip2 = new FlxText(-20, 0, FlxG.width, 'F1 for Help!\nF2 to Browse Verified Skins');
+		var f1:String = (controls.mobileC) ? "Y" : "F1";
+		var f2:String = (controls.mobileC) ? "Z" : "F2";
+		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 for Help!\n$f2 to Browse Verified Skins');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -344,6 +352,9 @@ class SkinsState extends MusicBeatState {
 		super.create();
 		
 		CustomFadeTransition.nextCamera = hud; // wat
+
+		addTouchPad('LEFT_FULL', 'A_B_C_D_V_X_Y_Z');
+		addTouchPadCamera();
 
 		GameClient.send("status", "Selects their skin");
     }
@@ -382,7 +393,7 @@ class SkinsState extends MusicBeatState {
 			Conductor.songPosition = music.time;
 		}
 
-        if (FlxG.keys.pressed.SHIFT) {
+        if (touchPad.buttonX.pressed || FlxG.keys.pressed.SHIFT) {
 			if (character.members[0] != null) {
 				if (controls.NOTE_UP) {
 					character.members[0].playAnim("singUP");
@@ -410,9 +421,11 @@ class SkinsState extends MusicBeatState {
 			}
         }
 
-		if (FlxG.keys.justPressed.CONTROL) {
+		if (touchPad.buttonV.justPressed || FlxG.keys.justPressed.CONTROL) {
 			if (selectTimer != null)
 				selectTimer.active = false;
+
+			touchPad.visible = false;
 
 			var daCopy = charactersName.copy();
 			daCopy[0] = "Default";
@@ -455,7 +468,7 @@ class SkinsState extends MusicBeatState {
 				charSelect.alpha = 1;
 			}
 			else {
-				charSelect.text = 'Press ACCEPT to select!';
+				charSelect.text = 'Press $accept to select!';
 				charSelect.alpha = 0.8;
 			}
 			if (acceptSound != null)
@@ -471,22 +484,22 @@ class SkinsState extends MusicBeatState {
 			switchState(() -> Type.createInstance(backClass, []));
 		}
 
-		if (FlxG.keys.justPressed.EIGHT) {
+		if (touchPad.buttonD.justPressed || FlxG.keys.justPressed.EIGHT) {
 			Mods.currentModDirectory = charactersMod.get(charactersName[curCharacter]);
 			switchState(() -> new CharacterEditorState(charactersName[curCharacter], false, true));
 		}
 
-		if (FlxG.keys.justPressed.TAB) {
+		if (touchPad.buttonC.justPressed || FlxG.keys.justPressed.TAB) {
 			flipped = !flipped;
 			skipStaticDestroy = true;
 			LoadingState.loadAndSwitchState(new SkinsState());
 		}
 
-		if (FlxG.keys.justPressed.F1) {
+		if (touchPad.buttonY.justPressed || FlxG.keys.justPressed.F1) {
 			RequestSubstate.requestURL("https://github.com/Snirozu/Funkin-Psych-Online/wiki#skins", true);
 		}
 
-		if (FlxG.keys.justPressed.F2) {
+		if (touchPad.buttonZ.justPressed || FlxG.keys.justPressed.F2) {
 			switchState(() -> new DownloaderState('collection:110039'));
 		}
 
@@ -557,8 +570,11 @@ class SkinsState extends MusicBeatState {
 
 	override function closeSubState() {
 		persistentUpdate = true;
-
 		super.closeSubState();
+		if (touchPad != null)
+			removeTouchPad();
+		addTouchPad('LEFT_FULL', 'A_B_C_D_V_X_Y_Z');
+		addTouchPadCamera();
 	}
 
 	override function destroy() {
@@ -655,7 +671,7 @@ class SkinsState extends MusicBeatState {
 				charSelect.alpha = 1;
 			}
             else {
-				charSelect.text = 'Press ACCEPT to select!';
+				charSelect.text = 'Press $accept to select!';
 				charSelect.alpha = 0.8;
             }
 

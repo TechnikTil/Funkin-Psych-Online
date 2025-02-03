@@ -6,7 +6,7 @@ import backend.StageData;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics and Performance', 'Visuals and UI', 'Gameplay'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics and Performance', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -14,11 +14,21 @@ class OptionsState extends MusicBeatState
 	public static var onOnlineRoom:Bool = false;
 
 	function openSelectedSubstate(label:String) {
+		if (label != "Adjust Delay and Combo"){
+			removeTouchPad();
+			persistentUpdate = false;
+		}
 		switch(label) {
 			case 'Note Colors':
 				openSubState(new options.NotesSubState());
 			case 'Controls':
-				openSubState(new options.ControlsSubState());
+				switch (controls.mobileC)
+				{
+					case true:
+						persistentUpdate = false;
+						openSubState(new mobile.substates.MobileControlSelectSubState());
+					default: openSubState(new options.ControlsSubState());
+				}
 			case 'Graphics and Performance':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
@@ -27,6 +37,8 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				FlxG.switchState(() -> new options.NoteOffsetState());
+			case 'Mobile Options':
+				openSubState(new mobile.options.MobileOptionsSubState());
 		}
 	}
 
@@ -65,6 +77,8 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
+		addTouchPad('UP_DOWN', 'A_B');
+
 		super.create();
 
 		online.GameClient.send("status", "In the Game Options");
@@ -73,6 +87,10 @@ class OptionsState extends MusicBeatState
 	override function closeSubState() {
 		super.closeSubState();
 		ClientPrefs.saveSettings();
+		controls.isInSubstate = false;
+		removeTouchPad();
+		addTouchPad('UP_DOWN', 'A_B');
+		persistentUpdate = true;
 	}
 
 	override function update(elapsed:Float) {

@@ -382,6 +382,7 @@ class ResultsState extends MusicBeatState {
 		});
 
 		registerMessages();
+		addTouchPad('NONE', 'B_C_T');
     }
 
 	function registerMessages() {

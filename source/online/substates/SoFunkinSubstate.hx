@@ -11,6 +11,7 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 	private var curSelected:Int = 0;
 
 	public function new(options:Array<String>, ?selected:Int = 0, callback:Int->Bool, ?iconCallback:(Int, FlxSprite)->FlxSprite) {
+		controls.isInSubstate = true;
         super();
         
 		curSelected = selected;
@@ -51,6 +52,8 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 		}
 		changeSelection();
 
+		addTouchPad("UP_DOWN", "A_B");
+
 		super.create();
 	}
 
@@ -67,13 +70,16 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 		}
 
 		if (controls.BACK) {
+			controls.isInSubstate = false;
 			close();
 		}
 
-		if (controls.ACCEPT) {
+		if (controls.ACCEPT)
 			if (callback(curSelected))
+			{
+				controls.isInSubstate = false;
 				close();
-		}
+			}
 
 		var bullShit:Int = 0;
 		var item:Scrollable;

@@ -463,6 +463,10 @@ class RoomState extends MusicBeatState {
 			stage.createPost();
 
 		GameClient.send("status", "In the Lobby");
+
+		addTouchPad('LEFT_FULL', 'B_C_Y_T_M');
+		addTouchPadCamera();
+		touchPad.y -= 300;
 	}
 
 	var hasStage:Bool = false;
@@ -729,8 +733,8 @@ class RoomState extends MusicBeatState {
 
 			// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
 
-			if (FlxG.keys.pressed.ALT) { // useless, but why not?
-				var suffix = FlxG.keys.pressed.CONTROL ? 'miss' : '';
+			if (touchPad.buttonY.pressed || FlxG.keys.pressed.ALT) { // useless, but why not?
+				var suffix = (touchPad.buttonM.pressed || FlxG.keys.pressed.CONTROL) ? 'miss' : '';
 				if (controls.NOTE_LEFT_P) {
 					playerAnim('singLEFT' + suffix);
 				}
@@ -771,7 +775,7 @@ class RoomState extends MusicBeatState {
 			danceLogic(p1);
 			danceLogic(p2);
 			
-			if ((!FlxG.keys.pressed.ALT && controls.ACCEPT) || FlxG.mouse.justPressed) {
+			if (((!FlxG.keys.pressed.ALT || !touchPad.buttonY.pressed) && controls.ACCEPT) || FlxG.mouse.justPressed) {
 				switch (curSelected) {
 					case 0:
 						openSubState(new RoomSettingsSubstate());
@@ -865,6 +869,8 @@ class RoomState extends MusicBeatState {
 		else if (waitingForPlayer2Skin && FlxG.mouse.justPressed && FlxG.mouse.overlaps(p2)) {
 			loadCharacter(false, true, true);
 		}
+
+		touchPad.buttonLeft.visible = touchPad.buttonRight.visible = touchPad.buttonUp.visible = touchPad.buttonDown.visible = touchPad.buttonT.visible = touchPad.buttonM.visible = touchPad.buttonY.pressed;
 
         super.update(elapsed);
 
@@ -1040,21 +1046,27 @@ class RoomState extends MusicBeatState {
 
 		positionCharacters();
 
+		final settingsBind:String = !controls.mobileC ? "\n\n(Keybind: SHIFT)" : "";
+		final chatBind:String = !controls.mobileC ? "\n\n(Keybind: TAB)" : "";
+		final roomBind:String = !controls.mobileC ? "\n\nACCEPT - Reveals the code and\ncopies it to your clipboard.\n\nCTRL + C - Copies the code without\nrevealing it on the screen." : "\n\nTOUCH - Reveals the code and\ncopies it to your clipboard.";
+		final modBind:String = !controls.mobileC ? "\n\nRIGHT CLICK - Open Mod Downloader" : "\n\nTOUCH - Open Mod Downloader";
+		final lobbyBind:String = !controls.mobileC ? "\nPress UI keybinds\nor use your mouse\nto select an option!" : "\nTouch UI keybinds\nto select an option!";
+
 		switch (curSelected) {
 			case 0:
-				itemTip.text = " - SETTINGS - \nOpens server settings.\n\n(Keybind: SHIFT)";
+				itemTip.text = " - SETTINGS - \nOpens server settings." + settingsBind;
 			case 1:
-				itemTip.text = " - CHAT - \nOpens chat.\n\n(Keybind: TAB)";
+				itemTip.text = " - CHAT - \nOpens chat." + chatBind;
 			case 2:
 				itemTip.text = " - START GAME/READY - \nToggles your READY status.\n\nPlayers also need to have the\ncurrently selected mod installed.\n\nTwo players are required to start.";
 			case 3:
-				itemTip.text = " - ROOM CODE - \nUnique code of this room.\n\nACCEPT - Reveals the code and\ncopies it to your clipboard.\n\nCTRL + C - Copies the code without\nrevealing it on the screen.";
+				itemTip.text = " - ROOM CODE - \nUnique code of this room." + roomBind;
 			case 4:
 				itemTip.text = " - SELECT SONG - \nSelects the song.\n\n(Players with host permissions\ncan only do that)";
 			case 5:
-				itemTip.text = " - MOD - \nDownloads the currently selected mod\nif it isn't installed.\n\nAfter you install it\npress this button again!\n\nRIGHT CLICK - Open Mod Downloader";
+				itemTip.text = " - MOD - \nDownloads the currently selected mod\nif it isn't installed.\n\nAfter you install it\npress this button again!" + modBind;
 			default:
-				itemTip.text = " - LOBBY - \nPress UI keybinds\nor use your mouse\nto select an option!";
+				itemTip.text = " - LOBBY - " + lobbyBind;
 		}
 
 		itemTip.x = settingsIconBg.x + settingsIconBg.width - itemTip.width;

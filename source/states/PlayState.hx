@@ -283,6 +283,7 @@ class PlayState extends MusicBeatState
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 	public var camLoading:FlxCamera;
+	public var luaTpadCam:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
 	var _tempDiff:Float = 0;
@@ -461,6 +462,8 @@ class PlayState extends MusicBeatState
 	@:unreflective
 	public static var redditMod:Bool = false;
 
+	public var luaTouchPad:TouchPad;
+
 	override public function create()
 	{
 		theWorld = true;
@@ -480,13 +483,16 @@ class PlayState extends MusicBeatState
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camLoading = new FlxCamera();
+		luaTpadCam = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
+		luaTpadCam.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
 		FlxG.cameras.add(camLoading, false);
+		FlxG.cameras.add(luaTpadCam, false);
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
 		FlxG.cameras.cameraAdded.addOnce(realignLoadCam);
@@ -700,7 +706,7 @@ class PlayState extends MusicBeatState
 		preloadTasks.push(() -> {
 			var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'scripts/');
 			for (folder in foldersToCheck)
-				for (file in FileSystem.readDirectory(folder))
+				for (file in Paths.readDirectory(folder))
 				{
 					if(file.toLowerCase().endsWith('.lua'))
 						new FunkinLua(folder + file);
@@ -1033,7 +1039,7 @@ class PlayState extends MusicBeatState
 		preloadTasks.push(() -> {
 			var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'data/' + songName + '/');
 			for (folder in foldersToCheck)
-				for (file in FileSystem.readDirectory(folder)) {
+				for (file in Paths.readDirectory(folder)) {
 					if (file.toLowerCase().endsWith('.lua'))
 						new FunkinLua(folder + file);
 					#if HSCRIPT_ALLOWED
@@ -1046,7 +1052,7 @@ class PlayState extends MusicBeatState
 
 		if (GameClient.isConnected()) {
 			preloadTasks.push(() -> {
-				waitReadySpr = new Alphabet(0, 0, "PRESS ACCEPT TO START", true);
+				waitReadySpr = new Alphabet(0, 0, controls.mobileC ? "TOUCH YOUR SCREEN TO START" : "PRESS ACCEPT TO START", true);
 				waitReadySpr.cameras = [camOther];
 				waitReadySpr.alpha = 0;
 				waitReadySpr.alignment = CENTERED;
@@ -1181,6 +1187,30 @@ class PlayState extends MusicBeatState
 		loaderGroup.add(asyncLoop);
 
 		orderOffset = 2;
+
+		addMobileControls();
+		addTouchPad((replayData != null) ? 'LEFT_RIGHT' : 'NONE', (GameClient.isConnected()) ? 'P_C_T' : (replayData != null) ? #if android 'X_Y' : 'T' #else 'P_X_Y' : 'P_T' #end);
+		addTouchPadCamera();
+		mobileControls.onButtonDown.add(onButtonPress);
+		mobileControls.onButtonUp.add(onButtonRelease);
+		if (replayData == null)
+			mobileControls.instance.visible = true;
+		if (touchPad.buttonT != null)
+		{
+			touchPad.buttonT.IDs = [TAUNT];
+			touchPad.buttonT.onUp.callback = touchPad.buttonT.onOut.callback = () -> touchPad.onButtonUp.dispatch(touchPad.buttonT, [TAUNT]);
+			touchPad.buttonT.onDown.callback = () -> touchPad.onButtonDown.dispatch(touchPad.buttonT, [TAUNT]);
+			touchPad.updateTrackedButtons();
+		}
+		mobileControls.instance.forEachAlive((button) ->
+		{
+			if (touchPad.buttonT != null)
+    				button.deadZones.push(touchPad.buttonT);
+			if (touchPad.buttonC != null)
+    				button.deadZones.push(touchPad.buttonC);
+			if (touchPad.buttonP != null)			
+					button.deadZones.push(touchPad.buttonP);
+		});
 
 		super.create();
 	}
@@ -1719,7 +1749,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				daNote.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 				unspawnNotes.remove(daNote);
 				daNote.destroy();
 			}
@@ -1735,7 +1765,7 @@ class PlayState extends MusicBeatState
 				daNote.visible = false;
 				daNote.ignoreNote = true;
 
-				daNote.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 				notes.remove(daNote, true);
 				daNote.destroy();
 			}
@@ -2272,6 +2302,8 @@ class PlayState extends MusicBeatState
 					resyncVocals();
 				}
 
+				touchPad.visible = true;
+
 				if (startTimer != null && !startTimer.finished)
 					startTimer.active = true;
 				if (finishTimer != null && !finishTimer.finished)
@@ -2464,7 +2496,7 @@ class PlayState extends MusicBeatState
 			// 	endSong();
 			// }
 
-			if (canStart && !isReady && controls.ACCEPT && canInput()) {
+			if (canStart && !isReady && (controls.mobileC && FlxG.mouse.justPressed || controls.ACCEPT) && canInput()) {
 				isReady = true;
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
 				if (ClientPrefs.data.flashing)
@@ -2505,7 +2537,7 @@ class PlayState extends MusicBeatState
 		setOnScripts('curDecStep', curDecStep);
 		setOnScripts('curDecBeat', curDecBeat);
 
-		if (controls.PAUSE && startedCountdown && canPause && canInput())
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause && canInput())
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {
@@ -2675,7 +2707,7 @@ class PlayState extends MusicBeatState
 								daNote.active = false;
 								daNote.visible = false;
 
-								daNote.kill();
+								//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 								notes.remove(daNote, true);
 								daNote.destroy();
 							}
@@ -2740,7 +2772,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		FlxG.camera.followLerp = 0;
-		persistentUpdate = false;
+		touchPad.visible = persistentUpdate = false;
 		persistentDraw = true;
 		paused = true;
 
@@ -2774,7 +2806,7 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	function openChartEditor()
+	public function openChartEditor()
 	{
 		if (GameClient.isConnected() || redditMod)
 			return;
@@ -3251,6 +3283,7 @@ class PlayState extends MusicBeatState
 	public var transitioning = false;
 	public function endSong()
 	{
+		mobileControls.instance.visible = #if !android touchPad.visible = #end false;
 		if (redditMod) {
 			health = 0;
 			doDeathCheck();
@@ -3433,7 +3466,7 @@ class PlayState extends MusicBeatState
 			daNote.active = false;
 			daNote.visible = false;
 
-			daNote.kill();
+			//if(!ClientPrefs.data.lowQuality || !cpuControlled) daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
 		}
@@ -3516,6 +3549,7 @@ class PlayState extends MusicBeatState
 			antialias = !isPixelStage;
 		}
 
+		if (ClientPrefs.data.popUpRating){
 		var rating:FlxSprite = new FlxSprite();
 		rating.loadGraphic(Paths.image(uiPrefix + ratingImage + uiSuffix));
 		rating.cameras = [camHUD];
@@ -3608,6 +3642,7 @@ class PlayState extends MusicBeatState
 			}
 		});
 	}
+	}
 
 	private function popUpScore(note:Note = null):Rating
 	{
@@ -3672,6 +3707,7 @@ class PlayState extends MusicBeatState
 			antialias = !isPixelStage;
 		}
 
+		if (ClientPrefs.data.popUpRating){
 		rating.loadGraphic(Paths.image(uiPrefix + daRating.image + uiSuffix));
 		rating.cameras = [camHUD];
 		rating.screenCenter();
@@ -3839,6 +3875,7 @@ class PlayState extends MusicBeatState
 				onComplete: (t) -> noteTimingRating.active = false
 			});
 		}
+	}
 
 		return daRating;
 	}
@@ -3888,7 +3925,7 @@ class PlayState extends MusicBeatState
 					{
 						for (doubleNote in pressNotes) {
 							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1) {
-								doubleNote.kill();
+								//if(!ClientPrefs.data.lowQuality || !cpuControlled) doubleNote.kill();
 								notes.remove(doubleNote, true);
 								doubleNote.destroy();
 							} else
@@ -3983,6 +4020,28 @@ class PlayState extends MusicBeatState
 		return -1;
 	}
 
+	private function onButtonPress(button:TouchButton, ids:Array<MobileInputID>):Void
+	{
+		if (ids.filter(id -> id.toString().startsWith("EXTRA")).length > 0 || ids.filter(id -> id.toString().startsWith("TAUNT")).length > 0)
+			return;
+
+		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
+		callOnScripts('onButtonPressPre', [buttonCode]);
+		if (button.justPressed) keyPressed(buttonCode);
+		callOnScripts('onButtonPress', [buttonCode]);
+	}
+
+	private function onButtonRelease(button:TouchButton, ids:Array<MobileInputID>):Void
+	{
+		if (ids.filter(id -> id.toString().startsWith("EXTRA")).length > 0 || ids.filter(id -> id.toString().startsWith("TAUNT")).length > 0)
+			return;
+
+		var buttonCode:Int = (ids[0].toString().startsWith('NOTE')) ? ids[0] : ids[1];
+		callOnScripts('onButtonReleasePre', [buttonCode]);
+		if(buttonCode > -1) keyReleased(buttonCode);
+		callOnScripts('onButtonRelease', [buttonCode]);
+	}
+
 	// Hold notes
 	@:unreflective
 	private function keysCheck():Void
@@ -4052,7 +4111,7 @@ class PlayState extends MusicBeatState
 		//Dupe note remove
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && isPlayerNote(daNote) && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
-				note.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -4179,7 +4238,7 @@ class PlayState extends MusicBeatState
 
 		if (!note.isSustainNote)
 		{
-			note.kill();
+			//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 			notes.remove(note, true);
 			note.destroy();
 		}
@@ -4216,7 +4275,7 @@ class PlayState extends MusicBeatState
 
 				if (!note.isSustainNote)
 				{
-					note.kill();
+					//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 					notes.remove(note, true);
 					note.destroy();
 				}
@@ -4305,7 +4364,7 @@ class PlayState extends MusicBeatState
 
 			if (!note.isSustainNote)
 			{
-				note.kill();
+				//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -5139,7 +5198,7 @@ class PlayState extends MusicBeatState
 						&& note.isSustainNote == message[2]
 						&& Math.abs(note.strumTime - message[0]) < 1) 
 					{
-						note.kill();
+						//if(!ClientPrefs.data.lowQuality || !cpuControlled) note.kill();
 						unspawnNotes.remove(note);
 						note.destroy();
 					}
@@ -5271,5 +5330,100 @@ class PlayState extends MusicBeatState
 	}
 	function set_scrollYCenter(value) {
 		return camGame.scroll.y = value - FlxG.height / 2;
+	}
+
+	public function makeLuaTouchPad(DPadMode:String, ActionMode:String) {
+		if(members.contains(luaTouchPad)) return;
+
+		if(!variables.exists("luaTouchPad"))
+			variables.set("luaTouchPad", luaTouchPad);
+
+		luaTouchPad = new TouchPad(DPadMode, ActionMode, NONE);
+		luaTouchPad.alpha = ClientPrefs.data.controlsAlpha;
+	}
+	
+	public function addLuaTouchPad() {
+		if(luaTouchPad == null || members.contains(luaTouchPad)) return;
+
+		var target = LuaUtils.getTargetInstance();
+		target.insert(target.members.length + 1, luaTouchPad);
+	}
+
+	public function addLuaTouchPadCamera() {
+		if(luaTouchPad != null)
+			luaTouchPad.cameras = [luaTpadCam];
+	}
+
+	public function removeLuaTouchPad() {
+		if (luaTouchPad != null) {
+			luaTouchPad.kill();
+			luaTouchPad.destroy();
+			remove(luaTouchPad);
+			luaTouchPad = null;
+		}
+	}
+
+	public function luaTouchPadPressed(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonPressed(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button; // haxe said "You Can't Iterate On A Dyanmic Value Please Specificy Iterator or Iterable *insert nerd emoji*" so that's the only i foud to fix
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyPressed(idArray);
+			} else
+				return false;
+		}
+		return false;
+	}
+
+	public function luaTouchPadJustPressed(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonJustPressed(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button;
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyJustPressed(idArray);
+			} else
+				return false;
+		}
+		return false;
+	}
+	
+	public function luaTouchPadJustReleased(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonJustReleased(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button;
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyJustReleased(idArray);
+			} else
+				return false;
+		}
+		return false;
+	}
+
+	public function luaTouchPadReleased(button:Dynamic):Bool {
+		if(luaTouchPad != null) {
+			if(Std.isOfType(button, String))
+				return luaTouchPad.buttonReleased(MobileInputID.fromString(button));
+			else if(Std.isOfType(button, Array)){
+				var FUCK:Array<String> = button;
+				var idArray:Array<MobileInputID> = [];
+				for(strId in FUCK)
+					idArray.push(MobileInputID.fromString(strId));
+				return luaTouchPad.anyReleased(idArray);
+			} else
+				return false;
+		}
+		return false;
 	}
 }
