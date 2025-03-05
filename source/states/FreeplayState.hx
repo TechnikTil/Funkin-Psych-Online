@@ -25,7 +25,6 @@ import haxe.io.Path;
 import haxe.Json;
 import haxe.io.Bytes;
 import lime.ui.FileDialog;
-import online.objects.ChatBox;
 import online.gui.Alert;
 import online.backend.Waiter;
 import haxe.crypto.Md5;
@@ -105,8 +104,6 @@ class FreeplayState extends MusicBeatState
 	var missingText:FlxText;
 
 	var prevPauseGame = false;
-
-	var chatBox:ChatBox;
 
 	var listening:Bool = false;
 	var selected:Bool = false;
@@ -575,8 +572,6 @@ class FreeplayState extends MusicBeatState
 		add(infoText);
 
 		if (GameClient.isConnected()) {
-			add(chatBox = new ChatBox(camera));
-			chatBox.cameras = [hudCamera];
 			GameClient.send("status", "Choosing a Song");
 		}
 		
@@ -724,7 +719,7 @@ class FreeplayState extends MusicBeatState
 			scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 		positionHighscore();
 
-		if ((chatBox != null && chatBox.focused) || searchInputWait || transToPlayState) {
+		if (searchInputWait || transToPlayState) {
 			updateTexts(elapsed);
 			super.update(elapsed);
 			return;

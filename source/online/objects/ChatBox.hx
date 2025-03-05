@@ -17,17 +17,21 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			typeTextHint.text = "(Type something to input the message, ACCEPT to send)";
 			typeBg.colorTransform.alphaOffset = 0;
 			typeBg.scale.x = FlxG.width;
-			ClientPrefs.toggleVolumeKeys(false);
 		}
 		else {
 			FlxG.mouse.visible = prevMouseVisibility;
 			typeTextHint.text = "(Press TAB to open chat!)";
 			typeBg.colorTransform.alphaOffset = -100;
 			typeBg.scale.x = Std.int(bg.width);
-			ClientPrefs.toggleVolumeKeys(true);
 		}
 		typeBg.updateHitbox();
 		targetAlpha = v ? 3 : 0;
+
+		Controls.instance.enabled = !v;
+		ClientPrefs.toggleVolumeKeys(!v);
+		FlxG.keys.enabled = !v;
+		FlxG.mouse.enabled = !v;
+
 		return focused = v;
 	}
 	var bg:FlxSprite;
@@ -36,8 +40,8 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
     public var typeText:InputText;
     var typeTextHint:FlxText; // i can call it a hint or tip whatever i want
 	var targetAlpha:Float;
-	var chatHeight:Float;
-	var onCommand:(String, Array<String>) -> Bool;
+	public var chatHeight:Float;
+	public var onCommand:(String, Array<String>) -> Bool;
 
 	static var lastMessages:Array<Dynamic> = [];
 	var dwnMsgToClick:Map<NoteSkinDownloadMessage, ()->Void> = new Map<NoteSkinDownloadMessage, ()->Void>();
@@ -90,10 +94,8 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			});
 	}
 
-	public function new(?camera:FlxCamera, ?onCommand:(command:String, args:Array<String>) -> Bool, ?chatHeight:Int = 400) {
+	public function new(?camera:FlxCamera) {
 		super();
-
-		this.chatHeight = chatHeight;
 
 		instance = this;
 
@@ -101,7 +103,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
         
         bg = new FlxSprite();
 		bg.makeGraphic(600, 1, FlxColor.BLACK);
-		bg.scale.y = chatHeight;
+		bg.scale.y = 400;
 		bg.updateHitbox();
 		bg.alpha = 0.6;
         add(bg);
@@ -159,7 +161,6 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		add(typeText);
 
 		cameras = [camera];
-		this.onCommand = onCommand;
 
 		tryRegisterLogs();
 

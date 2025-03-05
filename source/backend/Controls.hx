@@ -95,6 +95,9 @@ class Controls
 	public var gamepadBinds:Map<String, Array<FlxGamepadInputID>>;
 	public function justPressed(key:String)
 	{
+		if(!enabled)
+			return false;
+
 		if (moodyBlues != null && ReplayRecorder.REGISTER_BINDS.contains(key)) {
 			return moodyBlues.pressedKeys.get(key) == JUST_PRESSED;
 		}
@@ -107,6 +110,9 @@ class Controls
 
 	public function pressed(key:String)
 	{
+		if(!enabled)
+			return false;
+
 		if (moodyBlues != null && ReplayRecorder.REGISTER_BINDS.contains(key)) {
 			var status = moodyBlues.pressedKeys.get(key);
 			return status == PRESSED || status == JUST_PRESSED;
@@ -120,6 +126,9 @@ class Controls
 
 	public function justReleased(key:String)
 	{
+		if(!enabled)
+			return false;
+
 		if (moodyBlues != null && ReplayRecorder.REGISTER_BINDS.contains(key)) {
 			var status = moodyBlues.pressedKeys.get(key);
 			return status == JUST_RELEASED;
@@ -177,6 +186,11 @@ class Controls
 		}
 		return false;
 	}
+
+	/**
+	 * Whether or not input is currently enabled.
+	 */
+	public var enabled:Bool = true;
 
 	public var moodyBlues:ReplayPlayer;
 

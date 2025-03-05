@@ -410,7 +410,6 @@ class PlayState extends MusicBeatState
 	public var startCallback:Void->Void = null;
 	public var endCallback:Void->Void = null;
 
-	var chatBox:ChatBox;
 	var leavePie:LeavePie;
 
 	static var swingMode:Bool = false;
@@ -1164,7 +1163,6 @@ class PlayState extends MusicBeatState
 
 		if (GameClient.isConnected()) {
 			preloadTasks.push(() -> {
-				add(chatBox = new ChatBox(camOther, 100));
 				add(leavePie = new LeavePie());
 				leavePie.cameras = [camOther];
 				add(waitReadySpr);

@@ -3,6 +3,8 @@ package backend;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
+import online.objects.ChatBox;
+import online.GameClient;
 
 class MusicBeatState extends FlxUIState
 {
@@ -24,6 +26,9 @@ class MusicBeatState extends FlxUIState
 
 	public static var camBeat:FlxCamera;
 
+	public var chatBox:ChatBox;
+	var chatBoxCamera:FlxCamera;
+
 	override function create() {
 		camBeat = FlxG.camera;
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
@@ -34,6 +39,7 @@ class MusicBeatState extends FlxUIState
 		if(!skip) {
 			openSubState(new CustomFadeTransition(0.7, true));
 		}
+
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
 	}
@@ -43,6 +49,33 @@ class MusicBeatState extends FlxUIState
 	{
 		if (theWorld)
 			return super.update(elapsed);
+
+		if(GameClient.isConnected() && chatBox == null)
+		{
+			trace('time to add the camera!');
+			chatBoxCamera = new FlxCamera();
+			chatBoxCamera.bgColor.alpha = 0;
+			FlxG.cameras.add(chatBoxCamera, false);
+
+			trace('time to add the chatbox!');
+			chatBox = new ChatBox(chatBoxCamera);
+			// we manually do these
+			chatBox.active = false;
+			chatBox.visible = false;
+			add(chatBox);
+
+			FlxG.cameras.cameraAdded.add((cam:FlxCamera) -> {
+				if(cam == chatBoxCamera)
+					return;
+
+				FlxG.cameras.remove(chatBoxCamera, false);
+
+				if(chatBoxCamera == null || chatBoxCamera.flashSprite == null)
+					chatBoxCamera = new FlxCamera();
+
+				FlxG.cameras.add(chatBoxCamera, false);
+			});
+		}
 
 		//everyStep();
 		var oldStep:Int = curStep;
@@ -72,6 +105,34 @@ class MusicBeatState extends FlxUIState
 		});
 
 		super.update(elapsed);
+	}
+
+	override function tryUpdate(elapsed:Float):Void
+	{
+		super.tryUpdate(elapsed);
+
+		if(chatBox != null)
+		{
+			try {
+				chatBox.update(elapsed);
+			} catch(e) {
+				trace(e.details());
+			}
+		}
+	}
+
+	override public function draw():Void
+	{
+		super.draw();
+
+		if(chatBox != null)
+		{
+			try {
+				chatBox.draw();
+			} catch(e) {
+				trace(e.details());
+			}
+		}
 	}
 
 	private function updateSection():Void

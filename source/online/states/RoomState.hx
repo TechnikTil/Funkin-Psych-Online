@@ -42,7 +42,6 @@ class RoomState extends MusicBeatState {
 	var songNameBg:FlxSprite;
 	var playIcon:FlxSprite;
 	var playIconBg:FlxSprite;
-	var chatBox:ChatBox;
 
 	var p1:Character;
 	var p2:Character;
@@ -333,7 +332,7 @@ class RoomState extends MusicBeatState {
 			groupHUD.add(box);
 		}
 
-		chatBox = new ChatBox(camHUD, (cmd, args) -> {
+		chatBox.onCommand = (cmd, args) -> {
 			switch (cmd) {
 				case "help":
 					ChatBox.addMessage("> Room Commands: /pa, /results, /restage");
@@ -357,8 +356,7 @@ class RoomState extends MusicBeatState {
 				default:
 					return false;
 			}
-		});
-		groupHUD.add(chatBox);
+		};
 
 		items = new FlxTypedGroup<FlxSprite>();
 
@@ -747,81 +745,79 @@ class RoomState extends MusicBeatState {
 		}
 		playIcon.alpha = getSelfPlayer().hasSong ? 1.0 : 0.5;
 
-		if (!chatBox.focused) {
-			if (FlxG.mouse.justMoved) {
-				if (FlxG.mouse.overlaps(settingsIconBg, camHUD)) {
-					curSelected = settingsIcon.ID;
-				}
-				else if (FlxG.mouse.overlaps(chatIconBg, camHUD)) {
-					curSelected = chatIcon.ID;
-				}
-				else if (FlxG.mouse.overlaps(playIconBg, camHUD)) {
-					curSelected = playIcon.ID;
-				}
-				else if (FlxG.mouse.overlaps(roomCodeBg, camHUD)) {
-					curSelected = roomCode.ID;
-				}
-				else if (FlxG.mouse.overlaps(songNameBg, camHUD)) {
-					curSelected = songName.ID;
-				}
-				else if (FlxG.mouse.overlaps(verifyModBg, camHUD)) {
-					curSelected = verifyMod.ID;
-				}
-				else {
-					curSelected = -1;
-				}
+		if (FlxG.mouse.justMoved) {
+			if (FlxG.mouse.overlaps(settingsIconBg, camHUD)) {
+				curSelected = settingsIcon.ID;
 			}
-
-			var held = false;
-			for (key in ['note_left', 'note_down', 'note_up', 'note_right']) {
-				if (controls.pressed(key)) {
-					held = true;
-					break;
-				}
+			else if (FlxG.mouse.overlaps(chatIconBg, camHUD)) {
+				curSelected = chatIcon.ID;
 			}
-			playerHold = held;
+			else if (FlxG.mouse.overlaps(playIconBg, camHUD)) {
+				curSelected = playIcon.ID;
+			}
+			else if (FlxG.mouse.overlaps(roomCodeBg, camHUD)) {
+				curSelected = roomCode.ID;
+			}
+			else if (FlxG.mouse.overlaps(songNameBg, camHUD)) {
+				curSelected = songName.ID;
+			}
+			else if (FlxG.mouse.overlaps(verifyModBg, camHUD)) {
+				curSelected = verifyMod.ID;
+			}
+			else {
+				curSelected = -1;
+			}
+		}
 
-			// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
+		var held = false;
+		for (key in ['note_left', 'note_down', 'note_up', 'note_right']) {
+			if (controls.pressed(key)) {
+				held = true;
+				break;
+			}
+		}
+		playerHold = held;
 
-			if (FlxG.keys.pressed.ALT) { // useless, but why not?
-				var suffix = FlxG.keys.pressed.CONTROL ? 'miss' : '';
-				if (controls.NOTE_LEFT_P) {
-					playerAnim('singLEFT' + suffix);
-				}
-				if (controls.NOTE_RIGHT_P) {
-					playerAnim('singRIGHT' + suffix);
-				}
-				if (controls.NOTE_UP_P) {
-					playerAnim('singUP' + suffix);
-				}
-				if (controls.NOTE_DOWN_P) {
-					playerAnim('singDOWN' + suffix);
-				}
-				if (controls.TAUNT) {
-					var altSuffix = FlxG.keys.pressed.SHIFT ? '-alt' : '';
-					playerAnim('taunt' + altSuffix);
-				}
-			} else {
-				if (controls.UI_LEFT_P) {
-					changeSelection(1);
-				}
-				if (controls.UI_RIGHT_P) {
-					changeSelection(-1);
-				}
-				if (controls.UI_UP_P) {
-					changeSelection(1);
-				}
-				if (controls.UI_DOWN_P) {
-					changeSelection(-1);
-				}
-				if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.C) {
-					Clipboard.text = GameClient.getRoomSecret(true);
-					Alert.alert("Room code copied!");
+		// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
+
+		if (FlxG.keys.pressed.ALT) { // useless, but why not?
+			var suffix = FlxG.keys.pressed.CONTROL ? 'miss' : '';
+			if (controls.NOTE_LEFT_P) {
+				playerAnim('singLEFT' + suffix);
+			}
+			if (controls.NOTE_RIGHT_P) {
+				playerAnim('singRIGHT' + suffix);
+			}
+			if (controls.NOTE_UP_P) {
+				playerAnim('singUP' + suffix);
+			}
+			if (controls.NOTE_DOWN_P) {
+				playerAnim('singDOWN' + suffix);
+			}
+			if (controls.TAUNT) {
+				var altSuffix = FlxG.keys.pressed.SHIFT ? '-alt' : '';
+				playerAnim('taunt' + altSuffix);
+			}
+		} else {
+			if (controls.UI_LEFT_P) {
+				changeSelection(1);
+			}
+			if (controls.UI_RIGHT_P) {
+				changeSelection(-1);
+			}
+			if (controls.UI_UP_P) {
+				changeSelection(1);
+			}
+			if (controls.UI_DOWN_P) {
+				changeSelection(-1);
+			}
+			if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.C) {
+				Clipboard.text = GameClient.getRoomSecret(true);
+				Alert.alert("Room code copied!");
 				}
 
-				if (FlxG.keys.justPressed.SHIFT) {
-					openSubState(new RoomSettingsSubstate());
-				}
+			if (FlxG.keys.justPressed.SHIFT) {
+				openSubState(new RoomSettingsSubstate());
 			}
 			
 			danceLogic(p1);

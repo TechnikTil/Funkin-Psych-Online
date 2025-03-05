@@ -28,8 +28,6 @@ class ResultsState extends MusicBeatState {
 
 	var winner:Int;
 
-	var chatBox:ChatBox;
-
 	var p1:Character;
 	var p2:Character;
 
@@ -277,9 +275,6 @@ class ResultsState extends MusicBeatState {
 		spotlight.x = winner == 0 ? 70 : 630;
 		add(spotlight);
 
-		chatBox = new ChatBox(camera);
-		add(chatBox);
-
 		FlxTween.tween(dim, {alpha: 0.25}, 2, {ease: FlxEase.quadInOut});
 		FlxTween.tween(back, {alpha: 1}, 1, {ease: FlxEase.quartInOut, startDelay: 4.0});
 
@@ -430,7 +425,7 @@ class ResultsState extends MusicBeatState {
 			if (back.animation.curAnim.name != "press")
 				back.animation.play('idle');
 
-			if (!chatBox.focused && (!FlxG.keys.justPressed.TAB && controls.BACK || FlxG.keys.justPressed.BACKSPACE || FlxG.keys.justPressed.ENTER)) {
+			if (controls.BACK || FlxG.keys.justPressed.BACKSPACE || FlxG.keys.justPressed.ENTER) {
 				FlxG.sound.music.stop();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 
@@ -446,7 +441,7 @@ class ResultsState extends MusicBeatState {
                 });
             }
 
-			if (!chatBox.focused && controls.TAUNT) {
+			if (controls.TAUNT) {
 				var altSuffix = FlxG.keys.pressed.ALT ? '-alt' : '';
 				(GameClient.isOwner ? p1 : p2).playAnim('taunt' + altSuffix, true);
 				if (GameClient.isConnected())
