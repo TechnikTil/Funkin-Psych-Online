@@ -98,6 +98,7 @@ class TitleState extends MusicBeatState
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
 		backend.NoteSkinData.reloadNoteSkins();
+		online.backend.Emojis.initialize();
 
 		Highscore.load();
 

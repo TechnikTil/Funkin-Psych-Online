@@ -1,10 +1,13 @@
 package online.objects;
 
+import online.backend.Emojis;
 import online.util.ShitUtil;
 import online.substates.RequestSubstate;
 import flixel.math.FlxRect;
 import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
+import openfl.text.TextFormat;
+import openfl.text.TextFormatAlign;
 
 class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	public static var instance:ChatBox;
@@ -264,8 +267,11 @@ class ChatMessage extends FlxText {
 	public var link:String = null;
 
 	public function new(fieldWidth:Float = 0, msg:LogData) {
+		var data:EmojiFormatData = Emojis.format(msg.content);
+		msg.content = data.content;
 		super(0, 0, fieldWidth, msg.content);
-		setFormat("VCR OSD Mono", 16, msg.hue != null ? FlxColor.fromHSL(msg.hue, 1.0, 0.8) : FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		trace(msg.content);
+		setFormat(Paths.font("vcr.ttf"), 16, msg.hue != null ? FlxColor.fromHSL(msg.hue, 1.0, 0.8) : FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		var _split = msg.content.split("");
 		var i = -1;
@@ -294,6 +300,44 @@ class ChatMessage extends FlxText {
 
 		if (link != null)
 			addFormat(new FlxTextFormat(FlxColor.CYAN), formatBeg, formatEnd);
+
+		@:privateAccess
+		for(position in data.emojiPositions)
+		{
+			var format:FlxTextFormat = new FlxTextFormat(FlxColor.WHITE);
+			format.format.font = Paths.font("twemoji.ttf");
+			addFormat(format, position.start, position.end);
+		}
+	}
+
+	// needed for different fonts
+	override function applyFormats(FormatAdjusted:TextFormat, UseBorderColor:Bool = false):Void
+	{
+		// Apply the default format
+		copyTextFormat(_defaultFormat, FormatAdjusted, false);
+		FormatAdjusted.color = UseBorderColor ? borderColor.to24Bit() : _defaultFormat.color;
+		textField.setTextFormat(FormatAdjusted);
+
+		// Apply other formats
+		for (formatRange in _formatRanges)
+		{
+			@:privateAccess
+			if (textField.text.length - 1 < formatRange.range.start)
+			{
+				// we can break safely because the array is ordered by the format start value
+				break;
+			}
+			else
+			{
+				var textFormat:TextFormat = formatRange.format.format;
+				var oldFont:Null<String> = textFormat.font;
+				copyTextFormat(textFormat, FormatAdjusted, false);
+				if(oldFont != null) textFormat.font = oldFont;
+				FormatAdjusted.color = UseBorderColor ? formatRange.format.borderColor.to24Bit() : textFormat.color;
+			}
+
+			textField.setTextFormat(FormatAdjusted, formatRange.range.start, Std.int(Math.min(formatRange.range.end, textField.text.length)));
+		}
 	}
 }
 
