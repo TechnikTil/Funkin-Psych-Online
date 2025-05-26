@@ -572,6 +572,7 @@ class RoomState extends MusicBeatState {
 
 	function loadCharacter(isP1:Bool, ?enableDownload:Bool = false, ?manualDownload:Bool = false) {
 		var oldModDir = Mods.currentModDirectory;
+		var wantDownload:Bool = false;
 
 		if (isP1) {
 			if (p1Layer == null || p1Layer.members == null) //what
@@ -586,9 +587,23 @@ class RoomState extends MusicBeatState {
 					Mods.currentModDirectory = GameClient.room.state.player1.skinMod;
 
 				if (GameClient.room.state.player1.skinName != null)
+				{
 					p1 = new Character(0, 0, GameClient.room.state.player1.skinName + (GameClient.room.state.swagSides ? "-player" : ''), GameClient.room.state.swagSides);
+
+					if(p1.loadFailed)
+					{
+						// debating on this one...
+						/*waitingForPlayer1Skin = true;
+						updateTexts();*/
+						wantDownload = true;
+					}
+				}
 			}
-			else if (enableDownload && GameClient.room.state.player1.skinURL != null) {
+			else {
+				wantDownload = true;
+			}
+
+			if (wantDownload && enableDownload && GameClient.room.state.player1.skinURL != null) {
 				waitingForPlayer1Skin = true;
 				OnlineMods.downloadMod(GameClient.room.state.player1.skinURL, manualDownload, (_) -> {
 					if (destroyed)
@@ -618,9 +633,23 @@ class RoomState extends MusicBeatState {
 					Mods.currentModDirectory = GameClient.room.state.player2.skinMod;
 
 				if (GameClient.room.state.player2.skinName != null)
+				{
 					p2 = new Character(0, 0, GameClient.room.state.player2.skinName + (GameClient.room.state.swagSides ? '' : "-player"), !GameClient.room.state.swagSides);
+
+					if(p2.loadFailed)
+					{
+						// debating on this one...
+						/*waitingForPlayer2Skin = true;
+						updateTexts();*/
+						wantDownload = true;
+					}
+				}
 			}
-			else if (enableDownload && GameClient.room.state.player2.skinURL != null) {
+			else {
+				wantDownload = true;
+			}
+
+			if (wantDownload && enableDownload && GameClient.room.state.player2.skinURL != null) {
 				waitingForPlayer2Skin = true;
 				OnlineMods.downloadMod(GameClient.room.state.player2.skinURL, manualDownload, (_) -> {
 					if (destroyed)
