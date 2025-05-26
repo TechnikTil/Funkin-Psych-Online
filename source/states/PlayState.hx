@@ -5499,6 +5499,10 @@ class PlayState extends MusicBeatState
 			});
 		});
 
+		op.listen("hasLoaded", (value, prev) -> {
+			if(value) FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
+		});
+
 		GameClient.room.onMessage("custom", function(message:Array<Dynamic>) {
 			if (message.length != 2)
 				return;
