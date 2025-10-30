@@ -310,7 +310,6 @@ class Tank extends BaseStage
 
 		picoCutscene = new FlxAnimate(gf.x - 849, gf.y - 264);
 		picoCutscene.antialiasing = ClientPrefs.data.antialiasing;
-		picoCutscene.showPivot = false;
 
 		Paths.loadAnimateAtlas(picoCutscene, 'cutscenes/stressPico');
 		picoCutscene.antialiasing = ClientPrefs.data.antialiasing;
@@ -369,12 +368,12 @@ class Tank extends BaseStage
 						}
 					};
 
-					picoCutscene.anim.onComplete.add(function()
+					picoCutscene.animation.finishCallback = function(name:String)
 					{
 						picoCutscene.visible = false;
 						gfGroup.alpha = 1;
-						picoCutscene.anim.onComplete.removeAll();
-					});
+						picoCutscene.animation.finishCallback = null;
+					};
 					gfCutscene.animation.finishCallback = null;
 				}
 			};

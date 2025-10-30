@@ -19,8 +19,6 @@ class ResultsSoloState extends MusicBeatState {
 
 	public var charSprites:Array<FlxSprite> = [];
 	public var charSpritesDelay:Array<Float> = [];
-	public var charAnimates:Array<FlxAnimate> = [];
-	public var charAnimatesDelay:Array<Float> = [];
 
 	var rankTextos:FlxBackdrop;
 	var rankScroll:FlxBackdrop;
@@ -126,38 +124,41 @@ class ResultsSoloState extends MusicBeatState {
 		var coolData:Array<Dynamic> = rank.images;
 		if (coolData != null) {
 			for (imageData in coolData) {
-				switch (imageData.renderType) {
-					case 'animateatlas':
-						var coolAssAnim:FlxAnimate = new FlxAnimate(imageData.offsets[0], imageData.offsets[1]);
-						Paths.loadAnimateAtlas(coolAssAnim, imageData.assetPath);
-						if (imageData.scale != null)
-							coolAssAnim.scale.set(imageData.scale, imageData.scale);
-						coolAssAnim.visible = false;
-						coolAssAnim.anim.onComplete.add(() -> {
-							if (imageData.loopFrameLabel != null)
-								coolAssAnim.anim.goToFrameLabel(imageData.loopFrameLabel);
+				var sprite = new FlxAnimate(imageData.offsets[0], imageData.offsets[1]);
 
-							if (imageData.loopFrame != null)
-								coolAssAnim.anim.play(null, true, false, imageData.loopFrame);
-						});
-						charAnimates.push(coolAssAnim);
-						charAnimatesDelay.push(imageData?.delay ?? 0);
-						add(coolAssAnim);
+				switch(imageData.renderType) {
+					case 'animateatlas':
+						Paths.loadAnimateAtlas(sprite, imageData.assetPath);
 					case 'sparrow':
-						var sprite = new FlxSprite(imageData.offsets[0], imageData.offsets[1]);
 						sprite.frames = Paths.getSparrowAtlas(imageData.assetPath);
-						if (imageData.scale != null)
-							sprite.scale.set(imageData.scale, imageData.scale);
-						sprite.visible = false;
-						sprite.animation.addByPrefix('idle', '', 24, false);
-						sprite.animation.finishCallback = _ -> {
-							if (imageData.loopFrame != null)
-								sprite.animation.play('idle', true, false, imageData.loopFrame);
-						};
-						charSprites.push(sprite);
-						charSpritesDelay.push(imageData?.delay ?? 0);
-						add(sprite);
 				}
+
+				if (imageData.scale != null)
+					sprite.scale.set(imageData.scale, imageData.scale);
+
+				sprite.visible = false;
+
+				switch(imageData.renderType) {
+					case 'animateatlas':
+						sprite.anim.addByTimeline('idle', sprite.anim.getDefaultTimeline(), null, false);
+
+						if (imageData.loopFrameLabel != null)
+							sprite.anim.addByFrameLabel('loop', imageData.loopFrameLabel, true);
+
+					case 'sparrow':
+						sprite.animation.addByPrefix('idle', '', 24, false);
+				}
+
+				sprite.animation.finishCallback = _ -> {
+					if (imageData.loopFrameLabel != null)
+						sprite.animation.play('loop', true, false);
+
+					if (imageData.loopFrame != null)
+						sprite.animation.play('idle', true, false, imageData.loopFrame);
+				};
+				charSprites.push(sprite);
+				charSpritesDelay.push(imageData?.delay ?? 0);
+				add(sprite);
 			}
 		}
 
@@ -306,12 +307,6 @@ class ResultsSoloState extends MusicBeatState {
 							if (rank.soundOnFlash ?? false)
 								playMusic();
 
-							for (i => sprite in charAnimates) {
-								FlxTimer.wait(charAnimatesDelay[i], () -> {
-									sprite.visible = true;
-									sprite.anim.play();
-								});
-							}
 							for (i => sprite in charSprites) {
 								FlxTimer.wait(charSpritesDelay[i], () -> {
 									sprite.visible = true;

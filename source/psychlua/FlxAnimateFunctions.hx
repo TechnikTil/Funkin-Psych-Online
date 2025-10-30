@@ -2,7 +2,10 @@ package psychlua;
 
 import openfl.utils.Assets;
 
-#if (LUA_ALLOWED && flxanimate)
+/**
+ * Not really needed anymore, but we keep it as backwards compatibility.
+ */
+#if (LUA_ALLOWED && flixel_animate)
 
 class FlxAnimateFunctions
 {
@@ -27,7 +30,7 @@ class FlxAnimateFunctions
 
 		Lua_helper.add_callback(lua, "loadAnimateAtlas", function(tag:String, folderOrImg:Dynamic, ?spriteJson:Dynamic = null, ?animationJson:Dynamic = null) {
 			var spr:FlxAnimate = PlayState.instance.variables.get(tag);
-			if(spr != null) Paths.loadAnimateAtlas(spr, folderOrImg, spriteJson, animationJson);
+			if(spr != null) Paths.loadAnimateAtlas(spr, folderOrImg/*, spriteJson, animationJson*/);
 		});
 		
 		Lua_helper.add_callback(lua, "addAnimationBySymbol", function(tag:String, name:String, symbol:String, ?framerate:Float = 24, ?loop:Bool = false, ?matX:Float = 0, ?matY:Float = 0)

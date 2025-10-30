@@ -12,10 +12,8 @@ class ABotSpeaker extends FlxSpriteGroup {
 	public var vizSprites:Array<FlxSprite> = [];
 	public var eyeBg:FlxSprite;
 	public var eyes:FlxAnimate;
-	public var eyesPixel:FlxSprite;
 	public var darkSpeaker:FlxAnimate;
 	public var speaker:FlxAnimate;
-	public var speakerPixel:FlxSprite;
 
 	#if funkin.vis
 	var analyzer:SpectralAnalyzer;
@@ -32,13 +30,17 @@ class ABotSpeaker extends FlxSpriteGroup {
 		return snd;
 	}
 
+	public var isPixel:Bool = false;
+
 	public function new(x:Float = 0, y:Float = 0, ?addDarkSprite:Bool = false, ?isPixel:Bool = false) {
+		this.isPixel = isPixel;
 		super(x, y);
 
 		var antialias = ClientPrefs.data.antialiasing && !isPixel;
+		var speakerPos:Array<Float> = [];
 
 		bg = new FlxSprite(90, 20).loadGraphic(Paths.image(
-			!isPixel 
+			!isPixel
 			? 'abot/stereoBG'
 			: 'abotPixel/aBotPixelBack'
 		));
@@ -90,23 +92,25 @@ class ABotSpeaker extends FlxSpriteGroup {
 
 			eyes = new FlxAnimate(-10, 230);
 			Paths.loadAnimateAtlas(eyes, 'abot/systemEyes');
-			eyes.anim.addBySymbolIndices('lookleft', 'a bot eyes lookin', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 24, false);
-			eyes.anim.addBySymbolIndices('lookright', 'a bot eyes lookin', [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35], 24, false);
+			var timelineFramesByTwo:Int = Std.int(eyes.anim.getDefaultTimeline().frameCount / 2);
+			eyes.anim.addByTimelineIndices('lookleft', eyes.anim.getDefaultTimeline(), [for (i in 0...timelineFramesByTwo) i], 24, false);
+			eyes.anim.addByTimelineIndices('lookright', eyes.anim.getDefaultTimeline(), [for (i in 0...timelineFramesByTwo) timelineFramesByTwo + i], 24, false);
 			eyes.anim.play('lookright', true);
-			eyes.anim.curFrame = eyes.anim.length - 1;
+			eyes.animation.finish();
+			eyes.applyStageMatrix = false;
 			eyes.antialiasing = antialias;
 			add(eyes);
 		}
 		else {
-			eyesPixel = new FlxSprite(-227, -131);
-			eyesPixel.frames = Paths.getSparrowAtlas('abotPixel/abotHead');
-			eyesPixel.animation.addByPrefix('lookleft', 'toleft', 24, false);
-			eyesPixel.animation.addByPrefix('lookright', 'toright', 24, false);
-			eyesPixel.animation.play('lookleft', true);
-			eyesPixel.antialiasing = antialias;
-			eyesPixel.scale.set(6, 6);
-			eyesPixel.updateHitbox();
-			add(eyesPixel);
+			eyes = new FlxAnimate(-227, -131);
+			eyes.frames = Paths.getSparrowAtlas('abotPixel/abotHead');
+			eyes.animation.addByPrefix('lookleft', 'toleft', 24, false);
+			eyes.animation.addByPrefix('lookright', 'toright', 24, false);
+			eyes.animation.play('lookleft', true);
+			eyes.antialiasing = antialias;
+			eyes.scale.set(6, 6);
+			eyes.updateHitbox();
+			add(eyes);
 		}
 
 		if (addDarkSprite) {
@@ -114,7 +118,7 @@ class ABotSpeaker extends FlxSpriteGroup {
 			Paths.loadAnimateAtlas(darkSpeaker, 'abot/dark/abotSystem');
 			darkSpeaker.anim.addBySymbol('anim', 'Abot System', 24, false);
 			darkSpeaker.anim.play('anim', true);
-			darkSpeaker.anim.curFrame = darkSpeaker.anim.length - 1;
+			darkSpeaker.animation.finish();
 			darkSpeaker.antialiasing = antialias;
 			add(darkSpeaker);
 		}
@@ -124,19 +128,19 @@ class ABotSpeaker extends FlxSpriteGroup {
 			Paths.loadAnimateAtlas(speaker, 'abot/abotSystem');
 			speaker.anim.addBySymbol('anim', 'Abot System', 24, false);
 			speaker.anim.play('anim', true);
-			speaker.anim.curFrame = speaker.anim.length - 1;
+			speaker.animation.finish();
 			speaker.antialiasing = antialias;
 			add(speaker);
 		}
 		else {
-			speakerPixel = new FlxSprite(-228, -226);
-			speakerPixel.frames = Paths.getSparrowAtlas('abotPixel/aBotPixel');
-			speakerPixel.animation.addByPrefix('idle', 'idle', 24, false);
-			speakerPixel.animation.play('idle', true);
-			speakerPixel.antialiasing = antialias;
-			speakerPixel.scale.set(6, 6);
-			speakerPixel.updateHitbox();
-			add(speakerPixel);
+			speaker = new FlxAnimate(-228, -226);
+			speaker.frames = Paths.getSparrowAtlas('abotPixel/aBotPixel');
+			speaker.animation.addByPrefix('idle', 'idle', 24, false);
+			speaker.animation.play('idle', true);
+			speaker.antialiasing = antialias;
+			speaker.scale.set(6, 6);
+			speaker.updateHitbox();
+			add(speaker);
 		}
 	}
 
@@ -177,15 +181,15 @@ class ABotSpeaker extends FlxSpriteGroup {
 	#end
 
 	public function actualBeatHit() {
-		if (speakerPixel != null)
-			speakerPixel.animation.play('idle', true);
+		if (!isPixel) return;
+		speaker.animation.play('idle', true);
 	}
 
 	public function bumpSpeaker() {
+		if(isPixel) return;
+
 		if (speaker != null)
 			speaker.anim.play('anim', true);
-		// if (speakerPixel != null)
-		// 	speakerPixel.animation.play('idle', true);
 		if (darkSpeaker != null) {
 			darkSpeaker.anim.play('anim', true);
 		}
@@ -217,40 +221,23 @@ class ABotSpeaker extends FlxSpriteGroup {
 
 	public function lookLeft() {
 		if (lookingAtRight) {
-			if (eyes != null)
-				eyes.anim.play('lookleft', true);
-
-			if (eyesPixel != null)
-				eyesPixel.animation.play('lookleft', true);
+			eyes.animation.play('lookleft', true);
 		}
 		lookingAtRight = false;
 	}
 
 	public function lookRight() {
 		if (!lookingAtRight) {
-			if (eyes != null)
-				eyes.anim.play('lookright', true);
-
-			if (eyesPixel != null)
-				eyesPixel.animation.play('lookright', true);
+			eyes.animation.play('lookright', true);
 		}
 		lookingAtRight = true;
 	}
 
 	public function finishEyes() {
-		if (eyes != null)
-			eyes.anim.curFrame = eyes.anim.length - 1;
-		if (eyesPixel != null)
-			eyesPixel.animation.finish();
+		eyes.animation.finish();
 	}
 
 	function getCurSpeakerFrame() {
-		if (speaker != null) {
-			return speaker.anim.curFrame;
-		}
-		if (speakerPixel != null) {
-			return speakerPixel.animation.curAnim.curFrame;
-		}
-		return 0;
+		return speaker.animation.curAnim.curFrame;
 	}
 }

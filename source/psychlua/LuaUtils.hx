@@ -79,7 +79,7 @@ class LuaUtils
 			PlayState.instance.variables.set(variable, value);
 			return value;
 		}
-		Reflect.setProperty(instance, variable, value);
+
 		return value;
 	}
 	//todo: laggy

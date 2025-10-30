@@ -14,8 +14,8 @@ import llua.Lua;
 import backend.Achievements;
 #end
 
-#if flxanimate
-import flxanimate.FlxAnimate;
+#if flixel_animate
+import animate.FlxAnimate;
 #end
 
 #if lumod

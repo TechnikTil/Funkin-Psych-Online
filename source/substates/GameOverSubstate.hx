@@ -89,7 +89,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		}
 
 		if (boyfriend.isAnimateAtlas) {
-			boyfriend.onAtlasAnimationComplete = animName -> {
+			boyfriend.animation.finishCallback = animName -> {
 				if (animName == "confirm") {
 					boyfriend.atlas.anim.play("confirm", true, false);
 				}

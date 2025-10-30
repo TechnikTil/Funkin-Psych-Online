@@ -3882,6 +3882,9 @@ class PlayState extends MusicBeatState
 				stage3D.setFollowCamera('bf');
 			callOnScripts('onMoveCamera', ['boyfriend']);
 		}
+
+		if (abot != null)
+			updateABotEye();
 	}
 
 	public function tweenCamIn() {
@@ -5343,9 +5346,6 @@ class PlayState extends MusicBeatState
 		}
 		super.sectionHit();
 
-		if (abot != null)
-			updateABotEye();
-		
 		setOnScripts('curSection', curSection);
 		callOnScripts('onSectionHit');
 	}

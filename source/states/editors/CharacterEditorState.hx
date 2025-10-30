@@ -684,8 +684,7 @@ class CharacterEditorState extends MusicBeatState {
 					lastOffsets = anim.offsets;
 					if(char.animOffsets.exists(animationInputText.text))
 					{
-						if(!char.isAnimateAtlas) char.animation.remove(animationInputText.text);
-						else @:privateAccess char.atlas.anim.animsMap.remove(animationInputText.text);
+						char.animation.remove(animationInputText.text);
 					}
 					char.animationsArray.remove(anim);
 				}
@@ -712,13 +711,13 @@ class CharacterEditorState extends MusicBeatState {
 					char.animation.addByPrefix(newAnim.anim, newAnim.name, newAnim.fps, newAnim.loop);
 				}
 			}
-			#if flxanimate
+			#if flixel_animate
 			else
 			{
 				if(indices != null && indices.length > 0)
-					char.atlas.anim.addBySymbolIndices(newAnim.anim, newAnim.name, newAnim.indices, newAnim.fps, newAnim.loop);
+					char.anim.addBySymbolIndices(newAnim.anim, newAnim.name, newAnim.indices, newAnim.fps, newAnim.loop);
 				else
-					char.atlas.anim.addBySymbol(newAnim.anim, newAnim.name, newAnim.fps, newAnim.loop);
+					char.anim.addBySymbol(newAnim.anim, newAnim.name, newAnim.fps, newAnim.loop);
 			}
 			#end
 
@@ -767,8 +766,7 @@ class CharacterEditorState extends MusicBeatState {
 					if(anim.anim == char.getAnimationName()) resetAnim = true;
 					if(char.animOffsets.exists(anim.anim))
 					{
-						if(!char.isAnimateAtlas) char.animation.remove(anim.anim);
-						else @:privateAccess char.atlas.anim.animsMap.remove(anim.anim);
+						char.animation.remove(anim.anim);
 						char.animOffsets.remove(anim.anim);
 						char.animationsArray.remove(anim);
 					}
@@ -870,17 +868,15 @@ class CharacterEditorState extends MusicBeatState {
 		var lastAnim:String = char.getAnimationName();
 		var anims:Array<AnimArray> = char.animationsArray.copy();
 		
-		#if flxanimate
+		#if flixel_animate
 		char.isAnimateAtlas = false;
 
 		if (Paths.fileExists('images/' + char.imageFile + '/Animation.json', TEXT)) {
 			char.frames = null;
 			char.isAnimateAtlas = true;
-			char.atlas = new FlxAnimate();
-			char.atlas.showPivot = false;
 			try
 			{
-				Paths.loadAnimateAtlas(char.atlas, char.imageFile);
+				Paths.loadAnimateAtlas(char, char.imageFile);
 			}
 			catch(e:Dynamic)
 			{
@@ -921,13 +917,13 @@ class CharacterEditorState extends MusicBeatState {
 						char.animation.addByPrefix(animAnim, animName, animFps, animLoop);
 					}
 				}
-				#if flxanimate
+				#if flixel_animate
 				else
 				{
 					if(animIndices != null && animIndices.length > 0)
-						char.atlas.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+						char.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
 					else
-						char.atlas.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+						char.anim.addBySymbol(animAnim, animName, animFps, animLoop);
 				}
 				#end
 			}
@@ -1087,26 +1083,8 @@ class CharacterEditorState extends MusicBeatState {
 	}
 
 	function reloadGhost() {
-		if(char.isAnimateAtlas)
-		{
-			ghostChar.frames = null;
-			ghostChar.isAnimateAtlas = true;
-			ghostChar.atlas = new FlxAnimate();
-			ghostChar.atlas.showPivot = false;
-			try
-			{
-				Paths.loadAnimateAtlas(ghostChar.atlas, char.imageFile);
-			}
-			catch(e:Dynamic)
-			{
-				FlxG.log.warn('Could not load atlas ${ghostChar.imageFile}: $e');
-			}
-		}
-		else
-		{
-			ghostChar.isAnimateAtlas = false;
-			ghostChar.frames = char.frames;
-		}
+		ghostChar.isAnimateAtlas = char.isAnimateAtlas;
+		ghostChar.frames = char.frames;
 
 		for (anim in char.animationsArray) {
 			var animAnim:String = '' + anim.anim;
@@ -1123,13 +1101,13 @@ class CharacterEditorState extends MusicBeatState {
 					ghostChar.animation.addByPrefix(animAnim, animName, animFps, animLoop);
 				}
 			}
-			#if flxanimate
+			#if flixel_animate
 			else
 			{
 				if(animIndices != null && animIndices.length > 0)
-					ghostChar.atlas.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+					ghostChar.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
 				else
-					ghostChar.atlas.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+					ghostChar.anim.addBySymbol(animAnim, animName, animFps, animLoop);
 			}
 			#end
 

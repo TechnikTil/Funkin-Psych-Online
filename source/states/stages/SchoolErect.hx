@@ -206,9 +206,9 @@ class SchoolErect extends BaseStage
 			abotSpeakerShader.antialiasAmt = 0;
 			abotSpeakerShader.threshold = 1;
 
-			abotSpeakerShader.attachedSprite = abot.speakerPixel;
-			abot.speakerPixel.animation.callback = function(name:String, frameNumber:Int, frameIndex:Int) {
-				abotSpeakerShader.updateFrameInfo(abot.speakerPixel.frame);
+			abotSpeakerShader.attachedSprite = abot.speaker;
+			abot.speaker.animation.callback = function(name:String, frameNumber:Int, frameIndex:Int) {
+				abotSpeakerShader.updateFrameInfo(abot.speaker.frame);
 			};
 
 			abotSpeakerShader.loadAltMask('weeb/erect/masks/aBotPixel_mask');
@@ -222,10 +222,10 @@ class SchoolErect extends BaseStage
 			noRimShader.contrast = 24;
 
 			abot.bg.shader = noRimShader.shader;
-			abot.eyesPixel.shader = noRimShader.shader;
+			abot.eyes.shader = noRimShader.shader;
 			for(viz in abot.vizSprites)
 				viz.shader = noRimShader.shader;
-			abot.speakerPixel.shader = abotSpeakerShader.shader;
+			abot.speaker.shader = abotSpeakerShader.shader;
 		}
 	}
 
